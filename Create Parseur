@@ -1,0 +1,134 @@
+# Projet-C
+
+	Lexèmes : <>
+	[ ] : nombre indéfini de lexèmes
+	“ ” : renvoi au parseur correspondant
+	! : not
+
+	tous les identifiants sont précédés du préfixe “id_”. Ils seront stockés dans des listes dédiées (ex : id_library sera stocké dans List_Library )
+	le type d'un signal est noté : “type of id_[...]”
+
+
+Parseur Fichier
+	while !<eof> (
+
+	if < Library > then “Parseur Library”
+	if < Entity > then “Parseur Entity”
+	if < Architecture > then “Parseur Architecture”	
+	if < -- > then “Parseur commentaire”
+	
+	) end while
+
+	Parseur commentaire
+	{
+		[ lexèmes_quelconques ]
+		< \n >
+	}
+
+	Parseur Library
+	{
+		< id_library>
+		< ; >
+		if < use > then “Parseur Use”
+	} return id_library
+
+		Parseur Use
+		{
+			< id_library >
+			if < . > then
+				< id_paquet >
+				< . >
+				< id_partie > or < all >
+			< ; >
+		}
+
+	Parseur Entity
+	{
+		< is >
+		< id_entity >
+		if < port > then “Parseur Port”
+	
+		< end >
+		< id_entity >
+	} return id_entity
+
+		Parseur Port
+		{
+			< ( >
+			while !< )> then (
+				 < id_port >
+				< : >
+				< in > or < out >
+				if < std_logic > then < ; >
+				if < std_logic_vector > then 
+					“Parseur tableau”
+					< ; >	
+			) end while
+			< ) >
+			< ; >
+		} return liste_ports
+
+	Parseur Architecture
+	{
+		< id_architecture >
+		< of >
+		< id_entity >
+		< is >
+
+		while !<begin> then (
+			“Parseur Declaration”
+		) end while
+
+		while !< end > then (
+			“Parseur Instructions”
+		) end while
+	
+		< ; >
+	} return id_architecture
+
+		Parseur Déclaration
+		{
+		 	if < Signal > then (
+				< id_signal >
+				< : >
+				< type of id_signal >
+				if < ( > then “Parseur tableau”
+				< ; >
+			if < type > then “Parseur Déclaration Type”
+			if < component > then “Parseur Déclaration Composant”
+		} return liste_signal
+
+			Parseur Déclaration Type
+			{
+				< id_type>
+				< is >
+				// à compléter
+			}
+
+			Parseur Déclaration Composant
+			{
+				// à compléter
+			}
+
+		Parseur Instructions
+		{
+			if < process > then “Parseur process”
+			// à compléter avec les différentes instructions concurrentielles
+		}
+
+			Parseur Process
+			{
+				if < id_process > then < : >
+				< process >
+				< ( >
+				while !< ) > then
+					< id_port > or < id_signal >
+					< , >
+				end while
+				< begin >
+				while !< end > (
+					// à compléter avec les différents types d'instructions séquentielles
+				) end while
+				< process >
+				if < id_process >!=NULL then < id_process >
+}
