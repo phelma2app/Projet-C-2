@@ -2,11 +2,17 @@
 #include <string>
 #include "utilities.h"
 
-using namespace std ;
+
+using namespace std;
+
+
 //Fonction pour mettre toutes les lettres en minuscule, à faire en préambule de toute analyse sur le string
 void minus_string(string &to_minus)
 {
-        //code à écrire
+	for(int i=0;i<to_minus.length();i++)
+	{
+		to_minus[i]=tolower(to_minus[i]);
+	}
 }
 
 //Fonction pour tester la ponctuation
