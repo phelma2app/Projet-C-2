@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-using namespace std ;
+using namespace std;
 
 //Fonction pour mettre toutes les lettres en minuscule, à faire en préambule de toute analyse sur le string
 void minus_string(string &to_minus);
