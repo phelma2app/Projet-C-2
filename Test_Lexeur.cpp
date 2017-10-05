@@ -3,6 +3,7 @@
 #include <list>
 #include <fstream>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "utilities.h"
 #include "Lexeme.h"
@@ -13,18 +14,22 @@ string read_line(ifstream& fichier);
 string add_space_on_string(string str, int length);
 void stock_lexemes(string buffer, int ligne, list<Lexeme*>& Lex_VHDL);
 int commande_vhdl(string &libraryname, string &sourcename);
+int vhdlcomp(string libraryname, string sourcename);
 
-int main ()
+#include <algorithm>
+#include "tree.hh"
+
+int main()
 {
 	string libraryname;
 	string sourcename;
 
-	if(commande_vhdl(libraryname,sourcename)!=0)
-	{
-		cout << "Erreur : commande inconnue" << endl;
-		return 1;
-	}
+	while(commande_vhdl(libraryname,sourcename)!=0);
+	vhdlcomp(libraryname,sourcename);
+}
 
+int vhdlcomp(string libraryname, string sourcename)
+{
 	//Ouverture du fichier
 	ifstream fichier(sourcename.c_str(), ios::in);  // on ouvre en lecture
 	if(!fichier)  // si l'ouverture n'a pas fonctionnée
@@ -51,6 +56,7 @@ int main ()
 		cout << **itr;
 	}
 	cout << endl <<  "Nombre de lignes dans le fichier : " << n_ligne-1;		//pour test
+	return 0;
 }
 
 //Commandes sur la console pour l'utilisateur
@@ -79,7 +85,7 @@ int commande_vhdl(string &libraryname, string &sourcename)
 	}
 	else
 	{
-		cout << "Erreur : commande inconnue." << endl;
+		cout << "Erreur : commande inconnue" << endl;
 		return 1;
 	}
 	return 0;
