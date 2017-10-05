@@ -2,6 +2,8 @@
 #include <string>
 #include <iostream>
 
+grdjojh<fauiuyuiyui
+
 using namespace std;
 
 Lexeme::~Lexeme() {
