@@ -5,16 +5,17 @@
 
 using namespace std;
 
+// ********************************ENTITY********************************************************************
 int parseur_entity (List<Lexeme*>::iterator itr){
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
-		itr++;
-		string identifiant = lexeme ; 
+		string identifiant = (*itr)->getLex() ;
+		itr++; 
 		if ((*itr)->getLex() == "is"){
 			itr++; 
 			if ((*itr)->getLex() == "port"){
-				if (parseur_port(i)= 0) {
-					return 0 ; 
+				if (parseur_port(*itr)= 0) {
+					return 0 ; 		// indique que l'on a une erreur
 				} // if (parseur_port(i)= 0) {
 				else {
 					itr++;
@@ -34,29 +35,39 @@ int parseur_entity (List<Lexeme*>::iterator itr){
 	return 0 ; 
 } // parseur_entity 
 
+
+
+// *****************************************************PORT**********************************************************
 int parseur_port (List<Lexeme*>::iterator itr) {
+	bool fin_port = false ;  // bool qui nous permet de gérer le dernier port 
 	i++;
 	if ((*itr)->getLex()== "("){
-		i++;
-		while ((*itr)->getType() == MOT) {
-			i++;
+		itr++;
+		while ((*itr)->getType() == MOT && fin_port == false) {
+			itr++;
 			while ((*itr)->getLex() != ':') {
 				if ((*itr)->getLex()== ",") {
-					i++;
+					itr++;
 					if ((*itr)->getType() == MOT) {
-						i++;
+						itr++;
 					} //if ((*itr)->getType() == MOT)
 				} //if ((*itr)->getLex()== ",") 
 			} //while ((*itr)->getLex() != ':') 
-			i++ ; 
+			itr++ ; 
 			if ((*itr)->getLex()== "in"){
-			// A COMPLETER
+				if (parseur_type_port(*itr) = 0) {
+					return 0 ;
+				}
 			} // if ((*itr)->getLex()== "in")
 			else if ((*itr)->getLex()== "out"){
-			// A COMPLETER AVEC LE MEME CODE QUE LE "IN"
+				if (parseur_type_port(*itr) = 0) {
+					return 0 ;
+				}
 			} // else if 
 			else if ((*itr)->getLex()== "inout"){ 
-			// A COMPLETER AVEC LE MEME CODE QUE LE "IN "
+				if (parseur_type_port(*itr) = 0) {
+					return 0 ;
+				}
 			} // else if 
 			else {
 				return 0 ; 
@@ -66,3 +77,94 @@ int parseur_port (List<Lexeme*>::iterator itr) {
 	} // if ((*itr)->getLex()== "(")
 
 } // parseur_port
+
+
+
+
+
+//**************************************************************TYPE PORT*************************************************************
+int parseur_type_port (List<Lexeme*>::iterator itr, bool *fin_port) {
+	itr++;
+	if type // A COMPLETER
+		itr++ ; 
+		if ((*itr)->getLex()== ";") {
+			return 1 ;
+		}
+		else if ((*itr)->getLex()== ")") {
+			itr++
+			fin_port = true ;
+			if ((*itr)->getLex()== ";") {
+			return 1 ;
+			}
+		}
+		else {
+			return 0 ; 
+		}
+	}
+
+
+} // parseur type_port 
+
+
+
+
+
+
+
+
+
+
+
+//******************************************************LIBRARY*************************************************************************
+
+int parseur_library (List<Lexeme*>::iterator itr){
+	itr++ ; 
+	if ((*itr)->getType() == MOT) {
+		string library = (*itr)->getLex() ;
+		itr++; 
+		if ((*itr)->getLex() == ";"){
+			itr++ ; 
+			while ((*itr)->getLex() == "use"){
+				if (parseur_library(*itr, *library)==0){
+					return 0 ; 
+				} //if (parseur_library(*itr)==0){
+			} //while
+			return 1 ;
+		} //if ((*itr)->getLex() == ";"){
+	} //if ((*itr)->getType() == MOT) {
+	return 0 ; 
+} //parseur_library 
+
+
+
+//****************************************************USE*******************************************************************************
+
+
+int parseur_use (List<Lexeme*>::iterator itr, string library){
+	itr++ ; 
+	if ((*itr)->getLex() == library) {
+		itr ++;
+		if ((*itr)->getLex() == ".") {
+			itr++;
+			if ((*itr)->getType() == MOT) {
+				string name = itr->getLex() ; 
+				itr++ ;
+				if ((*itr)->getLex() == ".") {
+					itr++;
+					// a compléter lexeme all ou autres 
+
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
