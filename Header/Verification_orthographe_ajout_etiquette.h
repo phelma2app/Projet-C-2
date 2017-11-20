@@ -9,6 +9,6 @@
 
 using namespace std ; 
 
-bool verif(Lexeme l, bool *com, int *ligne_com);
+bool verif(Lexeme& l, bool *com, int *ligne_com);
 
 #endif //VERIFICATION_ORTHOGRAPHE_AJOUT_ETIQUETTE_H_
