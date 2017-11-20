@@ -1,12 +1,12 @@
 #include <iostream>
 #include <string>
-#include "utilities.h"
+#include "../Header/utilities.h"
 
 
 using namespace std;
 
 
-//Fonction pour mettre toutes les lettres en minuscule, à faire en préambule de toute analyse sur le string
+//Fonction pour mettre toutes les lettres en minuscule, Ã  faire en prÃ©ambule de toute analyse sur le string
 void minus_string(string &to_minus)
 {
 	for(int i=0;i<to_minus.length();i++)
