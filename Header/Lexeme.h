@@ -34,10 +34,10 @@ public:
 	string getLex() const { return lex; }
 
 	void setLigne(int ligne) { n_ligne=ligne; }
-	int getLigne() const { return n_ligne; }
 
 	void setType(int type) { type_lex=type; }
 	int getType() const { return type_lex; }
+	int getLigne() const { return n_ligne; }
 	string afficheType() const;
 
 	void isPonctuation() { type_lex=PONCTUATION; }
