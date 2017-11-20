@@ -202,6 +202,12 @@ int parseur_architecture (list<Lexeme*>::iterator itr){
 int parseur_signal (list<Lexeme*>::iterator itr){
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
+		i++ ; 
+		if ((*itr)->getLex() == ":") {
+			itr++;
+			if // vérif type
+			}
+		}
 	}
 }
 //*************************************************************COMPONENT****************************************************************
