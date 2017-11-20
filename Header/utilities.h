@@ -1,11 +1,14 @@
 //--------------------------------------------FONCTIONS UTILES----------------------------------------------
 
+#ifndef UTILITIES_H_
+#define UTILITIES_H_
+
 #include <iostream>
 #include <string>
 
 using namespace std;
 
-//Fonction pour mettre toutes les lettres en minuscule, à faire en préambule de toute analyse sur le string
+//Fonction pour mettre toutes les lettres en minuscule, Ã  faire en prÃ©ambule de toute analyse sur le string
 void minus_string(string &to_minus);
 
 //Fonction pour tester la ponctuation
@@ -19,3 +22,6 @@ bool is_letter(char ch_test);
 
 //Nombre ?
 bool is_number(char ch_test);
+
+
+#endif //UTILITIES_H_
