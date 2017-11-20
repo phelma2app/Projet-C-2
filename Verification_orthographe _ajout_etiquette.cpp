@@ -1,11 +1,17 @@
+/*
 #include <iostream>
 #include <string>
 #include <list>
 #include "utilities.cpp"  // fichier contenant les fonctions is_number, is_letter, is_ponctuation, is_ponctuation2char
+#include "Lexeme.h"
+*/
+
+#include "../Header/Verification_orthographe_ajout_etiquette.h"
 
 using namespace std ; 
 
-bool verif(Lexeme l, bool *com, int *ligne_com) {  
+
+bool verif(Lexeme& l, bool *com, int *ligne_com) {  
 	string a = l.getLex() ;
 	int i =0 ; 
 	bool erreur = false ;
@@ -13,7 +19,7 @@ if (*com == true && *ligne_com == l.getLigne()){ 	// ici on est dans le cas ou o
 	l.isCommentaire() ; 				//meme ligne que ce dernier on place le lexeme en commentaire et on ne fait rien d'autre
 	return erreur ; 
 }
-else {							// SInon on teste le lexeme pour vérifier l'orthographe et mettre la bonne etiquette 
+else {							// SInon on teste le lexeme pour vÃ©rifier l'orthographe et mettre la bonne etiquette 
 	*com = false ;
 	if (is_letter(a[0])){
 		l.isMot() ;
@@ -27,7 +33,7 @@ else {							// SInon on teste le lexeme pour vérifier l'orthographe et mettre 
 		}
 		if (a[i-1]=='_'){
 		cout << "ERREUR ligne " << l.getLigne() << " : un mot commencant par une lettre ne peut pas se terminer par le caractere '_'" << endl ; 
-		//cout numero de la ligne du lexème
+		//cout numero de la ligne du lexÃ¨me
 		erreur = true ; 
 		}
 	}
@@ -38,7 +44,7 @@ else {							// SInon on teste le lexeme pour vérifier l'orthographe et mettre 
 			if(is_number(a[i])){}
 			else {
 				cout << "ERREUR ligne " << l.getLigne() << ": Un mot commencant par un chiffre peut contenir seulement des chiffres" << endl ; 
-				//cout numero de la ligne du lexème 
+				//cout numero de la ligne du lexÃ¨me 
 			 	erreur = true ; 
 			}
 			i=i++ ; 
@@ -52,8 +58,8 @@ else {							// SInon on teste le lexeme pour vérifier l'orthographe et mettre 
 			if(is_ponctuation2char(a[0],a[1])){
 				if (a[0]=='-'&&a[0]=='-'){
 					l.isCommentaire() ;
-					*ligne_com = l.getligne ;  
-					*com = TRUE ;
+					*ligne_com = l.getLigne() ;  
+					*com = true ;
 				}
 				else {
 					l.isPonctuation() ;
@@ -65,13 +71,13 @@ else {							// SInon on teste le lexeme pour vérifier l'orthographe et mettre 
 				erreur = true ; 
 			}
 			if(a[2]!='\0'){
-			cout << "ERREUR ligne " << l.getLigne() << " : On ne peut pas avoir plus de 2 ponctuations à la suite" << endl ;
+			cout << "ERREUR ligne " << l.getLigne() << " : On ne peut pas avoir plus de 2 ponctuations Ã  la suite" << endl ;
 			// + n ligne
 			erreur = true ; 
 			} 
 		}
 		else {
-			cout << "ERREUR ligne " << l.getLigne() << " : On ne peut pas avoir d'autres caractères qu'une ponctuation après une ponctuation" << endl ; 
+			cout << "ERREUR ligne " << l.getLigne() << " : On ne peut pas avoir d'autres caractÃ¨res qu'une ponctuation aprÃ¨s une ponctuation" << endl ; 
 			// + n ligne 
 			erreur = true ; 
 		}
