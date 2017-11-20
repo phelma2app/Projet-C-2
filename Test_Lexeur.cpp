@@ -106,7 +106,7 @@ void stock_lexemes(string buffer, int ligne, list<Lexeme*>& Lex_VHDL)
 		//	cout << ch_buff << endl;	//pour test
 		Lexeme *lex_buff = new Lexeme(ch_buff,ligne,0);
 
-		if(!verif(*lex_buff,&is_com,&ligne_com))
+		if(verif(*lex_buff,&is_com,&ligne_com))
 			cout << "Erreur lexicale detectee" << endl;
 			//exit(-1);
 
