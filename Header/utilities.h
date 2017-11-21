@@ -23,5 +23,7 @@ bool is_letter(char ch_test);
 //Nombre ?
 bool is_number(char ch_test);
 
+//Fonction pour tester le type
+bool is_type(string st_test);
 
 #endif //UTILITIES_H_
