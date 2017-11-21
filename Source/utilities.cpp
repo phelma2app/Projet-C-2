@@ -54,3 +54,13 @@ bool is_number(char ch_test)
 	}
 	return false;
 }
+
+//Fonction pour tester le type 
+bool is_type(string st_test)
+{
+	if(st_test=="std_logic"||st_test=="std_logic_vector")	
+	{
+		return true;
+	}
+	return false;
+}
