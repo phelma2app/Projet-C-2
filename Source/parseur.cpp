@@ -12,7 +12,6 @@ using namespace std;
 
 //ARCHITECTURE à compléter
 //PROCESS à compléter
-//IF à compléter
 //THEN à compléter
 
 // ********************************ENTITY********************************************************************
@@ -296,8 +295,11 @@ int parseur_type (list<Lexeme*>::iterator itr) {
 		return 1 ; 
 	}
 	else if ((*itr)->getLex()== "std_logic_vector"){
+		itr++;
 		if ((*itr)->getType() == NUMBER) { 
+			itr++;
 			if ((*itr)->getLex()== "downto") { 
+				itr++;
 				if ((*itr)->getType() == NUMBER) { 
 					return 1 ; 
 				}
@@ -311,8 +313,11 @@ int parseur_type (list<Lexeme*>::iterator itr) {
 		return 1 ; 		
 	}
 	else if ((*itr)->getLex()== "bit_vector"){
+		itr++;
 		if ((*itr)->getType() == NUMBER) { 
+			itr++;
 			if ((*itr)->getLex()== "downto") { 
+				itr++;
 				if ((*itr)->getType() == NUMBER) { 
 					return 1 ; 
 				}
@@ -325,10 +330,115 @@ int parseur_type (list<Lexeme*>::iterator itr) {
 //*****************************************************************IF*******************************************************************
 int parseur_if (list<Lexeme*>::iterator itr) {
 	itr++;
+	if ((*itr)->getType() == "(") {
+		itr++;
+		if (verif_cond_if(itr)== 0) {
+			return 0 ; 		
+		}
+		itr++;
+		if ((*itr)->getType() == ")") {
+		}
+	}
+	else if (verif_cond_if(itr)== 0) {
+			return 0 ; 		
+	}
+	itr++; 
+	while ((*itr)->getLex()== "and"|(*itr)->getLex()== "or"|(*itr)->getLex()== "xor"|(*itr)->getLex()== "not"){
+		itr++;
+		if ((*itr)->getType() == "(") {
+			itr++;
+			if (verif_cond_if(itr)== 0) {
+				return 0 ; 		
+			}
+			itr++;
+			if ((*itr)->getType() == ")") {
+			}
+		}
+		else if (verif_cond_if(itr)== 0) {
+				return 0 ; 		
+		}
+	}
+	itr++;
+	if ((*itr)->getType() == "then") {
+		if(parseur_then(itr)== 0) {
+			return 0 ; 		
+		}
+		if ((*itr)->getType() == "end") {
+			itr++;
+			if ((*itr)->getType() == "if") {
+				itr++;
+				if ((*itr)->getType() == ";") {
+					return 1 ; 
+				}
+			}
+		}
+	}
+	return 0 ; 	
+}
+
+//******************Cond_if***********
+int verif_cond_if(list<Lexeme*>::iterator itr) {
+	if ((*itr)->getType() == MOT) {
+		itr++;
+		if ((*itr)->getLex()== "="|(*itr)->getLex()== "<="|(*itr)->getLex()== ">="|(*itr)->getLex()== "<"|(*itr)->getLex()== ">"){
+			itr++;
+			if ((*itr)->getType() == MOT|(*itr)->getType() == NUMBER) {
+				return 1;
+			}
+			else if ((*itr)->getLex()== "'"){
+				itr++;
+				if ((*itr)->getType() == MOT|(*itr)->getType() == NUMBER) {
+					itr++;
+					if ((*itr)->getLex()== "'"){
+						return 1;
+					}
+				}
+			}
+		}
+	}
 }
 //*****************************************************************THEN*****************************************************************
 int parseur_then (list<Lexeme*>::iterator itr) {
 	itr++;
+	if (if) {
+
+	}
+	else if (elsif){
+
+	}
+	else if (else){
+
+	}
+        else if (instru){
+	
+	}
+	
+}
+
+//******************instr***********
+int verif_instr(list<Lexeme*>::iterator itr) {
+	if ((*itr)->getType() == MOT) {
+		itr++;
+		if ((*itr)->getLex()== ":="|(*itr)->getLex()== "<="){
+			itr++;
+			if ((*itr)->getType() == MOT|(*itr)->getType() == NUMBER) {
+				if((*itr)->getLex()== ";"){
+				return 1;
+				}
+			}
+			else if ((*itr)->getLex()== "'"){
+				itr++;
+				if ((*itr)->getType() == MOT|(*itr)->getType() == NUMBER) {
+					itr++;
+					if ((*itr)->getLex()== "'"){
+						if ((*itr)->getLex()== ";"){
+							return 1;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 //*****************************************************************ELSE*****************************************************************
 int parseur_else (list<Lexeme*>::iterator itr) {
@@ -349,11 +459,3 @@ int parseur_elsif (list<Lexeme*>::iterator itr) {
 		return 1 ; 	
 	}
 }
-
-
-
-
-
-
-
-
