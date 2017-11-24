@@ -12,6 +12,8 @@ tree<Lexeme*> createTree(list<Lexeme*>& lex)
 	Lexeme* l=new Lexeme("_root",0,NON_DEFINI);
 	root=tr.insert(top,l);
 
+	cout << "Tree Root" << endl;
+
 	list<Lexeme*>::iterator itr;
 	for(itr=lex.begin(); itr!=lex.end(); itr++)
 	{
@@ -38,6 +40,8 @@ tree<Lexeme*> createTree(list<Lexeme*>& lex)
 
 void constructTreeOnEntity(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& entity, list<Lexeme*>& l, list<Lexeme*>::iterator begin_entity)
 {
+	cout << "Tree Entity" << endl;
+
 	list<Lexeme*>::iterator itr=begin_entity;
 	tree<Lexeme*>::pre_order_iterator childentity;
 	while((*itr)->getType()!=ENTITY_END)
@@ -57,6 +61,8 @@ void constructTreeOnEntity(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 
 void constructTreeOnEntityID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& entityid, list<Lexeme*>& l, list<Lexeme*>::iterator begin_entityid)
 {
+	cout << "Tree Entity ID" << endl;
+
 	list<Lexeme*>::iterator itr=begin_entityid;
 	tree<Lexeme*>::pre_order_iterator childentityid;
 	while((*itr)->getType()!=ENTITY_END)
@@ -65,6 +71,7 @@ void constructTreeOnEntityID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterato
 		{
 			case PORT:
 				childentityid=tr.append_child(entityid,*itr);
+				constructTreeOnPort(tr,childentityid,l,itr);
 				break;
 			default:
 				break;
@@ -73,10 +80,56 @@ void constructTreeOnEntityID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterato
 	}
 }
 
+//-------------------------------------------------------------LIBRARY---------------------------------------------------------
+void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator begin_library)
+{
+	cout << "Tree Library" << endl;
+
+	list<Lexeme*>::iterator itr=begin_library;
+	tree<Lexeme*>::pre_order_iterator childlibrary;
+	while((*itr)->getType()!=LIBRARY_END)
+	{
+		switch((*itr)->getType())
+		{
+			case LIBRARY_ID:
+				childlibrary=tr.append_child(library,*itr);
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
+
+void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& use, list<Lexeme*>& l, list<Lexeme*>::iterator begin_use)
+{
+	cout << "Tree Library ID" << endl;
+
+	list<Lexeme*>::iterator itr=begin_use;
+	tree<Lexeme*>::pre_order_iterator childuse,buf;
+	buf=use;
+	while((*itr)->getType()!=USE_END)
+	{
+		switch((*itr)->getType())
+		{
+			case USE_ID:
+				childuse=tr.append_child(buf,*itr);
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
+
+
+
 //-------------------------------------------------------------PORT---------------------------------------------------------
 
 void constructTreeOnPort(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& port, list<Lexeme*>& l, list<Lexeme*>::iterator begin_port)
 {
+	cout << "Tree Port" << endl;
+
 	list<Lexeme*>::iterator itr=begin_port;
 	tree<Lexeme*>::pre_order_iterator childport;
 	while((*itr)->getType()!=PORT_END)
@@ -85,6 +138,7 @@ void constructTreeOnPort(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& p
 		{
 			case PORT_ID:
 				childport=tr.append_child(port,*itr);
+				//constructTreeOnPortId(tr,childport,l,itr);
 				break;
 			default:
 				break;
@@ -95,6 +149,8 @@ void constructTreeOnPort(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& p
 
 void constructTreeOnPortId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& portid, list<Lexeme*>& l, list<Lexeme*>::iterator begin_portid)
 {
+	cout << "Tree Port ID" << endl;
+
 	list<Lexeme*>::iterator itr=begin_portid;
 	tree<Lexeme*>::pre_order_iterator childportid;
 	while((*itr)->getType()!=PORT_ID_END)
