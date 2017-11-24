@@ -24,6 +24,10 @@ string Lexeme::afficheType() const
 			return "Identifiant Entity";
 		case LIBRARY :
 			return "Library";
+		case LIBRARY_END:
+			return "End Library";
+		case LIBRARY_ID :
+			return "Identifiant Librairie";
 		case MOT :
 			return "Mot";
 		case NOMBRE :
@@ -46,12 +50,18 @@ string Lexeme::afficheType() const
 			return "Port Out";
 		case PORT_TYPE:
 			return "Type Port";
+		case USE:
+			return "Use";
+		case USE_END:
+			return "End Use";
+		case USE_ID:
+			return "Identifiant Use";
 		default :
 			return "Non Defini";
 	}
 }
 
-ostream& operator << (ostream& out, Lexeme l)
+ostream& operator << (ostream& out, const Lexeme& l)
 {
 	out << l.getLex() << "	|	";
 	out << l.getLigne() << "	|	";
