@@ -16,9 +16,11 @@ using namespace std;
 
 // ********************************ENTITY********************************************************************
 int parseur_entity (list<Lexeme*>::iterator itr){
+	(*itr)->setType(ENTITY) ; 
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
 		string identifiant = (*itr)->getLex() ;
+		(*itr)->setType(ENTITY_ID) ; 
 		itr++; 
 		if ((*itr)->getLex() == "is"){
 			itr++; 
@@ -29,6 +31,7 @@ int parseur_entity (list<Lexeme*>::iterator itr){
 				else {
 					itr++;
 					if ((*itr)->getLex() == "end"){
+						(*itr)->setType(ENTITY_END) ; 
 						itr++;
 						if ((*itr)->getLex() == identifiant){
 							return 1; 
@@ -49,31 +52,37 @@ int parseur_entity (list<Lexeme*>::iterator itr){
 // *****************************************************PORT**********************************************************
 int parseur_port (list<Lexeme*>::iterator itr) {
 	bool fin_port = false ;  // bool qui nous permet de gérer le dernier port 
+	(*itr)->setType(PORT) ; 
 	itr++;
 	if ((*itr)->getLex()== "("){
 		itr++;
 		while ((*itr)->getType() == MOT && fin_port == false) {
+			(*itr)->setType(PORT_ID) ; 
 			itr++;
 			while ((*itr)->getLex() != ":") {
 				if ((*itr)->getLex()== ",") {
 					itr++;
 					if ((*itr)->getType() == MOT) {
+						(*itr)->setType(PORT_ID) ; 
 						itr++;
 					} //if ((*itr)->getType() == MOT)
 				} //if ((*itr)->getLex()== ",") 
 			} //while ((*itr)->getLex() != ':') 
 			itr++ ; 
 			if ((*itr)->getLex()== "in"){
+				(*itr)->setType(PORT_IN) ; 
 				if (parseur_type_port(itr, &fin_port) == 0) {
 					return 0 ;
 				}
 			} // if ((*itr)->getLex()== "in")
 			else if ((*itr)->getLex()== "out"){
+				(*itr)->setType(PORT_OUT) ; 
 				if (parseur_type_port(itr, &fin_port) == 0) {
 					return 0 ;
 				}
 			} // else if 
 			else if ((*itr)->getLex()== "inout"){ 
+				(*itr)->setType(PORT_INOUT) ; 
 				if (parseur_type_port(itr, &fin_port) == 0) {
 					return 0 ;
 				}
@@ -92,18 +101,22 @@ int parseur_port (list<Lexeme*>::iterator itr) {
 //**************************************************************TYPE PORT*************************************************************
 int parseur_type_port (list<Lexeme*>::iterator itr, bool *fin_port) {
 	itr++;
-	if (is_type((*itr)->getLex())==true) {
-		if (parseur_type(itr)== 0) {
+	if (is_type((*itr)->getLex())==true) {			// is_type est unefonction definie dans utilities qui permet de verifier qu'on est bien un type attendue
+		(*itr)->setType(PORT_TYPE) ; 
+		if (parseur_type(itr)== 0) {			// parseur_type traite les type afin de verifier qu'on est les info attendue
 			return 0 ; 		
 		}
 		itr++ ; 
 		if ((*itr)->getLex()== ";") {
+			(*itr)->setType(PORT_ID_END) ; 
 			return 1 ;
 		}
 		else if ((*itr)->getLex()== ")") {
+			(*itr)->setType(PORT_ID_END) ; 
 			itr++;
-			*fin_port = true ;
 			if ((*itr)->getLex()== ";") {
+			*fin_port = true ;
+			(*itr)->setType(PORT_END) ; 
 			return 1 ;
 			}
 		}
