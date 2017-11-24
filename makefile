@@ -1,17 +1,17 @@
 #$@  	Le nom de la cible
-#$< 	Le nom de la premiÃ¨re dÃ©pendance
-#$^ 	La liste des dÃ©pendances
+#$< 	Le nom de la premiÃÂ¨re dÃÂ©pendance
+#$^ 	La liste des dÃÂ©pendances
 #$* 	Le nom du fichier sans suffixe
 
 CC=g++ -std=c++11
 
-DIR=/tp/xph2app/xph2app001/Documents/Projet-C-2/ProjetC-master
+DIR=/users/phelma/phelma2016/margotan/Documents/ProjetC/ProjetC-master
 SRCDIR=$(DIR)/Source
 
 CFLAGS=-g -I$(DIR)/Header 
 LDFLAGS=
 
-SRC= $(SRCDIR)/main.cpp $(SRCDIR)/Console.cpp $(SRCDIR)/CreateTree.cpp $(SRCDIR)/Lexeme.cpp $(SRCDIR)/Lexeur.cpp $(SRCDIR)/utilities.cpp $(SRCDIR)/Verification_orthographe_ajout_etiquette.cpp
+SRC= $(SRCDIR)/main.cpp $(SRCDIR)/Console.cpp $(SRCDIR)/CreateTree.cpp $(SRCDIR)/Lexeme.cpp $(SRCDIR)/Lexeur.cpp $(SRCDIR)/parseur.cpp $(SRCDIR)/utilities.cpp $(SRCDIR)/Verification_orthographe_ajout_etiquette.cpp
 
 OBJ=$(SRC:.cpp=.o)
 
