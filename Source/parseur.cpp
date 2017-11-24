@@ -4,32 +4,33 @@
 #include "../Header/utilities.h"
 #include "../Header/Lexeme.h"
 #include "../Header/parseur.h"
+#include "../Header/type_Lexeme.h"
 
 using namespace std;
 
 // On retourne "0" s'il y a une erreur et "1" quand il n'y a pas d'erreur
 
 
-//ARCHITECTURE à compléter
-//PROCESS à compléter
-//THEN à compléter
+//ARCHITECTURE Ã  complÃ©ter
+//PROCESS Ã  complÃ©ter
+//THEN Ã  complÃ©ter
 
 // ********************************ENTITY********************************************************************
 int parseur_root (list<Lexeme*>& list_lex){
 	list<Lexeme*>::iterator itr;
 	for(itr=list_lex.begin();itr!=list_lex.end();itr++)
 	{
-		if((*itr)->getLex()=="entity") {
+		if((*itr)->getLex()=="entity"&&(*itr)->getType()!=COMMENTAIRE) {
 			parseur_entity(itr);
 		}
-		if((*itr)->getLex()=="library") {
+		if((*itr)->getLex()=="library"&&(*itr)->getType()!=COMMENTAIRE) {
 			parseur_entity(itr);
 		}
 	}
 }
 
 // ********************************ENTITY********************************************************************
-int parseur_entity (list<Lexeme*>::iterator itr){
+int parseur_entity (list<Lexeme*>::iterator& itr){
 	(*itr)->setType(ENTITY) ; 
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
@@ -44,6 +45,7 @@ int parseur_entity (list<Lexeme*>::iterator itr){
 				} // if (parseur_port(i)= 0) {
 				else {
 					itr++;
+					cout << (**itr) << endl;
 					if ((*itr)->getLex() == "end"){
 						(*itr)->setType(ENTITY_END) ; 
 						itr++;
@@ -51,7 +53,7 @@ int parseur_entity (list<Lexeme*>::iterator itr){
 							return 1; 
 						} // if (lexeme = identifiant){
 						else {
-							cout << "ERREUR ligne " << (*itr)->getLigne() << ": l'identifiant est mal orthographié" << endl ;
+							cout << "ERREUR ligne " << (*itr)->getLigne() << ": l'identifiant est mal orthographiÃ©" << endl ;
 						} //else
 					} //if (lexeme = 'end')
 				} // else
@@ -64,8 +66,8 @@ int parseur_entity (list<Lexeme*>::iterator itr){
 
 
 // *****************************************************PORT**********************************************************
-int parseur_port (list<Lexeme*>::iterator itr) {
-	bool fin_port = false ;  // bool qui nous permet de gérer le dernier port 
+int parseur_port (list<Lexeme*>::iterator& itr) {
+	bool fin_port = false ;  // bool qui nous permet de gÃ©rer le dernier port 
 	(*itr)->setType(PORT) ; 
 	itr++;
 	if ((*itr)->getLex()== "("){
@@ -113,7 +115,7 @@ int parseur_port (list<Lexeme*>::iterator itr) {
 
 
 //**************************************************************TYPE PORT*************************************************************
-int parseur_type_port (list<Lexeme*>::iterator itr, bool *fin_port) {
+int parseur_type_port (list<Lexeme*>::iterator& itr, bool *fin_port) {
 	itr++;
 	if (is_type((*itr)->getLex())==true) {			// is_type est unefonction definie dans utilities qui permet de verifier qu'on est bien un type attendue
 		(*itr)->setType(PORT_TYPE) ; 
@@ -146,7 +148,7 @@ int parseur_type_port (list<Lexeme*>::iterator itr, bool *fin_port) {
 
 //******************************************************LIBRARY*************************************************************************
 
-int parseur_library (list<Lexeme*>::iterator itr){
+int parseur_library (list<Lexeme*>::iterator& itr){
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
 		string library = (*itr)->getLex() ;
@@ -154,9 +156,9 @@ int parseur_library (list<Lexeme*>::iterator itr){
 		if ((*itr)->getLex() == ";"){
 			itr++ ; 
 			while ((*itr)->getLex() == "use"){
-				if (parseur_library(*itr, *library)==0){
+				if (parseur_use(itr, library)==0){
 					return 0 ; 
-				} //if (parseur_library(*itr)==0){
+				} //if (parseur_use(*itr)==0){
 			} //while
 			return 1 ;
 		} //if ((*itr)->getLex() == ";"){
@@ -169,14 +171,14 @@ int parseur_library (list<Lexeme*>::iterator itr){
 //****************************************************USE*******************************************************************************
 
 
-int parseur_use (list<Lexeme*>::iterator itr, string library){
+int parseur_use (list<Lexeme*>::iterator& itr, string library){
 	itr++ ; 
 	if ((*itr)->getLex() == library) {
 		itr ++;
 		if ((*itr)->getLex() == ".") {
 			itr++;
 			if ((*itr)->getType() == MOT) {
-				string name = itr->getLex() ; 
+				string name = (*itr)->getLex() ; 
 				itr++ ;
 				if ((*itr)->getLex() == ".") {
 					itr++;
@@ -184,7 +186,6 @@ int parseur_use (list<Lexeme*>::iterator itr, string library){
 						itr++;
 						if ((*itr)->getType() == MOT) {
 							itr++ ;	
-							}
 						}
 						else {
 						return 0 ; 
@@ -204,6 +205,7 @@ int parseur_use (list<Lexeme*>::iterator itr, string library){
 
 //**************************************************ARCHITECTURE************************************************************************
 
+/*
 int parseur_architecture (list<Lexeme*>::iterator itr){
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
@@ -211,7 +213,7 @@ int parseur_architecture (list<Lexeme*>::iterator itr){
 		itr++;
 		if ((*itr)->getLex() == "of"){
 			itr++ ; 
-			if (){ // vérifier que l'entité existe 
+			if (){ // vÃ©rifier que l'entitÃ© existe 
 				itr++;
 				if ((*itr)->getLex() == "is"){
 					itr++ ;
@@ -235,9 +237,10 @@ int parseur_architecture (list<Lexeme*>::iterator itr){
 	}
 	return 0 ; 
 }
-
+*/
 
 //****************************************************************SIGNAL****************************************************************
+/*
 int parseur_signal (list<Lexeme*>::iterator itr){
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
@@ -255,6 +258,7 @@ int parseur_signal (list<Lexeme*>::iterator itr){
 		}
 	}
 }
+
 //*************************************************************COMPONENT****************************************************************
 int parseur_component (list<Lexeme*>::iterator itr){
 	itr++ ; 
@@ -313,21 +317,21 @@ int parseur_process (list<Lexeme*>::iterator itr){
 	if ((*itr)->getType() == MOT) {
 	}
 }
-
+*/
 
 //***********************************************************TYPE***********************************************************************
-int parseur_type (list<Lexeme*>::iterator itr) {
-	itr++;
+int parseur_type (list<Lexeme*>::iterator& itr) {
+	//itr++;
 	if ((*itr)->getLex()== "std_logic"){
 		return 1 ; 
 	}
 	else if ((*itr)->getLex()== "std_logic_vector"){
 		itr++;
-		if ((*itr)->getType() == NUMBER) { 
+		if ((*itr)->getType() == NOMBRE) { 
 			itr++;
 			if ((*itr)->getLex()== "downto") { 
 				itr++;
-				if ((*itr)->getType() == NUMBER) { 
+				if ((*itr)->getType() == NOMBRE) { 
 					return 1 ; 
 				}
 			}
@@ -341,11 +345,11 @@ int parseur_type (list<Lexeme*>::iterator itr) {
 	}
 	else if ((*itr)->getLex()== "bit_vector"){
 		itr++;
-		if ((*itr)->getType() == NUMBER) { 
+		if ((*itr)->getType() == NOMBRE) { 
 			itr++;
 			if ((*itr)->getLex()== "downto") { 
 				itr++;
-				if ((*itr)->getType() == NUMBER) { 
+				if ((*itr)->getType() == NOMBRE) { 
 					return 1 ; 
 				}
 			}
@@ -354,6 +358,7 @@ int parseur_type (list<Lexeme*>::iterator itr) {
 	return 0 ; 
 }
 
+/*
 //*****************************************************************IF*******************************************************************
 int parseur_if (list<Lexeme*>::iterator itr) {
 	itr++;
@@ -363,7 +368,7 @@ int parseur_if (list<Lexeme*>::iterator itr) {
 			return 0 ; 		
 		}
 		itr++;
-		if ((*itr)->getType() == ")") {
+		if ((*itr)->getLex() == ")") {
 		}
 	}
 	else if (verif_cond_if(itr)== 0) {
@@ -372,13 +377,13 @@ int parseur_if (list<Lexeme*>::iterator itr) {
 	itr++; 
 	while ((*itr)->getLex()== "and"|(*itr)->getLex()== "or"|(*itr)->getLex()== "xor"|(*itr)->getLex()== "not"){
 		itr++;
-		if ((*itr)->getType() == "(") {
+		if ((*itr)->getLex() == "(") {
 			itr++;
 			if (verif_cond_if(itr)== 0) {
 				return 0 ; 		
 			}
 			itr++;
-			if ((*itr)->getType() == ")") {
+			if ((*itr)->getLex() == ")") {
 			}
 		}
 		else if (verif_cond_if(itr)== 0) {
@@ -402,6 +407,7 @@ int parseur_if (list<Lexeme*>::iterator itr) {
 	}
 	return 0 ; 	
 }
+
 
 //******************Cond_if***********
 int verif_cond_if(list<Lexeme*>::iterator itr) {
@@ -486,3 +492,4 @@ int parseur_elsif (list<Lexeme*>::iterator itr) {
 		return 1 ; 	
 	}
 }
+*/
