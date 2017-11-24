@@ -3,7 +3,7 @@
 using namespace std;
 
 //Commandes sur la console pour l'utilisateur
-//Retourne un entier qui vaut 0 si les commandes ont Ã©tÃ© comprises
+//Retourne un entier qui vaut 0 si erreur, sinon il renvoie une valeur associÃ©e Ã  la commande
 int commande_vhdl(string &libraryname, string &sourcename)
 {
 	string commande;
@@ -14,7 +14,7 @@ int commande_vhdl(string &libraryname, string &sourcename)
 	{
 		if(commande_vhdlcomp(libraryname, sourcename)!=0)
 		{
-			return 1;
+			return VHDLCOMP;
 		}
 	}
 	else
