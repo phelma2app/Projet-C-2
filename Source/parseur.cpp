@@ -15,6 +15,20 @@ using namespace std;
 //THEN à compléter
 
 // ********************************ENTITY********************************************************************
+int parseur_root (list<Lexeme*>& list_lex){
+	list<Lexeme*>::iterator itr;
+	for(itr=list_lex.begin();itr!=list_lex.end();itr++)
+	{
+		if((*itr)->getLex()=="entity") {
+			parseur_entity(itr);
+		}
+		if((*itr)->getLex()=="library") {
+			parseur_entity(itr);
+		}
+	}
+}
+
+// ********************************ENTITY********************************************************************
 int parseur_entity (list<Lexeme*>::iterator itr){
 	(*itr)->setType(ENTITY) ; 
 	itr++ ; 
