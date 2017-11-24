@@ -18,5 +18,6 @@ string read_line(ifstream& fichier);
 string add_space_on_string(string str, int length);
 void stock_lexemes(string buffer, int ligne, list<Lexeme*>& Lex_VHDL);
 int vhdlcomp(string libraryname, string sourcename, list<Lexeme*>& list_lex);
+void print_lex(list<Lexeme*>& list_lex);
 
 #endif //LEXEUR_H_
