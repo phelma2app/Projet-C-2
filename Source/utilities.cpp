@@ -6,7 +6,7 @@
 using namespace std;
 
 
-//Fonction pour mettre toutes les lettres en minuscule, Ã  faire en prÃ©ambule de toute analyse sur le string
+//Fonction pour mettre toutes les lettres en minuscule, Ã  faire en prÃÂ©ambule de toute analyse sur le string
 void minus_string(string &to_minus)
 {
 	for(int i=0;i<to_minus.length();i++)
@@ -58,7 +58,7 @@ bool is_number(char ch_test)
 //Fonction pour tester le type 
 bool is_type(string st_test)
 {
-	if(st_test=="std_logic"||st_test=="std_logic_vector")	
+	if(st_test=="std_logic"||st_test=="std_logic_vector"||st_test=="bit")	
 	{
 		return true;
 	}
