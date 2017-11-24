@@ -3,15 +3,9 @@
 
 #include <string>
 #include <iostream>
+#include "type_Lexeme.h"
 
 using namespace std;
-
-#define NON_DEFINI 0
-#define	PONCTUATION NON_DEFINI+1
-#define MOT PONCTUATION+1
-#define NOMBRE MOT+1
-#define COMMENTAIRE NOMBRE+1
-
 
 class Lexeme {
 	friend ostream& operator << (ostream& out, Lexeme l);
