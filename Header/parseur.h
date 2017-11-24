@@ -3,6 +3,8 @@
 
 using namespace std;
 
+int parseur_root (list<Lexeme*>& list_lex);
+
 int parseur_entity (list<Lexeme*>::iterator itr) ; 
 
 int parseur_port (list<Lexeme*>::iterator itr) ; 
