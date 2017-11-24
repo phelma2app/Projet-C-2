@@ -8,7 +8,9 @@
 #define ENTITY_END 	ENTITY+1
 #define ENTITY_ID 	ENTITY_END+1
 #define LIBRARY 	ENTITY_ID+1
-#define MOT 		LIBRARY+1
+#define LIBRARY_END	LIBRARY+1
+#define LIBRARY_ID	LIBRARY_END+1
+#define MOT 		LIBRARY_ID+1
 #define NOMBRE 		MOT+1
 #define	PONCTUATION 	NOMBRE+1
 #define PORT		PONCTUATION+1
@@ -19,5 +21,8 @@
 #define PORT_INOUT 	PORT_IN+1
 #define PORT_OUT 	PORT_INOUT+1
 #define PORT_TYPE 	PORT_OUT+1
+#define USE		PORT_TYPE+1
+#define USE_END		USE+1
+#define USE_ID		USE_END+1
 
 #endif //TYPE_LEXEME_H_
