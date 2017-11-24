@@ -8,7 +8,7 @@
 using namespace std;
 
 class Lexeme {
-	friend ostream& operator << (ostream& out, Lexeme l);
+	friend ostream& operator << (ostream& out, const Lexeme& l);
 
 private:
 	string lex;
@@ -38,8 +38,6 @@ public:
 	void isMot() { type_lex=MOT; }
 	void isNombre() { type_lex=NOMBRE; }
 	void isCommentaire() { type_lex=COMMENTAIRE; }
-
-
 };
 
 #endif /* LEXEME_H_ */
