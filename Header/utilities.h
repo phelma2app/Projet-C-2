@@ -8,7 +8,7 @@
 
 using namespace std;
 
-//Fonction pour mettre toutes les lettres en minuscule, Ã  faire en prÃ©ambule de toute analyse sur le string
+//Fonction pour mettre toutes les lettres en minuscule, ÃÂ  faire en prÃÂ©ambule de toute analyse sur le string
 void minus_string(string &to_minus);
 
 //Fonction pour tester la ponctuation
