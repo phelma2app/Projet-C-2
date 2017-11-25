@@ -1,0 +1,36 @@
+-- Declaration des libraries
+ biblio.vhd
+ 
+-- entite sans portes et architecture 
+entite_seule.vhd
+
+-- entite sans architecture avec portes ls
+entite_noarchi.vhd 
+
+-- entite avec architecture vide
+archivide.vhd
+
+--signal declaration
+signaux.vhd
+
+--signal assignemt
+assign.vhd
+
+-- types
+typage.vhd
+
+--process vide
+proc_vide.vhd
+
+--process
+proc.vhd
+
+--case
+case.vhd
+
+--porte de bases (comme dans le sujet)
+base_portes.vhd
+
+--instances
+
+instances.vhd
