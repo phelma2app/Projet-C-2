@@ -317,7 +317,16 @@ int parseur_process (list<Lexeme*>::iterator itr){
 	if ((*itr)->getType() == MOT) {
 	}
 }
-*/
+/*
+Apres le process 
+soit liste de sensibilité 
+soit declaration de variable (:=)
+soit une declaration de constante 
+soit BEGIN 
+
+
+
+ */ 
 
 //***********************************************************TYPE***********************************************************************
 int parseur_type (list<Lexeme*>::iterator& itr) {
@@ -433,20 +442,34 @@ int verif_cond_if(list<Lexeme*>::iterator itr) {
 //*****************************************************************THEN*****************************************************************
 int parseur_then (list<Lexeme*>::iterator itr) {
 	itr++;
-	if (if) {
+	if ((*itr)->getLex()== "if") {
+		if (parseur_if(itr)== 0) {
+			return 0 ; 		
+		}
 
 	}
-	else if (elsif){
+	else if ((*itr)->getLex()== "elsif") {
+		if (parseur_if(itr)== 0) {
+			return 0 ; 		
+		}
 
 	}
-	else if (else){
+	else if ((*itr)->getLex()== "else") {
+		if (parseur_if(itr)== 0) {
+			return 0 ; 		
+		}
+
 
 	}
-        else if (instru){
+        else if ((*itr)->getType() == MOT){
+		if verif_instr(itr)==0) {
+		return 0 ; 
+		}
 	
 	}
 	
 }
+
 
 //******************instr***********
 int verif_instr(list<Lexeme*>::iterator itr) {
