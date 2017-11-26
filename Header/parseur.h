@@ -25,11 +25,17 @@ int parseur_generic (list<Lexeme*>::iterator& itr) ;
 
 int parseur_process (list<Lexeme*>::iterator& itr);
 
+int parseur_begin (list<Lexeme*>::iterator& itr);
+
 int parseur_type (list<Lexeme*>::iterator& itr);
 
 int parseur_if (list<Lexeme*>::iterator& itr);
 
+int verif_cond_if(list<Lexeme*>::iterator& itr);
+
 int parseur_then (list<Lexeme*>::iterator& itr);
+
+int verif_instr(list<Lexeme*>::iterator& itr) ;
 
 int parseur_else (list<Lexeme*>::iterator& itr);
 

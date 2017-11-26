@@ -15,7 +15,7 @@ using namespace std;
 //PROCESS Ã  complÃ©ter
 //THEN Ã  complÃ©ter
 
-// ********************************ENTITY********************************************************************
+// ********************************ROOT********************************************************************
 int parseur_root (list<Lexeme*>& list_lex){
 	list<Lexeme*>::iterator itr;
 	for(itr=list_lex.begin();itr!=list_lex.end();itr++)
@@ -205,8 +205,8 @@ int parseur_use (list<Lexeme*>::iterator& itr, string library){
 
 //**************************************************ARCHITECTURE************************************************************************
 
-/*
-int parseur_architecture (list<Lexeme*>::iterator itr){
+
+int parseur_architecture (list<Lexeme*>::iterator& itr){
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
 		string identifiant = (*itr)->getLex() ;
@@ -237,11 +237,11 @@ int parseur_architecture (list<Lexeme*>::iterator itr){
 	}
 	return 0 ; 
 }
-*/
+
 
 //****************************************************************SIGNAL****************************************************************
-/*
-int parseur_signal (list<Lexeme*>::iterator itr){
+
+int parseur_signal (list<Lexeme*>::iterator& itr){
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
 		itr++ ; 
@@ -250,17 +250,17 @@ int parseur_signal (list<Lexeme*>::iterator itr){
 			if (is_type((*itr)->getLex())==true) {
 				if (parseur_type(itr)== 0) {
 					return 0 ;
+				}
 				else {
 					return 1 ; 
 				} 		
-				}
 			}
 		}
 	}
 }
 
 //*************************************************************COMPONENT****************************************************************
-int parseur_component (list<Lexeme*>::iterator itr){
+int parseur_component (list<Lexeme*>::iterator& itr){
 	itr++ ; 
 	if ((*itr)->getType() == MOT) {
 		string component_name = (*itr)->getLex() ;
@@ -272,9 +272,9 @@ int parseur_component (list<Lexeme*>::iterator itr){
 			else if ((*itr)->getLex() == "generic"){
 				if (parseur_generic(itr)== 0) {
 					return 0 ; 
+				}
 				else {
-					return 1 ; 
-				}		
+					return 1 ; 		
 				}	
 			}
 		}
@@ -284,7 +284,7 @@ int parseur_component (list<Lexeme*>::iterator itr){
 
 
 //***********************************************************GENERIC********************************************************************
-int parseur_generic (list<Lexeme*>::iterator itr) {
+int parseur_generic (list<Lexeme*>::iterator& itr) {
 	itr++;
 	if ((*itr)->getLex()== "("){
 		itr++;
@@ -312,17 +312,81 @@ int parseur_generic (list<Lexeme*>::iterator itr) {
 }
 
 //*************************************************************PROCESS******************************************************************
-int parseur_process (list<Lexeme*>::iterator itr){
+int parseur_process (list<Lexeme*>::iterator& itr){
 	itr++ ; 
-	if ((*itr)->getType() == MOT) {
+	if ((*itr)->getLex() == "begin") {
+		if (parseur_begin(itr)==0){
+			return 0; 
+		}
+		else {return 1;}
+	}
+	else if ((*itr)->getType() == MOT) {
+		if (verif_instr(itr)==0){
+			return 0; 
+		}
+		if ((*itr)->getLex() == "begin") {
+			if (parseur_begin(itr)==0){
+			return 0; 
+			}
+			else {return 1;}
+		}
+	}
+	else if ((*itr)->getLex() == "(") {
+		if ((*itr)->getType() == "SIGNAL") {
+			itr++;
+			while ((*itr)->getLex() == ")"){
+	 			if ((*itr)->getLex() == ",") {
+					itr++;
+					if ((*itr)->getType() == "SIGNAL") {
+					itr++;
+					}
+				}
+			}
+			itr++;
+			if ((*itr)->getLex() == "begin") {
+				if (parseur_begin(itr)==0){
+					return 0; 
+				}
+			}
+			else if ((*itr)->getType() == MOT) {
+				if (verif_instr(itr)==0){
+					return 0; 
+				}
+				if ((*itr)->getLex() == "begin") {
+					if (parseur_begin(itr)==0){
+					return 0; 
+					}
+					else {return 1;}
+				}	
+			}
+		}	
 	}
 }
+
+
+//**********************begin
+int parseur_begin (list<Lexeme*>::iterator& itr) {
+	itr++;
+	if (verif_instr(itr)==0){
+		return 0 ;
+	}
+	itr++; 
+	if ((*itr)->getLex() == "end") {
+		itr++;
+		if ((*itr)->getLex() == "end") {
+			return 1 ;
+		}
+	}
+	return 0;
+}
+ 
+
 /*
 Apres le process 
 soit liste de sensibilité 
 soit declaration de variable (:=)
 soit une declaration de constante 
-soit BEGIN 
+soit BEGIN puis instr jusqu'au end process 
 
 
 
@@ -367,11 +431,11 @@ int parseur_type (list<Lexeme*>::iterator& itr) {
 	return 0 ; 
 }
 
-/*
+
 //*****************************************************************IF*******************************************************************
-int parseur_if (list<Lexeme*>::iterator itr) {
+int parseur_if (list<Lexeme*>::iterator& itr) {
 	itr++;
-	if ((*itr)->getType() == "(") {
+	if ((*itr)->getLex() == "(") {
 		itr++;
 		if (verif_cond_if(itr)== 0) {
 			return 0 ; 		
@@ -400,15 +464,15 @@ int parseur_if (list<Lexeme*>::iterator itr) {
 		}
 	}
 	itr++;
-	if ((*itr)->getType() == "then") {
+	if ((*itr)->getLex() == "then") {
 		if(parseur_then(itr)== 0) {
 			return 0 ; 		
 		}
-		if ((*itr)->getType() == "end") {
+		if ((*itr)->getLex() == "end") {
 			itr++;
-			if ((*itr)->getType() == "if") {
+			if ((*itr)->getLex() == "if") {
 				itr++;
-				if ((*itr)->getType() == ";") {
+				if ((*itr)->getLex() == ";") {
 					return 1 ; 
 				}
 			}
@@ -419,17 +483,17 @@ int parseur_if (list<Lexeme*>::iterator itr) {
 
 
 //******************Cond_if***********
-int verif_cond_if(list<Lexeme*>::iterator itr) {
+int verif_cond_if(list<Lexeme*>::iterator& itr) {
 	if ((*itr)->getType() == MOT) {
 		itr++;
 		if ((*itr)->getLex()== "="|(*itr)->getLex()== "<="|(*itr)->getLex()== ">="|(*itr)->getLex()== "<"|(*itr)->getLex()== ">"){
 			itr++;
-			if ((*itr)->getType() == MOT|(*itr)->getType() == NUMBER) {
+			if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
 				return 1;
 			}
 			else if ((*itr)->getLex()== "'"){
 				itr++;
-				if ((*itr)->getType() == MOT|(*itr)->getType() == NUMBER) {
+				if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
 					itr++;
 					if ((*itr)->getLex()== "'"){
 						return 1;
@@ -440,7 +504,7 @@ int verif_cond_if(list<Lexeme*>::iterator itr) {
 	}
 }
 //*****************************************************************THEN*****************************************************************
-int parseur_then (list<Lexeme*>::iterator itr) {
+int parseur_then (list<Lexeme*>::iterator& itr) {
 	itr++;
 	if ((*itr)->getLex()== "if") {
 		if (parseur_if(itr)== 0) {
@@ -462,7 +526,7 @@ int parseur_then (list<Lexeme*>::iterator itr) {
 
 	}
         else if ((*itr)->getType() == MOT){
-		if verif_instr(itr)==0) {
+		if (verif_instr(itr)==0) {
 		return 0 ; 
 		}
 	
@@ -472,19 +536,19 @@ int parseur_then (list<Lexeme*>::iterator itr) {
 
 
 //******************instr***********
-int verif_instr(list<Lexeme*>::iterator itr) {
+int verif_instr(list<Lexeme*>::iterator& itr) {
 	if ((*itr)->getType() == MOT) {
 		itr++;
 		if ((*itr)->getLex()== ":="|(*itr)->getLex()== "<="){
 			itr++;
-			if ((*itr)->getType() == MOT|(*itr)->getType() == NUMBER) {
+			if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
 				if((*itr)->getLex()== ";"){
 				return 1;
 				}
 			}
 			else if ((*itr)->getLex()== "'"){
 				itr++;
-				if ((*itr)->getType() == MOT|(*itr)->getType() == NUMBER) {
+				if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
 					itr++;
 					if ((*itr)->getLex()== "'"){
 						if ((*itr)->getLex()== ";"){
@@ -497,7 +561,7 @@ int verif_instr(list<Lexeme*>::iterator itr) {
 	}
 }
 //*****************************************************************ELSE*****************************************************************
-int parseur_else (list<Lexeme*>::iterator itr) {
+int parseur_else (list<Lexeme*>::iterator& itr) {
 	if (parseur_then(itr)== 0) {
 		return 0 ; 		
 	}
@@ -507,7 +571,7 @@ int parseur_else (list<Lexeme*>::iterator itr) {
 }
 
 //*****************************************************************ELSIF****************************************************************
-int parseur_elsif (list<Lexeme*>::iterator itr) {
+int parseur_elsif (list<Lexeme*>::iterator& itr) {
 	if (parseur_if(itr)== 0) {
 		return 0 ; 		
 	}
@@ -515,4 +579,4 @@ int parseur_elsif (list<Lexeme*>::iterator itr) {
 		return 1 ; 	
 	}
 }
-*/
+

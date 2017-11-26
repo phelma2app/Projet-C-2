@@ -58,7 +58,7 @@ bool is_number(char ch_test)
 //Fonction pour tester le type 
 bool is_type(string st_test)
 {
-	if(st_test=="std_logic"||st_test=="std_logic_vector"||st_test=="bit")	
+	if(st_test=="std_logic"||st_test=="std_logic_vector"||st_test=="bit"||st_test=="bit_vector")	
 	{
 		return true;
 	}
