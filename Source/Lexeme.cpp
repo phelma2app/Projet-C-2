@@ -14,6 +14,12 @@ string Lexeme::afficheType() const
 	{
 		case ARCHITECTURE :
 			return "Architecture";
+        case ARCHITECTURE_BEGIN:
+            return "Begin Architecture";
+        case ARCHITECTURE_END:
+            return "End Architecture";
+        case ARCHITECTURE_ID:
+            return "Identifiant Architecture";
 		case COMMENTAIRE :
 			return "Commentaire";
 		case ENTITY :
@@ -32,6 +38,14 @@ string Lexeme::afficheType() const
 			return "Mot";
 		case NOMBRE :
 			return "Nombre";
+        case PROCESS:
+            return "Process";
+        case PROCESS_BEGIN:
+            return "Begin Process";
+        case PROCESS_END:
+            return "End Process";
+        case PROCESS_ID:
+            return "Identifiant Process";
 		case PONCTUATION :
 			return "Ponctuation";
 		case PORT :
@@ -58,6 +72,10 @@ string Lexeme::afficheType() const
             return "End Port Vector";
         case PORT_VECTOR_SENSE:
             return "Sense Port Vector";
+        case SENSIBILITY_SIGNAL:
+            return "Sensibility Signal";
+        case SIGNAL:
+            return "Signal";
 		case USE:
 			return "Use";
 		case USE_END:
