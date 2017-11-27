@@ -21,6 +21,7 @@ tree<Lexeme*> createTree(list<Lexeme*>& lex)
 		{
 			case ARCHITECTURE:
 				childroot=tr.append_child(root,*itr);
+				constructTreeOnArchitecture(tr,childroot,lex,itr);
 				break;
 			case ENTITY:
 				childroot=tr.append_child(root,*itr);
@@ -35,6 +36,82 @@ tree<Lexeme*> createTree(list<Lexeme*>& lex)
 	}
 	return tr;
 }
+
+//-------------------------------------------------------------ARCHITECTURE---------------------------------------------------------
+
+void constructTreeOnArchitecture(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architecture, list<Lexeme*>& l, list<Lexeme*>::iterator begin_archi)
+{
+	cout << "Tree Architecture" << endl;
+
+	list<Lexeme*>::iterator itr=begin_archi;
+	tree<Lexeme*>::pre_order_iterator childarchi;
+	while((*itr)->getType()!=ARCHITECTURE_END)
+	{
+		switch((*itr)->getType())
+		{
+			case ARCHITECTURE_ID:
+				childarchi=tr.append_child(architecture,*itr);
+				constructTreeOnArchitectureID(tr,childarchi,l,itr);
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
+
+void constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architectureid, list<Lexeme*>& l, list<Lexeme*>::iterator begin_archi_id)
+{
+	cout << "Tree Architecture ID" << endl;
+
+	list<Lexeme*>::iterator itr=begin_archi_id;
+	tree<Lexeme*>::pre_order_iterator childarchiid;
+	while((*itr)->getType()!=ARCHITECTURE_END)
+	{
+		switch((*itr)->getType())
+		{
+            case PROCESS:
+                childarchiid=tr.append_child(architectureid,*itr);
+                constructTreeOnProcess(tr,childarchiid,l,itr);
+                break;
+			case SIGNAL:
+				childarchiid=tr.append_child(architectureid,*itr);
+//				constructTreeOnSignal(tr,childarchiid,l,itr);       //A construire par la suite
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
+
+void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process, list<Lexeme*>& l, list<Lexeme*>::iterator begin_process)
+{
+	cout << "Tree Architecture ID" << endl;
+
+	list<Lexeme*>::iterator itr=begin_process;
+	tree<Lexeme*>::pre_order_iterator childprocess;
+	while((*itr)->getType()!=PROCESS_END)
+	{
+		switch((*itr)->getType())
+		{
+            case PROCESS_BEGIN:
+                childprocess=tr.append_child(process,*itr);
+                break;
+			case PROCESS_ID:
+                childprocess=tr.append_child(process,*itr);
+				break;
+            case SENSIBILITY_SIGNAL:
+                childprocess=tr.append_child(process,*itr);
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
+
+
 
 //-------------------------------------------------------------ENTITY---------------------------------------------------------
 
