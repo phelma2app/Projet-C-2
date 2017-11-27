@@ -6,7 +6,7 @@
 using namespace std;
 
 
-//Fonction pour mettre toutes les lettres en minuscule, Ã  faire en prÃÂ©ambule de toute analyse sur le string
+//Fonction pour mettre toutes les lettres en minuscule, a faire en preambule de toute analyse sur le string
 void minus_string(string &to_minus)
 {
 	for(int i=0;i<to_minus.length();i++)
@@ -18,7 +18,7 @@ void minus_string(string &to_minus)
 //Fonction pour tester la ponctuation
 bool is_ponctuation(char ch_test)
 {
-	if(ch_test==','||ch_test=='\n'||ch_test==';'||ch_test==':'||ch_test=='('||ch_test==')'||ch_test=='['||ch_test==']'||ch_test=='!'||ch_test=='-'||ch_test=='+'||ch_test=='<'||ch_test=='='||ch_test=='>'||ch_test=='\'')	//Liste des ponctuations
+	if(ch_test==','||ch_test=='.'||ch_test=='\n'||ch_test==';'||ch_test==':'||ch_test=='('||ch_test==')'||ch_test=='['||ch_test==']'||ch_test=='!'||ch_test=='-'||ch_test=='+'||ch_test=='<'||ch_test=='='||ch_test=='>'||ch_test=='\'')	//Liste des ponctuations
 	{
 		return true;
 	}
