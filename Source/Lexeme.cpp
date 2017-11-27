@@ -13,7 +13,7 @@ string Lexeme::afficheType() const
 	switch(type_lex)
 	{
 		case ARCHITECTURE :
-			return "Architecture";		
+			return "Architecture";
 		case COMMENTAIRE :
 			return "Commentaire";
 		case ENTITY :
@@ -50,6 +50,14 @@ string Lexeme::afficheType() const
 			return "Port Out";
 		case PORT_TYPE:
 			return "Type Port";
+        case PORT_VECTOR:
+            return "Port Vector";
+        case PORT_VECTOR_BEGIN:
+            return "Begin Port Vector";
+        case PORT_VECTEUR_END:
+            return "End Port Vector";
+        case PORT_VECTOR_SENSE:
+            return "Sense Port Vector";
 		case USE:
 			return "Use";
 		case USE_END:
