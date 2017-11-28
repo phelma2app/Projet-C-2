@@ -11,7 +11,7 @@ SRCDIR=$(DIR)/Source
 CFLAGS=-g -I$(DIR)/Header 
 LDFLAGS=
 
-SRC= $(SRCDIR)/main.cpp $(SRCDIR)/Console.cpp $(SRCDIR)/CreateTree.cpp $(SRCDIR)/Lexeme.cpp $(SRCDIR)/Lexeur.cpp $(SRCDIR)/parseur.cpp $(SRCDIR)/utilities.cpp $(SRCDIR)/Verification_orthographe_ajout_etiquette.cpp
+SRC= $(SRCDIR)/main.cpp $(SRCDIR)/Console.cpp $(SRCDIR)/CreateTree.cpp $(SRCDIR)/Lexeme.cpp $(SRCDIR)/Lexeur.cpp $(SRCDIR)/parseur.cpp $(SRCDIR)/utilities.cpp $(SRCDIR)/Verif_lex.cpp
 
 OBJ=$(SRC:.cpp=.o)
 
