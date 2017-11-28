@@ -14,12 +14,12 @@ string Lexeme::afficheType() const
 	{
 		case ARCHITECTURE :
 			return "Architecture";
-        case ARCHITECTURE_BEGIN:
-            return "Begin Architecture";
-        case ARCHITECTURE_END:
-            return "End Architecture";
-        case ARCHITECTURE_ID:
-            return "Identifiant Architecture";
+		case ARCHITECTURE_BEGIN:
+		    return "Begin Architecture";
+		case ARCHITECTURE_END:
+		    return "End Architecture";
+		case ARCHITECTURE_ID:
+		    return "Identifiant Architecture";
 		case COMMENTAIRE :
 			return "Commentaire";
 		case ENTITY :
@@ -38,14 +38,16 @@ string Lexeme::afficheType() const
 			return "Mot";
 		case NOMBRE :
 			return "Nombre";
-        case PROCESS:
-            return "Process";
-        case PROCESS_BEGIN:
-            return "Begin Process";
-        case PROCESS_END:
-            return "End Process";
-        case PROCESS_ID:
-            return "Identifiant Process";
+		case PROCESS:
+		    return "Process";
+		case PROCESS_BEGIN:
+		    return "Begin Process";
+		case PROCESS_END:
+		    return "End Process";
+		case PROCESS_ID:
+		    return "Identifiant Process";
+		case PROCESS_SENSIBILITY:
+		    return "Process Sensibility";
 		case PONCTUATION :
 			return "Ponctuation";
 		case PORT :
@@ -64,18 +66,16 @@ string Lexeme::afficheType() const
 			return "Port Out";
 		case PORT_TYPE:
 			return "Type Port";
-        case PORT_VECTOR:
-            return "Port Vector";
-        case PORT_VECTOR_BEGIN:
-            return "Begin Port Vector";
-        case PORT_VECTEUR_END:
-            return "End Port Vector";
-        case PORT_VECTOR_SENSE:
-            return "Sense Port Vector";
-        case SENSIBILITY_SIGNAL:
-            return "Sensibility Signal";
-        case SIGNAL:
-            return "Signal";
+		case PORT_VECTOR:
+		    return "Port Vector";
+		case PORT_VECTOR_BEGIN:
+		    return "Begin Port Vector";
+		case PORT_VECTEUR_END:
+		    return "End Port Vector";
+		case PORT_VECTOR_SENSE:
+		    return "Sense Port Vector";
+		case SIGNAL:
+		    return "Signal";
 		case USE:
 			return "Use";
 		case USE_END:
