@@ -10,7 +10,7 @@
 #include <string.h>
 #include "utilities.h"
 #include "Lexeme.h"
-#include "Verification_orthographe_ajout_etiquette.h"
+#include "Verif_lex.h"
 
 using namespace std;
 

@@ -70,7 +70,7 @@ string Lexeme::afficheType() const
 		    return "Port Vector";
 		case PORT_VECTOR_BEGIN:
 		    return "Begin Port Vector";
-		case PORT_VECTEUR_END:
+		case PORT_VECTOR_END:
 		    return "End Port Vector";
 		case PORT_VECTOR_SENSE:
 		    return "Sense Port Vector";
