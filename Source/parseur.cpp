@@ -14,15 +14,27 @@ using namespace std;
 // ********************************ROOT********************************************************************
 int parseur_root (list<Lexeme*>& list_lex){
 	list<Lexeme*>::iterator itr;
-	for(itr=list_lex.begin();itr!=list_lex.end();itr++)
+	itr=list_lex.begin();
+	//for (itr=list_lex.begin();itr!=list_lex.end();itr++)
+	while (itr!=list_lex.end())
 	{
+		cout<< "On est au debut du while" << endl;
 		if((*itr)->getLex()=="entity"&&(*itr)->getType()!=COMMENTAIRE) {
 			parseur_entity(itr);
 		}
-		if((*itr)->getLex()=="library"&&(*itr)->getType()!=COMMENTAIRE) {
+		else if((*itr)->getLex()=="library"&&(*itr)->getType()!=COMMENTAIRE) {
 			parseur_library(itr);
 		}
+		else if ((*itr)->getLex()=="architecture"&&(*itr)->getType()!=COMMENTAIRE) {
+			parseur_library(itr);
+		}
+		else {
+			cout << "Ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex() << ") : le mot n'est ni une library, ni une architecture, ni une entity" << endl ;
+			itr++ ; 
+
+		}
 	}
+	cout << "On est sorti du while root" << endl;
 }
 
 // ********************************ENTITY********************************************************************
@@ -168,8 +180,8 @@ int parseur_library (list<Lexeme*>::iterator& itr){
 				} //if (parseur_use(*itr)==0){
 			cout << (**itr) << endl; 
 			itr++;
-			cout << (**itr) << endl; 
 			} //while
+			cout << "On a fini l'iteration des use" << endl;
 			return 1 ;
 		} //if ((*itr)->getLex() == ";"){
 	} //if ((*itr)->getType() == MOT) {
@@ -204,8 +216,7 @@ int parseur_use (list<Lexeme*>::iterator& itr, string library){
 						return 0 ; 
 					}
 							
-				}
-				cout << (*itr) << endl ;  
+				} 
 				if ((*itr)->getLex() == ";") {
 					(*itr)->setType(USE_END) ;
 					return 1 ; 
@@ -483,15 +494,21 @@ int parseur_type (list<Lexeme*>::iterator& itr) {
 	else if ((*itr)->getLex()== "std_logic_vector"){
 		(*itr)->setType(PORT_VECTOR) ;
 		itr++;
-		if ((*itr)->getType() == NOMBRE) {
-			(*itr)->setType(PORT_VECTOR_BEGIN) ; 
-			itr++;
-			if ((*itr)->getLex()== "downto") { 
-				(*itr)->setType(PORT_VECTOR_SENSE) ;
+		if ((*itr)->getLex()== "(") { 
+			itr++ ;
+			if ((*itr)->getType() == NOMBRE) {
+				(*itr)->setType(PORT_VECTOR_BEGIN) ; 
 				itr++;
-				if ((*itr)->getType() == NOMBRE) { 
-					(*itr)->setType(PORT_VECTOR_END) ;
-					return 1 ; 
+				if ((*itr)->getLex()== "downto") { 
+					(*itr)->setType(PORT_VECTOR_SENSE) ;
+					itr++;
+					if ((*itr)->getType() == NOMBRE) { 
+						(*itr)->setType(PORT_VECTOR_END) ;
+						itr++ ; 
+						if ((*itr)->getLex()== ")") {
+							return 1 ; 
+						}
+					}
 				}
 			}
 		}
@@ -505,15 +522,21 @@ int parseur_type (list<Lexeme*>::iterator& itr) {
 	else if ((*itr)->getLex()== "bit_vector"){
 		(*itr)->setType(PORT_VECTOR) ;
 		itr++;
-		if ((*itr)->getType() == NOMBRE) { 
-			(*itr)->setType(PORT_VECTOR_BEGIN) ;
-			itr++;
-			if ((*itr)->getLex()== "downto") { 
-				(*itr)->setType(PORT_VECTOR_SENSE) ;
+		if ((*itr)->getLex()== "(") { 
+			itr++ ;
+			if ((*itr)->getType() == NOMBRE) { 
+				(*itr)->setType(PORT_VECTOR_BEGIN) ;
 				itr++;
-				if ((*itr)->getType() == NOMBRE) { 
-					(*itr)->setType(PORT_VECTOR_END) ;
-					return 1 ; 
+				if ((*itr)->getLex()== "downto") { 
+					(*itr)->setType(PORT_VECTOR_SENSE) ;
+					itr++;
+					if ((*itr)->getType() == NOMBRE) { 
+						(*itr)->setType(PORT_VECTOR_END) ;
+						itr++ ; 
+						if ((*itr)->getLex()== ")") {
+							return 1 ; 
+						}
+					}
 				}
 			}
 		}
