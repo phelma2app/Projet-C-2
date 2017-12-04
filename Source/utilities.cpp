@@ -1,66 +1,35 @@
+//--------------------------------------------FONCTIONS UTILES----------------------------------------------
+
+#ifndef UTILITIES_H_
+#define UTILITIES_H_
+
 #include <iostream>
 #include <string>
-#include "../Header/utilities.h"
-
+#include "Lexeme.h"
+#include "type_Lexeme.h"
+#include <list>
 
 using namespace std;
 
+//Fonction pour enlever les commentaires d'une liste de lexeme
+void delete_com(list<Lexeme*>& list_lex);
 
-//Fonction pour mettre toutes les lettres en minuscule, a faire en preambule de toute analyse sur le string
-void minus_string(string &to_minus)
-{
-	for(int i=0;i<to_minus.length();i++)
-	{
-		to_minus[i]=tolower(to_minus[i]);
-	}
-}
+//Fonction pour mettre toutes les lettres en minuscule, a  faire en preambule de toute analyse sur le string
+void minus_string(string &to_minus);
 
 //Fonction pour tester la ponctuation
-bool is_ponctuation(char ch_test)
-{
-	if(ch_test==','||ch_test=='.'||ch_test=='\n'||ch_test==';'||ch_test==':'||ch_test=='('||ch_test==')'||ch_test=='['||ch_test==']'||ch_test=='!'||ch_test=='-'||ch_test=='+'||ch_test=='<'||ch_test=='='||ch_test=='>'||ch_test=='\'')	//Liste des ponctuations
-	{
-		return true;
-	}
-	return false;
-}
+bool is_ponctuation(char ch_test);
 
 //Fonction pour tester la double ponctuation
-bool is_ponctuation2char(char ch_test1, char ch_test2)
-{
-	if((ch_test1==':'&&ch_test2=='=')||(ch_test1=='='&&ch_test2=='>')||(ch_test1=='<'&&ch_test2=='=')||(ch_test1=='-'&&ch_test2=='-'))
-	{
-		return true;
-	}
-	return false;
-}
+bool is_ponctuation2char(char ch_test1, char ch_test2);
 
 //Lettre ?
-bool is_letter(char ch_test)
-{
-	if(ch_test>='a'&&ch_test<='z')
-	{
-		return true;
-	}
-	return false;
-}
+bool is_letter(char ch_test);
 
 //Nombre ?
-bool is_number(char ch_test)
-{
-	if(ch_test>='0'&&ch_test<='9')
-	{
-		return true;
-	}
-	return false;
-}
+bool is_number(char ch_test);
 
-//Fonction pour tester le type 
-bool is_type(string st_test)
-{
-	if(st_test=="std_logic"||st_test=="std_logic_vector"||st_test=="bit"||st_test=="bit_vector")	
-	{
-		return true;
-	}
-	return false;
-}
+//Fonction pour tester le type
+bool is_type(string st_test);
+
+#endif //UTILITIES_H_
