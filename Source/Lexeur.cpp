@@ -18,7 +18,7 @@ int vhdlcomp(string libraryname, string sourcename, list<Lexeme*>& list_lex)
 	{
 		string buffer ="";
 		buffer = read_line(fichier);	//on lit une ligne
-		cout << "Stock_Lexeme : ligne nÃÂ°" << n_ligne << endl;
+		cout << "Stock_Lexeme : ligne nÂ°" << n_ligne << endl;
 		stock_lexemes(buffer,n_ligne,list_lex);		//on separe les lexemes
 		n_ligne++;
 	}while(!fichier.eof());
@@ -27,6 +27,7 @@ int vhdlcomp(string libraryname, string sourcename, list<Lexeme*>& list_lex)
 	list_lex.push_back(endFile);
 
 	print_lex(list_lex);
+
 	cout << endl <<  "Nombre de lignes dans le fichier : " << n_ligne-1 << endl;		//pour test
 	return 0;
 }
@@ -38,7 +39,6 @@ void print_lex(list<Lexeme*>& list_lex)
 	{
 		cout << **itr;
 	}
-
 }
 
 //Fonction pour stocker chaque lexeme d'une ligne dans une liste, avec leur numero de ligne
@@ -51,7 +51,7 @@ void stock_lexemes(string buffer, int ligne, list<Lexeme*>& Lex_VHDL)
 	bool is_com=false;
 	while(ch_buff!=NULL||ch_buff!='\0')
 	{
-		cout << "." << ch_buff << "." << endl;	//pour test
+		//cout << "." << ch_buff << "." << endl;	//pour test
 		Lexeme *lex_buff = new Lexeme(ch_buff,ligne,0);
 
 		if(verif(*lex_buff,&is_com,&ligne_com))
@@ -75,7 +75,7 @@ string read_line(ifstream& fichier)
 	//cout << buffer << endl;	//pour test
 
 	//Reformatage de la ligne
-	minus_string(buffer);		//Caracteres passes en miniscule
+	minus_string(buffer);		//Caracteres passes en minuscule
 	//buffer = add_space_on_string(buffer, buffer.length());	//Ajout des espaces
 	//cout << buffer << endl;	//pour test
 	
@@ -111,7 +111,7 @@ string add_space_on_string(string str, int length)
 					j++;
 				}
 
-				if(is_ponctuation(str[i])&&(str[i+1]!=' '))	//Si ponctuation & pas d'espace apres : on rajoute un espace si on est pas ÃÂ  la fin de la chaÃÂ®ne
+				if(is_ponctuation(str[i])&&(str[i+1]!=' '))	//Si ponctuation & pas d'espace apres : on rajoute un espace si on est pas Ã  la fin de la chaÃ®ne
 				{
 					if(str[i+1]!='\0')
 					{
@@ -149,7 +149,7 @@ string add_space_on_string(string str, int length)
 					j++;
 				}
 
-				if((str[i+1]!=' ')&&(str[i+1]!='\0')) // si le caractere suivant le lexeme n'est pas un espace ou une fin de chaÃÂ®ne, on en rajoute un
+				if((str[i+1]!=' ')&&(str[i+1]!='\0')) // si le caractere suivant le lexeme n'est pas un espace ou une fin de chaine, on en rajoute un
 				{
 					cout << "On rajoute un espace" << endl;
 					temp[j]=' ';
@@ -158,9 +158,9 @@ string add_space_on_string(string str, int length)
 			}
 			else	//si pas ponctuation
 			{
-				if(!(str[i]==' '&&temp[j-1]==' '))	//si on a dejaÃÂ  stocke un espace precedemment, on n'en stocke plus
+				if(!(str[i]==' '&&temp[j-1]==' '))	//si on a deja  stocke un espace precedemment, on n'en stocke plus
 				{
-					cout << "On recopie " << str[i] << endl;
+					//cout << "On recopie " << str[i] << endl;
 					temp[j]=str[i];			//dans tous les autres cas, on recopie
 					j++;
 				}
@@ -170,7 +170,7 @@ string add_space_on_string(string str, int length)
 	}
 	temp[j]='\0';	//sortie de la boucle = fin de chaine, on le signale dans temp
 
-	cout << "ChaÃÂ®ne stockee :" << temp << endl;		//Pour le test
+	cout << "Chaine stockee :" << temp << endl;		//Pour le test
 	str = temp;
 	return str;
 }
