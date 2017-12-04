@@ -44,7 +44,7 @@ int main()
 		cout << endl;
 		cout << "Impression de l'arbre" << endl;
 		printTree(parseur);
-
+		lex.clear();
 	}
 
 
