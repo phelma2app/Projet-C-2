@@ -13,9 +13,9 @@ using namespace std;
 // Pour retourner toutes les infos du lexeme : cout << (**itr) << endl;     
 // ********************************ROOT********************************************************************
 int parseur_root (list<Lexeme*>& list_lex){
+	//delete_com(list_lex);
 	list<Lexeme*>::iterator itr;
 	itr=list_lex.begin();
-	//for (itr=list_lex.begin();itr!=list_lex.end();itr++)
 	while (itr!=list_lex.end())
 	{
 		cout<< "On est au debut du while" << endl;
@@ -26,7 +26,7 @@ int parseur_root (list<Lexeme*>& list_lex){
 			parseur_library(itr);
 		}
 		else if ((*itr)->getLex()=="architecture"&&(*itr)->getType()!=COMMENTAIRE) {
-			parseur_library(itr);
+			parseur_architecture(itr);
 		}
 		else {
 			cout << "Ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex() << ") : le mot n'est ni une library, ni une architecture, ni une entity" << endl ;
@@ -64,7 +64,13 @@ int parseur_entity (list<Lexeme*>::iterator& itr){
 					} //if (lexeme = 'end')
 				} // else
 			} // if (lexeme = 'port')
-
+			else if ((*itr)->getLex() == "end"){
+				(*itr)->setType(ENTITY_END) ; 
+				itr++;
+				if ((*itr)->getLex() == identifiant){
+					return 1; 
+				} 
+			}
 		} // if ((*itr)->getLex() = 'is')
 	} // if ((*itr)->getType() = mot) 
 	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans l'entite" << endl ;
@@ -228,7 +234,7 @@ int parseur_use (list<Lexeme*>::iterator& itr, string library){
 }
 
 //**************************************************ARCHITECTURE************************************************************************
-/*
+
 int parseur_architecture (list<Lexeme*>::iterator& itr){
 	(*itr)->setType(ARCHITECTURE) ;
 	itr++ ; 
@@ -238,7 +244,7 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 		itr++;
 		if ((*itr)->getLex() == "of"){
 			itr++ ; 
-			if (){ // VERIFIER QUE L'ENTITY EXISTE 
+			if ((*itr)->getType()==MOT ){ // VERIFIER QUE L'ENTITY EXISTE 
 				(*itr)->setType(ENTITY) ;
 				itr++;
 				if ((*itr)->getLex() == "is"){
@@ -260,6 +266,7 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): on s'attend a avoir 'signal ou 'component' sachant qu'on a pas de begin " << endl ;
 							return 0 ;
 						}
+						itr++;
 					}
 					(*itr)->setType(ARCHITECTURE_BEGIN) ;
 					itr++ ;  	//premier lexeme apres le begin 
@@ -316,7 +323,7 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 	return 0 ; 
 }
 
-*/
+
 //****************************************************************SIGNAL****************************************************************
 
 int parseur_signal (list<Lexeme*>::iterator& itr){
