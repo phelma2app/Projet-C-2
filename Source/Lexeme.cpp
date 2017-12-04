@@ -22,6 +22,8 @@ string Lexeme::afficheType() const
 		    return "Identifiant Architecture";
 		case COMMENTAIRE :
 			return "Commentaire";
+		case END_OF_FILE :
+			return "End of File";
 		case ENTITY :
 			return "Entity";
 		case ENTITY_END :
