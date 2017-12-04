@@ -18,11 +18,13 @@ int vhdlcomp(string libraryname, string sourcename, list<Lexeme*>& list_lex)
 	{
 		string buffer ="";
 		buffer = read_line(fichier);	//on lit une ligne
-		cout << "Stock_Lexeme : ligne nÂ°" << n_ligne << endl;
+		cout << "Stock_Lexeme : ligne nÃÂ°" << n_ligne << endl;
 		stock_lexemes(buffer,n_ligne,list_lex);		//on separe les lexemes
 		n_ligne++;
 	}while(!fichier.eof());
 	cout << "Fin du fichier atteint" << endl;
+	Lexeme* endFile = new Lexeme("\0",n_ligne,END_OF_FILE);
+	list_lex.push_back(endFile);
 
 	print_lex(list_lex);
 	cout << endl <<  "Nombre de lignes dans le fichier : " << n_ligne-1 << endl;		//pour test
@@ -109,7 +111,7 @@ string add_space_on_string(string str, int length)
 					j++;
 				}
 
-				if(is_ponctuation(str[i])&&(str[i+1]!=' '))	//Si ponctuation & pas d'espace apres : on rajoute un espace si on est pas Ã  la fin de la chaÃ®ne
+				if(is_ponctuation(str[i])&&(str[i+1]!=' '))	//Si ponctuation & pas d'espace apres : on rajoute un espace si on est pas ÃÂ  la fin de la chaÃÂ®ne
 				{
 					if(str[i+1]!='\0')
 					{
@@ -147,7 +149,7 @@ string add_space_on_string(string str, int length)
 					j++;
 				}
 
-				if((str[i+1]!=' ')&&(str[i+1]!='\0')) // si le caractere suivant le lexeme n'est pas un espace ou une fin de chaÃ®ne, on en rajoute un
+				if((str[i+1]!=' ')&&(str[i+1]!='\0')) // si le caractere suivant le lexeme n'est pas un espace ou une fin de chaÃÂ®ne, on en rajoute un
 				{
 					cout << "On rajoute un espace" << endl;
 					temp[j]=' ';
@@ -156,7 +158,7 @@ string add_space_on_string(string str, int length)
 			}
 			else	//si pas ponctuation
 			{
-				if(!(str[i]==' '&&temp[j-1]==' '))	//si on a dejaÂ  stocke un espace precedemment, on n'en stocke plus
+				if(!(str[i]==' '&&temp[j-1]==' '))	//si on a dejaÃÂ  stocke un espace precedemment, on n'en stocke plus
 				{
 					cout << "On recopie " << str[i] << endl;
 					temp[j]=str[i];			//dans tous les autres cas, on recopie
@@ -168,7 +170,7 @@ string add_space_on_string(string str, int length)
 	}
 	temp[j]='\0';	//sortie de la boucle = fin de chaine, on le signale dans temp
 
-	cout << "ChaÃ®ne stockee :" << temp << endl;		//Pour le test
+	cout << "ChaÃÂ®ne stockee :" << temp << endl;		//Pour le test
 	str = temp;
 	return str;
 }
