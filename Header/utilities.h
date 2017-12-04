@@ -5,10 +5,16 @@
 
 #include <iostream>
 #include <string>
+#include "Lexeme.h"
+#include "type_Lexeme.h"
+#include <list>
 
 using namespace std;
 
-//Fonction pour mettre toutes les lettres en minuscule, ÃÂ  faire en prÃÂ©ambule de toute analyse sur le string
+//Fonction pour enlever les commentaires d'une liste de lexeme
+void delete_com(list<Lexeme*>& list_lex);
+
+//Fonction pour mettre toutes les lettres en minuscule, a  faire en preambule de toute analyse sur le string
 void minus_string(string &to_minus);
 
 //Fonction pour tester la ponctuation
