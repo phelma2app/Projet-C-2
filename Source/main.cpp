@@ -18,9 +18,12 @@ int main()
 	list<Lexeme*> lex;
 	tree<Lexeme*> parseur;
 
+	cout << endl << "---Synthetiseur VHDL Beta 1.0---" << endl << endl;
+
 	bool close=false;
 	while(!close)
 	{
+		cout << "--Ready--" << endl;
 		int commande=commande_vhdl(libraryname,sourcename);
 		while(commande==ERREUR)
 		{
@@ -31,21 +34,23 @@ int main()
 		{
 			case SOURCE :
 				execute_script(sourcename);
+				cout << endl << "--Fin script--" << endl << endl;
 				break;
 			case VHDLCOMP : 
 				vhdlcomp(libraryname,sourcename,lex);
-				cout << "Parseur en cours" << endl;
+				cout << endl << "--Parseur en cours--" << endl;
 				parseur_root(lex);
 				print_lex(lex);
-				cout << "Creation de l'arbre" << endl;
+				cout << endl << "--Creation de l'arbre--" << endl;
 				parseur = createTree(lex);
 				cout << endl;
-				cout << "Impression de l'arbre" << endl;
+				cout << endl << "--Impression de l'arbre--" << endl;
 				printTree(parseur);
 				if(libraryname!="")
 					saveTree(parseur,libraryname);
+				cout << endl << "--Fin de compilation--" << endl << endl;
 				break;
-			default: cout << "Sortie de programme" << endl;
+			default: cout << endl << "--Sortie de programme--" << endl << endl;
 				close=true;
 				break;
 		}		
