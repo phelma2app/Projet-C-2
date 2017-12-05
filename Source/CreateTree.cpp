@@ -20,15 +20,19 @@ tree<Lexeme*> createTree(list<Lexeme*>& lex)
 		switch((*itr)->getType())
 		{
 			case ARCHITECTURE:
-				childroot=tr.append_child(root,*itr);
-				constructTreeOnArchitecture(tr,childroot,lex,itr);
+				//childroot=tr.append_child(root,*itr);
+				constructTreeOnArchitecture(tr,root,lex,itr);
 				break;
 			case ENTITY:
-				childroot=tr.append_child(root,*itr);
-				constructTreeOnEntity(tr,childroot,lex,itr);
+				//childroot=tr.append_child(root,*itr);
+				constructTreeOnEntity(tr,root,lex,itr);
 				break;
 			case LIBRARY:
-				childroot=tr.append_child(root,*itr);
+				//childroot=tr.append_child(root,*itr);
+				constructTreeOnLibrary(tr,root,lex,itr);
+				break;
+			case USE:
+				constructTreeOnUse(tr,root,lex,itr);
 				break;
 			default:
 				break;
@@ -164,25 +168,10 @@ void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 
 	list<Lexeme*>::iterator itr=begin_library;
 	tree<Lexeme*>::pre_order_iterator childlibrary;
-	bool defineLibrary=false;
 	while((*itr)->getType()!=LIBRARY_END)
 	{
 		switch((*itr)->getType())
 		{
-			case LIBRARY_ID:
-				childlibrary=tr.append_child(library,*itr);
-				defineLibrary=true;
-                break;
-			case USE:
-			    if(defineLibrary)
-                {
-                    //constructTreeOnUse(tr,library,l,itr);
-                }
-                else
-                {
-                    cout << "Erreur : appel de use sans avoir de librairie definie" << endl;
-                }
-                break;
 			default:
 				break;
 		}
@@ -190,52 +179,44 @@ void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 	}
 }
 
-/*
 void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator begin_use)
 {
 	cout << "Tree Use" << endl;
 
 	list<Lexeme*>::iterator itr=begin_use;
-	tree<Lexeme*>::pre_order_iterator library_id,childuse,buf,use;
+	tree<Lexeme*>::pre_order_iterator childuse,buf,library_id;
 	buf=library;
-	bool libraryfound=false;
+	bool defineLibraryId=false;
 	while((*itr)->getType()!=USE_END)
 	{
 		switch((*itr)->getType())
 		{
-            case LIBRARY_ID:
-                library_id=library.first_child();
-                do
-                {
-                    if(*(library_id)->getLex()==(*itr)->getLex)
-                    {
-                        libraryfound=true;
-                    }
-                    library_id=library_id.next_sibling();
-                } while(library_id!=library.last_child());
-                if(*(library_id)->getLex()==(*itr)->getLex)
-                {
-                    libraryfound=true;
-                }
-                break;
+			case LIBRARY_ID:
+				if(!defineLibraryId)
+				{
+					defineLibraryId=true;
+					library_id=tr.append_child(buf,*itr);
+				    	buf=library_id;
+				}
+				break;
 			case USE_ID:
-                if(libraryfound)
-                {
-                    childuse=tr.append_child(buf,*itr);
-                    buf=childuse;
-                }
-                else
-                {
-                    cout << "Erreur : librairie non définie avant le use" << endl;
-                }
-                break;
+				if(defineLibraryId)
+				{
+		            		childuse=tr.append_child(buf,*itr);
+		            		buf=childuse;
+				}				
+				else
+				{
+				    cout << "Erreur : identifiant librairie non trouvee" << endl;
+				}
+                		break;
 			default:
 				break;
 		}
 		itr++;
 	}
 }
-*/
+
 
 
 //-------------------------------------------------------------PORT---------------------------------------------------------
@@ -283,9 +264,10 @@ void constructTreeOnPortId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 			case PORT_TYPE:
 				childportid=tr.append_child(portid,*itr);
 				break;
-            case PORT_VECTOR:
-                childportid=tr.append_child(portid,*itr);
-                constructTreeOnPortVector(tr,childportid,l,itr);
+			case PORT_VECTOR:
+				childportid=tr.append_child(portid,*itr);
+				constructTreeOnPortVector(tr,childportid,l,itr);
+				break;
 			default:
 				break;
 		}
@@ -317,6 +299,9 @@ void constructTreeOnPortVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_itera
 		}
 		itr++;
 	}
+
+	if((*itr)->getType()==PORT_VECTOR_END)
+		childportvec=tr.append_child(portvec,*itr);
 }
 
 //-------------------------------------------------------------PRINT---------------------------------------------------------
