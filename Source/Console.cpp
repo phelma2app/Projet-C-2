@@ -24,7 +24,6 @@ int commande_vhdl(string &libraryname, string &sourcename, string& commande)
 	{
 		if(commande_source(sourcename)!=ERREUR)
 		{
-			cout << "On retourne source" << endl;
 			return SOURCE;
 		}
 	}
@@ -53,7 +52,6 @@ int commande_vhdl(string &libraryname, string &sourcename, list<string> commande
 	{
 		if(commande_source(sourcename,commandes,itr)!=ERREUR)
 		{
-			cout << "On retourne source" << endl;
 			return SOURCE;
 		}
 	}
@@ -63,7 +61,6 @@ int commande_vhdl(string &libraryname, string &sourcename, list<string> commande
 	}
 	else
 	{
-		cout << "Erreur : commande inconnue" << endl;
 		return ERREUR;
 	}
 	return ERREUR;
@@ -87,6 +84,7 @@ int commande_vhdlcomp(string &libraryname, string &sourcename, list<string> comm
 	else
 	{
 		cout << "Le nom de la librairie n'est pas donnee" << endl; //pour test
+		libraryname="";
 		sourcename=(*itr);
 	}
 	return VHDLCOMP;
@@ -106,6 +104,7 @@ int commande_vhdlcomp(string &libraryname, string &sourcename)
 	else
 	{
 		cout << "Le nom de la librairie n'est pas donnee" << endl; //pour test
+		libraryname="";
 		sourcename=commande;
 	}
 	return VHDLCOMP;
@@ -173,6 +172,8 @@ int execute_script(string nom_script)
 				cout << endl;
 				cout << "Impression de l'arbre" << endl;
 				printTree(parseur);
+				if(libraryname!="")
+					saveTree(parseur,libraryname);
 				break;
 			case SOURCE:
 				execute_script(sourcename);
