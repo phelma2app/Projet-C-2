@@ -155,6 +155,7 @@ int execute_script(string nom_script)
 	list<string>::iterator itr=commandes.begin();
 	cout << "commandes.begin()=" << (*itr) << endl;
 	bool sortie=false;
+	tree<Lexeme*> parseur;
 	for(itr=commandes.begin();itr!=commandes.end();itr++)
 	{
 		int commande=commande_vhdl(libraryname,sourcename,commandes,itr);
@@ -164,6 +165,14 @@ int execute_script(string nom_script)
 				//cout << "VHDLCOMP" << endl;	//Pour test
 				lex.clear();
 				vhdlcomp(libraryname,sourcename,lex);
+				cout << "Parseur en cours" << endl;
+				parseur_root(lex);
+				print_lex(lex);
+				cout << "Creation de l'arbre" << endl;
+				parseur = createTree(lex);
+				cout << endl;
+				cout << "Impression de l'arbre" << endl;
+				printTree(parseur);
 				break;
 			case SOURCE:
 				execute_script(sourcename);
@@ -173,16 +182,6 @@ int execute_script(string nom_script)
 				break;
 		}
 	}		
-/*
-		cout << "Parseur en cours" << endl;
-		parseur_root(lex);
-		print_lex(lex);
-		cout << "Creation de l'arbre" << endl;
-		tree<Lexeme*> parseur = createTree(lex);
-		cout << endl;
-		cout << "Impression de l'arbre" << endl;
-		printTree(parseur);
-*/
 
 	return 1;	
 }
