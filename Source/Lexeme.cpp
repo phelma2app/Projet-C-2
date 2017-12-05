@@ -22,8 +22,6 @@ string Lexeme::afficheType() const
 		    return "Identifiant Architecture";
 		case COMMENTAIRE :
 			return "Commentaire";
-		case END_OF_FILE :
-			return "End of File";
 		case ENTITY :
 			return "Entity";
 		case ENTITY_END :
@@ -69,15 +67,21 @@ string Lexeme::afficheType() const
 		case PORT_TYPE:
 			return "Type Port";
 		case PORT_VECTOR:
-		    return "Port Vector";
+		    	return "Port Vector";
 		case PORT_VECTOR_BEGIN:
-		    return "Begin Port Vector";
+		    	return "Begin Port Vector";
 		case PORT_VECTOR_END:
-		    return "End Port Vector";
+		    	return "End Port Vector";
 		case PORT_VECTOR_SENSE:
-		    return "Sense Port Vector";
+		    	return "Sense Port Vector";
 		case SIGNAL:
-		    return "Signal";
+		    	return "Signal";
+		case SIGNAL_END :
+			return "End Signal";
+		case SIGNAL_ID:
+			return "Identifiant Signal";
+		case SIGNAL_TYPE:
+			return "Type Signal";
 		case USE:
 			return "Use";
 		case USE_END:
