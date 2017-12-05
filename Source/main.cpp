@@ -16,6 +16,7 @@ int main()
 	string libraryname;
 	string sourcename;
 	list<Lexeme*> lex;
+	tree<Lexeme*> parseur;
 
 	bool close=false;
 	while(!close)
@@ -28,24 +29,23 @@ int main()
 
 		switch(commande)
 		{
+			case SOURCE :
+				execute_script(sourcename);
+				break;
 			case VHDLCOMP : 
 				vhdlcomp(libraryname,sourcename,lex);
+				cout << "Parseur en cours" << endl;
+				parseur_root(lex);
+				print_lex(lex);
+				cout << "Creation de l'arbre" << endl;
+				parseur = createTree(lex);
+				cout << endl;
+				cout << "Impression de l'arbre" << endl;
+				printTree(parseur);
 				break;
 			default: cout << "Sortie de programme" << endl;
 				close=true;
 				break;
 		}		
-
-		cout << "Parseur en cours" << endl;
-		parseur_root(lex);
-		print_lex(lex);
-		cout << "Creation de l'arbre" << endl;
-		tree<Lexeme*> parseur = createTree(lex);
-		cout << endl;
-		cout << "Impression de l'arbre" << endl;
-		printTree(parseur);
-		lex.clear();
 	}
-
-
 }
