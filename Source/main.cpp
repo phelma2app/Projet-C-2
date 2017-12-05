@@ -42,6 +42,8 @@ int main()
 				cout << endl;
 				cout << "Impression de l'arbre" << endl;
 				printTree(parseur);
+				if(libraryname!="")
+					saveTree(parseur,libraryname);
 				break;
 			default: cout << "Sortie de programme" << endl;
 				close=true;
