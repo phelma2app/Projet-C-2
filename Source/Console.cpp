@@ -27,7 +27,7 @@ int commande_vhdl(string &libraryname, string &sourcename, string& commande)
 			return SOURCE;
 		}
 	}
-	if(commande=="\0")
+	if(commande=="quit")
 	{
 		return SORTIE;
 	}
@@ -55,7 +55,7 @@ int commande_vhdl(string &libraryname, string &sourcename, list<string> commande
 			return SOURCE;
 		}
 	}
-	if((*itr)=="\0")
+	if((*itr)=="quit")
 	{
 		return SORTIE;
 	}
@@ -164,13 +164,13 @@ int execute_script(string nom_script)
 				//cout << "VHDLCOMP" << endl;	//Pour test
 				lex.clear();
 				vhdlcomp(libraryname,sourcename,lex);
-				cout << "Parseur en cours" << endl;
+				cout << endl << "--Parseur en cours--" << endl;
 				parseur_root(lex);
 				print_lex(lex);
-				cout << "Creation de l'arbre" << endl;
+				cout << endl << "--Creation de l'arbre--" << endl;
 				parseur = createTree(lex);
 				cout << endl;
-				cout << "Impression de l'arbre" << endl;
+				cout << endl << "--Impression de l'arbre--" << endl;
 				printTree(parseur);
 				if(libraryname!="")
 					saveTree(parseur,libraryname);
@@ -183,6 +183,5 @@ int execute_script(string nom_script)
 				break;
 		}
 	}		
-
 	return 1;	
 }
