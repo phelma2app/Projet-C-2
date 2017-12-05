@@ -85,7 +85,6 @@ void constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_i
 	}
 }
 
-
 void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process, list<Lexeme*>& l, list<Lexeme*>::iterator begin_process)
 {
 	cout << "Tree Architecture ID" << endl;
@@ -102,7 +101,7 @@ void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 			case PROCESS_ID:
                 		childprocess=tr.append_child(process,*itr);
 				break;
-           		 case PROCESS_SENSIBILITY:
+            		case PROCESS_SENSIBILITY:
                 		childprocess=tr.append_child(process,*itr);
 				break;
 			default:
@@ -158,7 +157,6 @@ void constructTreeOnEntityID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterato
 	}
 }
 
-/*
 //-------------------------------------------------------------LIBRARY---------------------------------------------------------
 void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator begin_library)
 {
@@ -178,7 +176,7 @@ void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 			case USE:
 			    if(defineLibrary)
                 {
-                    constructTreeOnUse(tr,library,l,itr);
+                    //constructTreeOnUse(tr,library,l,itr);
                 }
                 else
                 {
@@ -192,6 +190,7 @@ void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 	}
 }
 
+/*
 void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator begin_use)
 {
 	cout << "Tree Use" << endl;
@@ -236,8 +235,8 @@ void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& li
 		itr++;
 	}
 }
-
 */
+
 
 //-------------------------------------------------------------PORT---------------------------------------------------------
 
@@ -304,16 +303,16 @@ void constructTreeOnPortVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_itera
 	{
 		switch((*itr)->getType())
 		{
-			case PORT_VECTOR_BEGIN:
-				childportvec=tr.append_child(portvec,*itr);
-				break;
-		    	case PORT_VECTOR_SENSE:
-				childportvec=tr.append_child(portvec,*itr);
-				break;
-		    	case PORT_VECTOR_END:
-				childportvec=tr.append_child(portvec,*itr);
-				break;
-			default:
+		    case PORT_VECTOR_BEGIN:
+		        childportvec=tr.append_child(portvec,*itr);
+		        break;
+		    case PORT_VECTOR_SENSE:
+		        childportvec=tr.append_child(portvec,*itr);
+		        break;
+		    case PORT_VECTOR_END:
+		        childportvec=tr.append_child(portvec,*itr);
+               		break;
+		    default:
 			break;
 		}
 		itr++;
@@ -338,5 +337,28 @@ void printTree(tree<Lexeme*> tr)
 		cout << (*itr)->getLex() << endl;
 		++itr;
 	}
+}
 
+int saveTree(tree<Lexeme*> tr, string libraryname)
+{
+	ofstream fichier(libraryname, ios::out | ios::trunc);
+	if(!fichier)
+	{
+		cout << "Erreur a l'ecriture de " << libraryname << endl;
+		return 0;
+	}
+	tree<Lexeme*>::pre_order_iterator itr=tr.begin();
+	if(itr!=tr.end())
+		++itr;
+
+	while(itr!=tr.end())
+	{
+
+		for(int i=0; i<tr.depth(itr); i++)
+		{
+			fichier << "	";
+		}
+		fichier << (**itr);
+		++itr;
+	}
 }
