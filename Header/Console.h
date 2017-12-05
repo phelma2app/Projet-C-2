@@ -6,7 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
+#include "Console.h"
+#include "CreateTree.h"
+#include "Lexeme.h"
 #include "Lexeur.h"
+#include "parseur.h"
+#include "tree.hh"
 
 using namespace std;
 
