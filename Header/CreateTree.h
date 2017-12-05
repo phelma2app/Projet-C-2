@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "type_Lexeme.h"
 
 using namespace std;
@@ -30,10 +31,8 @@ void constructTreeOnPortVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_itera
 void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator begin_library);
 void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator begin_use);
 
-
-
-
 //------------------------------------Print--------------------------------
 void printTree(tree<Lexeme*> tr);
+int saveTree(tree<Lexeme*> tr, string libraryname);
 
 #endif //CREATETREE_h_
