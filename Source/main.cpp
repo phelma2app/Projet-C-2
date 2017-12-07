@@ -17,7 +17,7 @@ int main()
 	string sourcename;
 	list<Lexeme*> lex;
 	tree<Lexeme*> parseur;
-
+	int erreur;
 	cout << endl << "---Synthetiseur VHDL Beta 1.0---" << endl << endl;
 
 	bool close=false;
@@ -39,16 +39,25 @@ int main()
 			case VHDLCOMP : 
 				vhdlcomp(libraryname,sourcename,lex);
 				cout << endl << "--Parseur en cours--" << endl;
-				parseur_root(lex);
+				erreur=parseur_root(lex);
 				print_lex(lex);
-				cout << endl << "--Creation de l'arbre--" << endl;
-				parseur = createTree(lex);
-				cout << endl;
-				cout << endl << "--Impression de l'arbre--" << endl;
-				printTree(parseur);
-				if(libraryname!="")
-					saveTree(parseur,libraryname);
-				cout << endl << "--Fin de compilation--" << endl << endl;
+				
+				if(erreur==1)
+				{
+					cout << endl << "--Creation de l'arbre--" << endl;
+					parseur = createTree(lex);
+					cout << endl;
+					cout << endl << "--Impression de l'arbre--" << endl;
+					printTree(parseur);
+					if(libraryname!="")
+						saveTree(parseur,libraryname);
+					cout << endl << "--Fin de compilation--" << endl << endl;
+				}
+				else
+				{
+					cout << endl << "--Erreur de syntaxe--" << endl;
+					cout <<  "--Compilation avortée--" << endl << endl;
+				}
 				break;
 			default: cout << endl << "--Sortie de programme--" << endl << endl;
 				close=true;
