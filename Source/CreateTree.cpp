@@ -126,6 +126,10 @@ void constructTreeOnSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 			case SIGNAL_ID:
                 		childsignal=tr.append_child(signal,*itr);
 				constructTreeOnSignalID(tr,childsignal,l,itr);
+				break;			
+			case TYPE_VECTOR:
+                		childsignal=tr.append_child(signal,*itr);
+				constructTreeOnVector(tr,childsignal,l,itr);
 				break;
 			default:
 				break;
@@ -343,7 +347,7 @@ void constructTreeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 	}
 
 	if((*itr)->getType()==TYPE_VECTOR_END)
-		childportvec=tr.append_child(vec,*itr);
+		childvec=tr.append_child(vec,*itr);
 }
 
 //-------------------------------------------------------------PRINT---------------------------------------------------------
