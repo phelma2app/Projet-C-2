@@ -26,6 +26,8 @@ string Lexeme::afficheType() const
 			return "Else";
 		case ELSIF :
 			return "Elsif";
+		case END_OF_FILE :
+			return "End of File";
 		case ENTITY :
 			return "Entity";
 		case ENTITY_END :
