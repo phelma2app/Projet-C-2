@@ -342,8 +342,8 @@ void constructTreeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 		itr++;
 	}
 
-	if((*itr)->getType()==PORT_VECTOR_END)
-		childportvec=tr.append_child(portvec,*itr);
+	if((*itr)->getType()==TYPE_VECTOR_END)
+		childportvec=tr.append_child(vec,*itr);
 }
 
 //-------------------------------------------------------------PRINT---------------------------------------------------------
