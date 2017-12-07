@@ -76,8 +76,8 @@ void constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_i
 		        	constructTreeOnProcess(tr,childarchiid,l,itr);
 		        	break;
 			case SIGNAL:
-				childarchiid=tr.append_child(architectureid,*itr);
-				constructTreeOnSignal(tr,childarchiid,l,itr);
+				//childarchiid=tr.append_child(architectureid,*itr);
+				constructTreeOnSignal(tr,architectureid,l,itr);
 				break;
 			default:
 				break;
