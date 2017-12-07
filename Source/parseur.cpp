@@ -478,15 +478,18 @@ int parseur_begin (list<Lexeme*>::iterator& itr) {
 	while ((*itr)->getLex() != "end"){
 		if ((*itr)->getLex()=="if"){
 			if (parseur_if(itr)==0){
+				cout << "retourne une erreur dans le parseur if dans le begin du process" << endl ;
 				return 0;
 			}
-		}
-		if (verif_instr(itr)==0){
+		} 
+		else if (verif_instr(itr)==0){
 			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme avec l'instruction " << endl ;
 			return 0 ;
 		}
 	itr++; 
+	cout << " dans begin process on est a la fin du while " << (**itr) << endl ;
 	}
+	cout << " dans begin process on est sortie du while " << (**itr) << endl ;
 	(*itr)->setType(PROCESS_END) ;
 	itr++;
 	if ((*itr)->getLex()=="process"){
@@ -665,11 +668,15 @@ int if_elsif (list<Lexeme*>::iterator& itr) {
 			}
 		}
 	itr++;
-	cout << "fin while if " << (**itr) << endl;
 	}
-	cout << "on est sortie du while if  " << (**itr) << endl;
 	(*itr)->setType(IF_END) ;
-	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le if " << endl ;
+	itr++; 
+	if ((*itr)->getLex()== "if"){
+		itr++; 
+		if ((*itr)->getLex()== ";"){
+			return 1;
+		}
+	}
 	return 0 ; 	
 }
 
