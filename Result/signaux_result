@@ -39,34 +39,34 @@
 	struct	|	20	|	Identifiant Architecture
 		signal	|	22	|	Signal
 			data_round_in	|	22	|	Identifiant Signal
-			bit_vector	|	22	|	Vector
-				12	|	22	|	Begin Vector
-				downto	|	22	|	Sense Vector
-				0	|	22	|	End Vector
+				bit_vector	|	22	|	Vector
+					12	|	22	|	Begin Vector
+					downto	|	22	|	Sense Vector
+					0	|	22	|	End Vector
 		signal	|	23	|	Signal
 			data_round_out	|	23	|	Identifiant Signal
-			bit_vector	|	23	|	Vector
-				17	|	23	|	Begin Vector
-				downto	|	23	|	Sense Vector
-				0	|	23	|	End Vector
+				bit_vector	|	23	|	Vector
+					17	|	23	|	Begin Vector
+					downto	|	23	|	Sense Vector
+					0	|	23	|	End Vector
 		signal	|	24	|	Signal
 			first_round_key	|	24	|	Identifiant Signal
-			bit_vector	|	24	|	Vector
-				6	|	24	|	Begin Vector
-				downto	|	24	|	Sense Vector
-				0	|	24	|	End Vector
+				bit_vector	|	24	|	Vector
+					6	|	24	|	Begin Vector
+					downto	|	24	|	Sense Vector
+					0	|	24	|	End Vector
 		signal	|	25	|	Signal
 			round_key	|	25	|	Identifiant Signal
-			bit_vector	|	25	|	Vector
-				0	|	25	|	Begin Vector
-				to	|	25	|	Sense Vector
-				127	|	25	|	End Vector
+				bit_vector	|	25	|	Vector
+					0	|	25	|	Begin Vector
+					to	|	25	|	Sense Vector
+					127	|	25	|	End Vector
 		signal	|	26	|	Signal
 			round_key2	|	26	|	Identifiant Signal
-			bit_vector	|	26	|	Vector
-				0	|	26	|	Begin Vector
-				to	|	26	|	Sense Vector
-				127	|	26	|	End Vector
+				bit_vector	|	26	|	Vector
+					0	|	26	|	Begin Vector
+					to	|	26	|	Sense Vector
+					127	|	26	|	End Vector
 		signal	|	27	|	Signal
 			last_round_signal	|	27	|	Identifiant Signal
 				bit	|	27	|	Type Signal

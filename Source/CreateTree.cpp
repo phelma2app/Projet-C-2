@@ -99,10 +99,6 @@ void constructTreeOnSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 			case SIGNAL_ID:
                 		childsignal=tr.append_child(signal,*itr);
 				constructTreeOnSignalID(tr,childsignal,l,itr);
-				break;			
-			case TYPE_VECTOR:
-                		childsignal=tr.append_child(signal,*itr);
-				constructTreeOnVector(tr,childsignal,l,itr);
 				break;
 			default:
 				break;
@@ -123,6 +119,10 @@ void constructTreeOnSignalID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterato
 		{
 			case SIGNAL_TYPE:
                 		childsignalid=tr.append_child(signalid,*itr);
+				break;			
+			case TYPE_VECTOR:
+                		childsignalid=tr.append_child(signalid,*itr);
+				constructTreeOnVector(tr,childsignalid,l,itr);
 				break;
 			default:
 				break;
