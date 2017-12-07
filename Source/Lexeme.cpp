@@ -74,14 +74,6 @@ string Lexeme::afficheType() const
 			return "Port Out";
 		case PORT_TYPE:
 			return "Type Port";
-		case PORT_VECTOR:
-		    	return "Port Vector";
-		case PORT_VECTOR_BEGIN:
-		    	return "Begin Port Vector";
-		case PORT_VECTOR_END:
-		    	return "End Port Vector";
-		case PORT_VECTOR_SENSE:
-		    	return "Sense Port Vector";
 		case SIGNAL:
 		    	return "Signal";
 		case SIGNAL_END :
@@ -92,6 +84,14 @@ string Lexeme::afficheType() const
 			return "Type Signal";
 		case THEN :
 			return "Then";
+		case TYPE_VECTOR:
+		    	return "Vector";
+		case TYPE_VECTOR_BEGIN:
+		    	return "Begin Vector";
+		case TYPE_VECTOR_END:
+		    	return "End Vector";
+		case TYPE_VECTOR_SENSE:
+		    	return "Sense Vector";
 		case USE:
 			return "Use";
 		case USE_END:
