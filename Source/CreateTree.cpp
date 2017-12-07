@@ -86,33 +86,6 @@ void constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_i
 	}
 }
 
-void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process, list<Lexeme*>& l, list<Lexeme*>::iterator begin_process)
-{
-	cout << "Tree Process" << endl;
-
-	list<Lexeme*>::iterator itr=begin_process;
-	tree<Lexeme*>::pre_order_iterator childprocess;
-	while((*itr)->getType()!=PROCESS_END)
-	{
-		switch((*itr)->getType())
-		{
-            		case PROCESS_BEGIN:
-                		childprocess=tr.append_child(process,*itr);
-                		break;
-			case PROCESS_ID:
-                		childprocess=tr.append_child(process,*itr);
-				break;
-            		case PROCESS_SENSIBILITY:
-                		childprocess=tr.append_child(process,*itr);
-				break;
-			default:
-				break;
-		}
-		itr++;
-	}
-}
-
-
 void constructTreeOnSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& signal, list<Lexeme*>& l, list<Lexeme*>::iterator begin_signal)
 {
 	cout << "Tree Signal" << endl;
@@ -317,6 +290,85 @@ void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& li
 }
 
 
+//-------------------------------------------------------------PROCESS---------------------------------------------------------
+
+
+void constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if, list<Lexeme*>& l, list<Lexeme*>::iterator begin_if)
+{
+	cout << "Tree If" << endl;
+
+	list<Lexeme*>::iterator itr=begin_if;
+	tree<Lexeme*>::pre_order_iterator childif;
+	while((*itr)->getType()!=IF_END)
+	{
+		switch((*itr)->getType())
+		{
+			case CONDITION:
+				childif=tr.append_child(_if,*itr);
+				break;
+			case ELSE:
+				childif=tr.append_child(_if,*itr);
+				break;
+			case ELSIF:
+				childif=tr.append_child(_if,*itr);
+				break;
+			case THEN:
+				childif=tr.append_child(_if,*itr);
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
+
+void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process, list<Lexeme*>& l, list<Lexeme*>::iterator begin_process)
+{
+	cout << "Tree Process" << endl;
+
+	list<Lexeme*>::iterator itr=begin_process;
+	tree<Lexeme*>::pre_order_iterator childprocess;
+	while((*itr)->getType()!=PROCESS_END)
+	{
+		switch((*itr)->getType())
+		{
+            		case PROCESS_BEGIN:
+                		childprocess=tr.append_child(process,*itr);
+				constructTreeOnProcessInst(tr,childprocess,l,itr);
+                		break;
+			case PROCESS_ID:
+                		childprocess=tr.append_child(process,*itr);
+				break;
+            		case PROCESS_SENSIBILITY:
+                		childprocess=tr.append_child(process,*itr);
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
+
+void constructTreeOnProcessInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process_inst, list<Lexeme*>& l, list<Lexeme*>::iterator begin_process_inst)
+{
+	cout << "Tree Process Instructions" << endl;
+
+	list<Lexeme*>::iterator itr=begin_process_inst;
+	tree<Lexeme*>::pre_order_iterator childprocessinst;
+	while((*itr)->getType()!=PROCESS_END)
+	{
+		switch((*itr)->getType())
+		{
+            		case IF:
+                		childprocessinst=tr.append_child(process_inst,*itr);
+				constructTreeOnIf(tr,childprocessinst,l,itr);
+                		break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
 
 //-------------------------------------------------------------AUTRES---------------------------------------------------------
 

@@ -71,7 +71,7 @@ int commande_vhdl(string &libraryname, string &sourcename, list<string> commande
 //
 int commande_vhdlcomp(string &libraryname, string &sourcename, list<string> commandes, list<string>::iterator itr)
 {
-	cout << "On va compiler" << endl;	//pour test
+	//cout << "On va compiler" << endl;	//pour test
 	itr ++;
 	if((*itr)=="-l")
 	{
@@ -127,11 +127,11 @@ int commande_source(string &sourcename)
 
 int execute_script(string nom_script)
 {
-	cout << "Execute script " << nom_script << endl;
+	cout << "--Execute script " << nom_script << "--" << endl;
 	ifstream fichier_script(nom_script.c_str(), ios::in);  // on ouvre en lecture
 	if(!fichier_script)  // si l'ouverture n'a pas fonctionnee
 	{
-		cerr << "Impossible d'ouvrir le fichier " << nom_script << " !" << endl;
+		cerr << "!!Impossible d'ouvrir le fichier " << nom_script << " !!" << endl;
 		return 0;
 	}
 
@@ -141,7 +141,7 @@ int execute_script(string nom_script)
 	string sourcename;
 	list<Lexeme*> lex;
 	list<string> commandes;
-	cout << "Le fichier script va être lu" << endl;
+	// cout << "Le fichier script va être lu" << endl;
 
 	while(!fichier_script.eof())
 	{
@@ -152,28 +152,37 @@ int execute_script(string nom_script)
 
 	//cout << "Commande vhdl va etre lance" << endl;	//Pour test
 	list<string>::iterator itr=commandes.begin();
-	cout << "commandes.begin()=" << (*itr) << endl;
 	bool sortie=false;
+	int erreur;
 	tree<Lexeme*> parseur;
 	for(itr=commandes.begin();itr!=commandes.end();itr++)
 	{
 		int commande=commande_vhdl(libraryname,sourcename,commandes,itr);
 		switch(commande)
 		{
-			case VHDLCOMP : 
-				//cout << "VHDLCOMP" << endl;	//Pour test
+			case VHDLCOMP :
 				lex.clear();
 				vhdlcomp(libraryname,sourcename,lex);
 				cout << endl << "--Parseur en cours--" << endl;
-				parseur_root(lex);
+				erreur=parseur_root(lex);
 				print_lex(lex);
-				cout << endl << "--Creation de l'arbre--" << endl;
-				parseur = createTree(lex);
-				cout << endl;
-				cout << endl << "--Impression de l'arbre--" << endl;
-				printTree(parseur);
-				if(libraryname!="")
-					saveTree(parseur,libraryname);
+				
+				if(erreur==1)
+				{
+					cout << endl << "--Creation de l'arbre--" << endl;
+					parseur = createTree(lex);
+					cout << endl;
+					cout << endl << "--Impression de l'arbre--" << endl;
+					printTree(parseur);
+					if(libraryname!="")
+						saveTree(parseur,libraryname);
+					cout << endl << "--Fin de compilation--" << endl << endl;
+				}
+				else
+				{
+					cout << endl << "--Erreur de syntaxe--" << endl;
+					cout <<  "--Compilation avortée--" << endl << endl;
+				}
 				break;
 			case SOURCE:
 				execute_script(sourcename);

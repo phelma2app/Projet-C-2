@@ -5,7 +5,7 @@
 
 CC=g++ -std=c++11
 
-DIR=/users/phelma/phelma2016/margotan/Documents/ProjetC/ProjetC-master
+DIR=/tp/xph2app/xph2app001/Documents/Projet-C-2/ProjetC
 SRCDIR=$(DIR)/Source
 
 CFLAGS=-g -I$(DIR)/Header 

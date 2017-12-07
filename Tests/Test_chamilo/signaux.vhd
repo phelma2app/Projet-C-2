@@ -22,7 +22,7 @@ architecture struct of signaux is
 signal data_round_in       : bit_vector(12 downto 0);
 signal data_round_out       : bit_vector(17 downto 0);
 signal First_round_KEY       : bit_vector(6 downto 0);            
-signal round_KEY         : bit_vector(127 to 0); -- erreur de sens
+signal round_KEY         : bit_vector(0 to 127); -- erreur de sens
 signal round_KEY2         : bit_vector(0 to 127); 
 signal last_round_signal    : bit;
 signal first_round_signal    : bit;

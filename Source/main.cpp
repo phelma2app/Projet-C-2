@@ -37,6 +37,7 @@ int main()
 				cout << endl << "--Fin script--" << endl << endl;
 				break;
 			case VHDLCOMP : 
+				lex.clear();
 				vhdlcomp(libraryname,sourcename,lex);
 				cout << endl << "--Parseur en cours--" << endl;
 				erreur=parseur_root(lex);
