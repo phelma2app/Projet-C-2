@@ -12,26 +12,52 @@ string Lexeme::afficheType() const
 {
 	switch(type_lex)
 	{
+		case AFFECTATION :
+			return "Affectation";
 		case ARCHITECTURE :
 			return "Architecture";
 		case ARCHITECTURE_BEGIN:
-		    return "Begin Architecture";
+			return "Begin Architecture";
 		case ARCHITECTURE_END:
-		    return "End Architecture";
+			return "End Architecture";
 		case ARCHITECTURE_ID:
-		    return "Identifiant Architecture";
+			return "Identifiant Architecture";
+		case ATTRIBUT:
+			return "Attribut";
+		case ATTRIBUT_ID:
+			return "Attribut ID"; 	
 		case COMMENTAIRE :
 			return "Commentaire";
+		case COMPONENT:
+			return "Component";
+		case COMPONENT_END:
+			return "End Component";
+		case COMPONENT_ID:
+			return "Identifiant Component";
+		case CONDITION:
+			return "Condition";
 		case ELSE :
 			return "Else";
 		case ELSIF :
 			return "Elsif";
+		case END_OF_FILE :
+			return "End of File";
 		case ENTITY :
 			return "Entity";
 		case ENTITY_END :
 			return "End Entity";
 		case ENTITY_ID :
 			return "Identifiant Entity";
+		case GENERIC :
+			return "Generic";
+		case GENERIC_END :
+			return "End Generic";
+		case GENERIC_ID :
+			return "Identifiant Generic";
+		case GENERIC_ID_END:
+			return "Fin Identifiant Generic";
+		case GENERIC_TYPE:
+			return "Type Generic";
 		case IF :
 			return "If";
 		case IF_END :
@@ -46,6 +72,8 @@ string Lexeme::afficheType() const
 			return "Mot";
 		case NOMBRE :
 			return "Nombre";
+		case OPERATOR :
+			return "Operator";
 		case PROCESS:
 		    	return "Process";
 		case PROCESS_BEGIN:
@@ -98,6 +126,14 @@ string Lexeme::afficheType() const
 			return "End Use";
 		case USE_ID:
 			return "Identifiant Use";
+		case VARIABLE:
+			return "Variable";
+		case VARIABLE_END:
+			return "End Variable";
+		case VARIABLE_ID:
+			return "Identifiant Variable";
+		case VARIABLE_TYPE:
+			return "Type Variable";
 		default :
 			return "Non Defini";
 	}
