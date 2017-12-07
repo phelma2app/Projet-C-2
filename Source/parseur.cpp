@@ -19,13 +19,19 @@ int parseur_root (list<Lexeme*>& list_lex){
 	while (itr!=list_lex.end())
 	{
 		if((*itr)->getLex()=="entity"&&(*itr)->getType()!=COMMENTAIRE) {
-			parseur_entity(itr);
+			if (parseur_entity(itr)==0){
+				return 0 ;
+			}
 		}
 		else if((*itr)->getLex()=="library"&&(*itr)->getType()!=COMMENTAIRE) {
-			parseur_library(itr);
+			if (parseur_library(itr)==0){
+				return 0 ;
+			}
 		}
 		else if ((*itr)->getLex()=="architecture"&&(*itr)->getType()!=COMMENTAIRE) {
-			parseur_architecture(itr);
+			if (parseur_architecture(itr)==0){
+				return 0 ;
+			}
 		}
 		else {
 			cout << "Ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex() << ") : le mot n'est ni une library, ni une architecture, ni une entity" << endl ;
@@ -33,7 +39,7 @@ int parseur_root (list<Lexeme*>& list_lex){
 
 		}
 	}
-	cout << "On est sorti du while root" << endl;
+	return 1;
 }
 
 // ********************************ENTITY********************************************************************
@@ -659,7 +665,9 @@ int if_elsif (list<Lexeme*>::iterator& itr) {
 			}
 		}
 	itr++;
+	cout << "fin while if " << (**itr) << endl;
 	}
+	cout << "on est sortie du while if  " << (**itr) << endl;
 	(*itr)->setType(IF_END) ;
 	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le if " << endl ;
 	return 0 ; 	
@@ -692,13 +700,6 @@ int verif_cond_if(list<Lexeme*>::iterator& itr) {
 //*****************************************************************THEN*****************************************************************
 int parseur_then (list<Lexeme*>::iterator& itr) {
 	(*itr)->setType(THEN) ;
-	if (then_else(itr)==0){
-	return 0;
-	}	
-	else {return 1;}
-}
-//*******************FonctionTHEN/ELSE**************
-int then_else (list<Lexeme*>::iterator& itr) {	
 	itr++;
 	if ((*itr)->getLex()== "if") {
 		if (parseur_if(itr)== 0) {
@@ -752,7 +753,18 @@ int verif_instr(list<Lexeme*>::iterator& itr) {
 					if ((*itr)->getLex()== "'"){
 						itr++;
 						if ((*itr)->getLex()== ";"){
-							cout << "parseur instr " << (**itr) << endl ; 
+							return 1;
+						}
+					}
+				}
+			}
+			else if ((*itr)->getLex()== "\""){
+				itr++;
+				if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
+					itr++;
+					if ((*itr)->getLex()== "\""){
+						itr++;
+						if ((*itr)->getLex()== ";"){
 							return 1;
 						}
 					}
@@ -766,12 +778,17 @@ int verif_instr(list<Lexeme*>::iterator& itr) {
 //*****************************************************************ELSE*****************************************************************
 int parseur_else (list<Lexeme*>::iterator& itr) {
 	(*itr)->setType(ELSE) ;
-	if (then_else(itr)==0){
-	return 0;
-	}	
-	else {return 1;}
+	itr++;
+	if ((*itr)->getType() == MOT){
+		if (verif_instr(itr)==0) {
+		cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans les instr " << endl ;
+		return 0 ; 
+		}
+		else {
+			cout << "on sort du else" << endl ;
+			return 1;}
+	}
 }
-
 //*****************************************************************ELSIF****************************************************************
 int parseur_elsif (list<Lexeme*>::iterator& itr) {
 	(*itr)->setType(ELSIF) ;
