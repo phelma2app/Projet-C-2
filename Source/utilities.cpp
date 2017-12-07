@@ -28,7 +28,7 @@ void minus_string(string &to_minus)
 //Fonction pour tester la ponctuation
 bool is_ponctuation(char ch_test)
 {
-	if(ch_test==','||ch_test=='.'||ch_test=='\n'||ch_test==';'||ch_test==':'||ch_test=='('||ch_test==')'||ch_test=='['||ch_test==']'||ch_test=='!'||ch_test=='-'||ch_test=='+'||ch_test=='<'||ch_test=='='||ch_test=='>'||ch_test=='\'')	//Liste des ponctuations
+	if(ch_test==','||ch_test=='.'||ch_test=='\n'||ch_test==';'||ch_test==':'||ch_test=='('||ch_test==')'||ch_test=='['||ch_test==']'||ch_test=='!'||ch_test=='-'||ch_test=='+'||ch_test=='<'||ch_test=='='||ch_test=='>'||ch_test=='"'||ch_test=='\'')	//Liste des ponctuations
 	{
 		return true;
 	}
