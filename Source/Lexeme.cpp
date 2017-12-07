@@ -22,12 +22,20 @@ string Lexeme::afficheType() const
 		    return "Identifiant Architecture";
 		case COMMENTAIRE :
 			return "Commentaire";
+		case ELSE :
+			return "Else";
+		case ELSIF :
+			return "Elsif";
 		case ENTITY :
 			return "Entity";
 		case ENTITY_END :
 			return "End Entity";
 		case ENTITY_ID :
 			return "Identifiant Entity";
+		case IF :
+			return "If";
+		case IF_END :
+			return "End If";
 		case LIBRARY :
 			return "Library";
 		case LIBRARY_END:
@@ -39,15 +47,15 @@ string Lexeme::afficheType() const
 		case NOMBRE :
 			return "Nombre";
 		case PROCESS:
-		    return "Process";
+		    	return "Process";
 		case PROCESS_BEGIN:
-		    return "Begin Process";
+		    	return "Begin Process";
 		case PROCESS_END:
-		    return "End Process";
+		    	return "End Process";
 		case PROCESS_ID:
-		    return "Identifiant Process";
+		    	return "Identifiant Process";
 		case PROCESS_SENSIBILITY:
-		    return "Process Sensibility";
+		    	return "Process Sensibility";
 		case PONCTUATION :
 			return "Ponctuation";
 		case PORT :
@@ -82,6 +90,8 @@ string Lexeme::afficheType() const
 			return "Identifiant Signal";
 		case SIGNAL_TYPE:
 			return "Type Signal";
+		case THEN :
+			return "Then";
 		case USE:
 			return "Use";
 		case USE_END:
