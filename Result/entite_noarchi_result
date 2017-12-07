@@ -1,0 +1,38 @@
+	std	|	3	|	Identifiant Librairie
+		textio	|	3	|	Identifiant Use
+			all	|	3	|	Identifiant Use
+	ieee	|	5	|	Identifiant Librairie
+		bit_1164	|	5	|	Identifiant Use
+			all	|	5	|	Identifiant Use
+	ieee	|	6	|	Identifiant Librairie
+		bit_misc	|	6	|	Identifiant Use
+			all	|	6	|	Identifiant Use
+	ieee	|	7	|	Identifiant Librairie
+		bit_arith	|	7	|	Identifiant Use
+			all	|	7	|	Identifiant Use
+	entite_noarchi	|	9	|	Identifiant Entity
+		port	|	10	|	Port
+			clk	|	11	|	Identifiant Port
+				in	|	11	|	Port In
+				bit	|	11	|	Type Port
+			rst	|	12	|	Identifiant Port
+				in	|	12	|	Port In
+				bit	|	12	|	Type Port
+			start	|	13	|	Identifiant Port
+				in	|	13	|	Port In
+				bit	|	13	|	Type Port
+			done	|	14	|	Identifiant Port
+				in	|	14	|	Port In
+				bit	|	14	|	Type Port
+			din	|	15	|	Identifiant Port
+				in	|	15	|	Port In
+				bit_vector	|	15	|	Vector
+					15	|	15	|	Begin Vector
+					downto	|	15	|	Sense Vector
+					0	|	15	|	End Vector
+			dout	|	16	|	Identifiant Port
+				out	|	16	|	Port Out
+				bit_vector	|	16	|	Vector
+					15	|	16	|	Begin Vector
+					downto	|	16	|	Sense Vector
+					0	|	16	|	End Vector

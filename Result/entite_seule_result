@@ -1,0 +1,13 @@
+	std	|	2	|	Identifiant Librairie
+		textio	|	2	|	Identifiant Use
+			all	|	2	|	Identifiant Use
+	ieee	|	4	|	Identifiant Librairie
+		bit_1164	|	4	|	Identifiant Use
+			all	|	4	|	Identifiant Use
+	ieee	|	5	|	Identifiant Librairie
+		bit_misc	|	5	|	Identifiant Use
+			all	|	5	|	Identifiant Use
+	ieee	|	6	|	Identifiant Librairie
+		bit_arith	|	6	|	Identifiant Use
+			all	|	6	|	Identifiant Use
+	entite_sans_portes	|	8	|	Identifiant Entity
