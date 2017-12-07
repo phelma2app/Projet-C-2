@@ -251,7 +251,7 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 		if ((*itr)->getLex() == "of"){
 			itr++ ; 
 			if ((*itr)->getType()==MOT ){ // VERIFIER QUE L'ENTITY EXISTE 
-				(*itr)->setType(ENTITY_ID) ;
+				(*itr)->setType(ENTITY_ID) ;	//Changement ici
 				itr++;
 				if ((*itr)->getLex() == "is"){
 					itr++ ;
