@@ -14,6 +14,8 @@ string Lexeme::afficheType() const
 	{
 		case AFFECTATION :
 			return "Affectation";
+        case AFFECTATION_END:
+            return "End Affectation";
 		case ARCHITECTURE :
 			return "Architecture";
 		case ARCHITECTURE_BEGIN:
@@ -25,7 +27,7 @@ string Lexeme::afficheType() const
 		case ATTRIBUT:
 			return "Attribut";
 		case ATTRIBUT_ID:
-			return "Attribut ID"; 	
+			return "Attribut ID";
 		case COMMENTAIRE :
 			return "Commentaire";
 		case COMPONENT:
@@ -36,6 +38,8 @@ string Lexeme::afficheType() const
 			return "Identifiant Component";
 		case CONDITION:
 			return "Condition";
+        case CONDITION_END:
+            return "End Condition";
 		case ELSE :
 			return "Else";
 		case ELSIF :
