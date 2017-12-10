@@ -841,3 +841,87 @@ int parseur_elsif (list<Lexeme*>::iterator& itr) {
 	}	
 	else {return 1;}
 }
+
+//*****************************************************************DECLARATION_TYPE*****************************************************
+int parseur_declar_type (list<Lexeme*>::iterator& itr) {
+	(*itr)->setType(MOT) ;            // A CHANGER
+	itr++;
+	if ((*itr)->getType()==MOT){
+		itr++;
+		if ((*itr)->getLex()=="is"){
+			itr++;
+			if ((*itr)->getLex()=="("){
+				itr++;
+				if ((*itr)->getType()==MOT){
+					itr++ ; 
+					while ((*itr)->getLex() != ")"){
+						if ((*itr)->getLex() != ","){
+							itr++; 
+							if ((*itr)->getType()==MOT){
+							}
+							else {return 0 ;}
+
+						}
+						else {return 0 ;}
+						itr++;
+					}
+					itr++; 
+					if ((*itr)->getLex()==";"){
+						return 1 ;
+					}
+				}
+				else if ((*itr)->getLex()=="'"){
+					itr++ ; 
+					if ((*itr)->getType()==MOT||(*itr)->getType()==NOMBRE){
+						itr++;
+						if ((*itr)->getLex()=="'"){
+							while ((*itr)->getLex() != ")"){
+								if ((*itr)->getLex() != ","){
+									itr++; 
+									if ((*itr)->getLex()=="'"){
+										itr++;
+										if ((*itr)->getType()==MOT||(*itr)->getType()==NOMBRE){
+											itr++;
+											if ((*itr)->getLex()=="'"){
+
+											}
+											else {return 0 ;}
+										}
+										else {return 0 ;}
+									}
+									else {return 0 ;}
+
+								}
+								else {return 0 ;}
+								itr++;
+							}
+							itr++; 
+							if ((*itr)->getLex()==";"){
+								return 1 ;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+
+//***************************************************************VARIABLE***************************************************
+int parseur_variable(list<Lexeme*>::iterator& itr) {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
