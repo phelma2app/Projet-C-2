@@ -83,9 +83,11 @@ string Lexeme::afficheType() const
 		case NOMBRE :
 			return "Nombre";
 		case OPERATOR_AFF :
-			return "Operator Affectation";
+			return "Operand Affectation";
+		case OPERATOR_IF :
+			return "Operand If";
 		case OPERATOR_SOURCE :
-			return "Operator Source";
+			return "Operand Source";
 		case PACKAGE :
 			return "Package";
 		case PACKAGE_ID :
