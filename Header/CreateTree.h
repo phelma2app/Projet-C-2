@@ -41,7 +41,8 @@ void constructTreeOnPackage(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 void constructTreeOnPackageId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& packageid, list<Lexeme*>& l, list<Lexeme*>::iterator &itr);
 
 //------------------------------------Process--------------------------------
-void constructTreeOnCondition(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& condition, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
+tree<Lexeme*>& constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, int type_fin);
+tree<Lexeme*>& constructTreeForOperand(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, int type_fin);
 void constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 void constructTreeOnIfInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& if_inst, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
