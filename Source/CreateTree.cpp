@@ -39,45 +39,171 @@ tree<Lexeme*> createTree(list<Lexeme*>& lex)
 }
 
 //-------------------------------------------------------------ARCHITECTURE---------------------------------------------------------
-void constructTreeOnAffectation(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& affectation, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+void constructTreeOnAffectationSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& affectation, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
-	cout << "Tree Affectation" << endl;
-	itr--;
-	tree<Lexeme*>::pre_order_iterator childaffectation,searchId;
-	string type_ref,type_test;
+	cout << "Tree Affectation Signal" << endl;
+	itr--;	//Pour reperer l'operateur aff
+	list<Lexeme*>::iterator itrAff, itrSource;
+	tree<Lexeme*>::pre_order_iterator childaffectation,searchOpAff,searchOpSource;
+	string typeAff,typeSource;
 	//int taille_ref,taille_test; //Tester la taille des vecteurs
-	bool ref_set=false;
+	bool source_set=false;
+	bool aff_set=false;
 	while((*itr)->getType()!=AFFECTATION_END)
 	{
 		switch((*itr)->getType())
 		{
-            case PORT_ID:
-            case SIGNAL_ID:
-            case VARIABLE_ID:
-                    searchId=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
-                    if(ref_set)
-                    {
-                        type_test=findType(tr,searchId);
-                        if(type_ref!=type_test)
-                        {
-                            cout << "Erreur d'affectation : types non identiques ligne " << (*itr)->getLigne() << endl;
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        type_ref=findType(tr,searchId);
-                        ref_set=true;
-                    }
-					childaffectation=tr.append_child(affectation,*itr);
-					break;
+            		case OPERATOR_AFF:
+		            	searchOpAff=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
+				if(searchOpAff!=tr.end())
+				{
+					//Test préliminaire :est-ce un signal ou un port ?
+					if((*searchOpAff)->getType()!=SIGNAL_ID&&(*searchOpAff)->getType()!=PORT_ID)
+					{
+						cout << "Erreur : operateur non valide ligne " << (*itr)->getLigne() << endl;
+						return;
+					}
+					itrAff=itr;
+					aff_set=true;
+				}
+				break;
+			case OPERATOR_SOURCE:
+		            	searchOpSource=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
+				if(searchOpSource!=tr.end())
+				{
+					itrSource=itr;
+					source_set=true;
+				}
+				break;
 			default:
 				break;
 		}
 		itr++;
 	}
+
+    	if(source_set)
+    	{
+		if(aff_set)
+		{
+			typeAff=findType(tr,searchOpAff);
+			typeSource=findType(tr,searchOpSource);
+			if(typeAff=="")
+			{
+			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpAff)->getLex() 
+				<< " ligne " << (*searchOpAff)->getLigne() << endl;
+			    return;
+			}
+			if(typeSource=="")
+			{
+			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpSource)->getLex() 
+				<< " ligne " << (*searchOpSource)->getLigne() << endl;
+			    return;
+			}
+			if(typeAff!=typeSource)
+			{
+			    cout << "Erreur d'affectation : types non identiques ligne " << (*itr)->getLigne() << endl;
+			    return;
+			}
+
+			//A placer : tests taille vecteurs
+
+			//Tous les tests sont passés
+			childaffectation=tr.append_child(affectation,*itrAff);
+			childaffectation=tr.append_child(affectation,*itrSource);			
+		}
+		else
+		{
+			cout << "Erreur : pas d'operateur affecte ligne " << (*itr)->getLigne() << endl;
+		}
+	}
+	else
+	{
+		cout << "Erreur : pas d'operateur source ligne " << (*itr)->getLigne() << endl;
+	}
 }
 
+void constructTreeOnAffectationVariable(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& affectation, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+{
+	cout << "Tree Affectation Variable" << endl;
+	itr--;	//Pour reperer l'operateur aff
+	list<Lexeme*>::iterator itrAff, itrSource;
+	tree<Lexeme*>::pre_order_iterator childaffectation,searchOpAff,searchOpSource;
+	string typeAff,typeSource;
+	//int taille_ref,taille_test; //Tester la taille des vecteurs
+	bool source_set=false;
+	bool aff_set=false;
+	while((*itr)->getType()!=AFFECTATION_END)
+	{
+		switch((*itr)->getType())
+		{
+            		case OPERATOR_AFF:
+		            	searchOpAff=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
+				if(searchOpAff!=tr.end())
+				{
+					//Test préliminaire :est-ce une varaible ?
+					if((*searchOpAff)->getType()!=VARIABLE_ID)
+					{
+						cout << "Erreur : operateur non valide ligne " << (*itr)->getLigne() << endl;
+						return;
+					}
+					itrAff=itr;
+					aff_set=true;
+				}
+				break;
+			case OPERATOR_SOURCE:
+		            	searchOpSource=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
+				if(searchOpSource!=tr.end())
+				{
+					itrSource=itr;
+					source_set=true;
+				}
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+
+    	if(source_set)
+    	{
+		if(aff_set)
+		{
+			typeAff=findType(tr,searchOpAff);
+			typeSource=findType(tr,searchOpSource);
+			if(typeAff=="")
+			{
+			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpAff)->getLex() 
+				<< " ligne " << (*searchOpAff)->getLigne() << endl;
+			    return;
+			}
+			if(typeSource=="")
+			{
+			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpSource)->getLex() 
+				<< " ligne " << (*searchOpSource)->getLigne() << endl;
+			    return;
+			}
+			if(typeAff!=typeSource)
+			{
+			    cout << "Erreur d'affectation : types non identiques ligne " << (*itr)->getLigne() << endl;
+			    return;
+			}
+
+			//A placer : tests taille vecteurs
+
+			//Tous les tests sont passés
+			childaffectation=tr.append_child(affectation,*itrAff);
+			childaffectation=tr.append_child(affectation,*itrSource);			
+		}
+		else
+		{
+			cout << "Erreur : pas d'operateur affecte ligne " << (*itr)->getLigne() << endl;
+		}
+	}
+	else
+	{
+		cout << "Erreur : pas d'operateur source ligne " << (*itr)->getLigne() << endl;
+	}
+}
 
 void constructTreeOnArchitecture(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architecture, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
@@ -93,7 +219,7 @@ void constructTreeOnArchitecture(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_ite
 				constructTreeOnArchitectureID(tr,childarchi,l,itr);
 				break;
 			default:
-                itr++;
+               	 		itr++;
 				break;
 		}
 	}
@@ -108,14 +234,19 @@ void constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_i
 	{
 		switch((*itr)->getType())
 		{
-        case AFFECTATION:
-            childarchiid=tr.append_child(architectureid,*itr);
-            constructTreeOnAffectation(tr,childarchiid,l,itr);
+        		case AFFECTATION_SIGNAL:
+            			childarchiid=tr.append_child(architectureid,*itr);
+            			constructTreeOnAffectationSignal(tr,childarchiid,l,itr);
+				break;
+        		case AFFECTATION_VARIABLE:
+            			childarchiid=tr.append_child(architectureid,*itr);
+            			constructTreeOnAffectationVariable(tr,childarchiid,l,itr);
+				break;
 		    	case PROCESS:
 		        	childarchiid=tr.append_child(architectureid,*itr);
 		        	constructTreeOnProcess(tr,childarchiid,l,itr);
 		        	break;
-                case PROCESS_ID:
+              		case PROCESS_ID:
 		        	childarchiid=tr.append_child(architectureid,*itr);
 		        	constructTreeOnProcess(tr,childarchiid,l,itr);
 		        	break;
@@ -541,14 +672,14 @@ int findSizeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent
          switch((*searchSize)->getType())
         {
             case TYPE_VECTOR_BEGIN:
-//                debut=stoi((*searchSize)->getLex());
+                debut=stoi((*searchSize)->getLex());
                 break;
             case TYPE_VECTOR_SENSE:
                 if((*searchSize)->getLex()=="downto")
                     downto=true;
                 break;
             case TYPE_VECTOR_END:
-//                find=stoi((*searchSize)->getLex());
+                fin=stoi((*searchSize)->getLex());
                 break;
         }
     }
@@ -568,6 +699,8 @@ string findType(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent)
             case PORT_TYPE:
                 return (*searchType)->getLex();
             case SIGNAL_TYPE:
+                return (*searchType)->getLex();
+	    case TYPE_VECTOR:
                 return (*searchType)->getLex();
             case VARIABLE_TYPE:
                 return (*searchType)->getLex();
