@@ -14,6 +14,8 @@ string Lexeme::afficheType() const
 	{
 		case AFFECTATION_END:
 			return "End Affectation";
+		case AFFECTATION_MAP:
+			return "Affectation Map";
 		case AFFECTATION_SIGNAL :
 			return "Affectation Signal";
 		case AFFECTATION_VARIABLE :
@@ -72,6 +74,10 @@ string Lexeme::afficheType() const
 			return "End Library";
 		case LIBRARY_ID :
 			return "Identifiant Librairie";
+		case MAP :
+			return "Map";
+		case MAP_END :
+			return "End Map";
 		case MOT :
 			return "Mot";
 		case NOMBRE :
