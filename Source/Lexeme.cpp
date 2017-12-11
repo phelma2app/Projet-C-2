@@ -12,8 +12,10 @@ string Lexeme::afficheType() const
 {
 	switch(type_lex)
 	{
-		case AFFECTATION :
-			return "Affectation";
+		case AFFECTATION_SIGNAL :
+			return "Affectation Signal";
+		case AFFECTATION_VARIABLE :
+			return "Affectation Variable";
 		case ARCHITECTURE :
 			return "Architecture";
 		case ARCHITECTURE_BEGIN:
@@ -72,8 +74,10 @@ string Lexeme::afficheType() const
 			return "Mot";
 		case NOMBRE :
 			return "Nombre";
-		case OPERATOR :
-			return "Operator";
+		case OPERATOR_AFF :
+			return "Operator Affectation";
+		case OPERATOR_SOURCE :
+			return "Operator Source";
 		case PACKAGE :
 			return "Package";
 		case PACKAGE_ID :
