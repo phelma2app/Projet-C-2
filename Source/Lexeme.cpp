@@ -12,6 +12,8 @@ string Lexeme::afficheType() const
 {
 	switch(type_lex)
 	{
+		case AFFECTATION_END:
+			return "End Affectation";
 		case AFFECTATION_SIGNAL :
 			return "Affectation Signal";
 		case AFFECTATION_VARIABLE :
