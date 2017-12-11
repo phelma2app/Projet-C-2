@@ -40,8 +40,10 @@ string Lexeme::afficheType() const
 			return "End Component";
 		case COMPONENT_ID:
 			return "Identifiant Component";
-		case CONDITION:
-			return "Condition";
+		case CONDITION_LOGIC:
+			return "Condition Logique";
+		case CONDITION_SCALAR:
+			return "Condition Scalaire";
 		case ELSE :
 			return "Else";
 		case ELSIF :
@@ -68,6 +70,10 @@ string Lexeme::afficheType() const
 			return "If";
 		case IF_END :
 			return "End If";
+		case IF_PARENTHESE_FER :
+			return "Parenthèse Fermante dans If";
+		case IF_PARENTHESE_OUV :
+			return "Parenthèse Ouvrante dans If";
 		case LIBRARY :
 			return "Library";
 		case LIBRARY_END:
