@@ -38,6 +38,11 @@ int parseur_root (list<Lexeme*>& list_lex){
 				return 0 ;
 			}
 		}
+		else if ((*itr)->getLex()=="use"&&(*itr)->getType()!=COMMENTAIRE) {
+			if (parseur_use(itr)==0){
+				return 0 ;
+			}
+		}
 		else {
 			cout << "Ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex() << ") : le mot n'est ni une library, ni une architecture, ni une entity" << endl ;
 			itr++ ; 
@@ -195,14 +200,6 @@ int parseur_library (list<Lexeme*>::iterator& itr){
 		if ((*itr)->getLex() == ";"){
 			(*itr)->setType(LIBRARY_END) ;
 			itr++ ; 
-			while ((*itr)->getLex() == "use"){
-				if (parseur_use(itr, library)==0){
-					cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur use" << endl ;
-					return 0 ; 
-				} //if (parseur_use(*itr)==0){
-			cout << (**itr) << endl; 
-			itr++;
-			} //while
 			return 1 ;
 		} //if ((*itr)->getLex() == ";"){
 	} //if ((*itr)->getType() == MOT) {
@@ -213,12 +210,10 @@ int parseur_library (list<Lexeme*>::iterator& itr){
 
 
 //****************************************************USE*******************************************************************************
-
-
-int parseur_use (list<Lexeme*>::iterator& itr, string library){
+int parseur_use (list<Lexeme*>::iterator& itr){
 	(*itr)->setType(USE) ;
 	itr++ ; 
-	if ((*itr)->getLex() == library) {
+	if ((*itr)->getType() == MOT) {
 		(*itr)->setType(LIBRARY_ID);    
 		itr ++;
 		if ((*itr)->getLex() == ".") {
@@ -324,7 +319,7 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 						}						
 						else if ((*itr)->getType() == MOT) {
 							itr++;
-							if ((*itr)->getLex() == "<="){
+							if ((*itr)->getLex() == "<="){				// affectation de signaux
 								itr++ ; 
 								if ((*itr)->getType() != MOT) {
 									itr++;
@@ -338,7 +333,7 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 									}
 								}
 							}
-							else if ((*itr)->getLex() == ":"){
+							else if ((*itr)->getLex() == ":"){			//process
 								itr--;   // pour recuperer le label du process
 								(*itr)->setType(PROCESS_ID) ;
 								itr++;
@@ -725,12 +720,12 @@ int verif_cond_if(list<Lexeme*>::iterator& itr) {
 		itr++;
 		if ((*itr)->getLex()== "="|(*itr)->getLex()== "<="|(*itr)->getLex()== ">="|(*itr)->getLex()== "<"|(*itr)->getLex()== ">"){
 			itr++;
-			if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
+			if ((*itr)->getType() == MOT||(*itr)->getType() == NOMBRE) {
 				return 1;
 			}
 			else if ((*itr)->getLex()== "'"){
 				itr++;
-				if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
+				if ((*itr)->getType() == MOT||(*itr)->getType() == NOMBRE) {
 					itr++;
 					if ((*itr)->getLex()== "'"){
 						return 1;
@@ -902,6 +897,46 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 						}
 					}
 				}
+				else if ((*itr)->getType()==NOMBRE){
+					int i = stoi((*itr)->getLex()); 
+					itr++;
+					if ((*itr)->getLex()== "downto" ||(*itr)->getLex()== "to") { 
+						string sens = (*itr)->getLex() ;
+						itr++;
+						if ((*itr)->getType() == NOMBRE) { 
+							int j = stoi((*itr)->getLex()); 
+							if (i<j && sens =="to"){
+								itr++ ; 
+								if ((*itr)->getLex()== ")") {
+									if ((*itr)->getLex()== "of") {
+										if ((*itr)->getType()== MOT) {
+											if ((*itr)->getLex()== ";") {
+												return 1 ; 
+											}
+										}
+									}
+								}
+								return 0 ; 
+							}
+							else if (i>j && sens =="downto"){
+								itr++ ; 
+								if ((*itr)->getLex()== ")") {
+									if ((*itr)->getLex()== "of") {
+										if ((*itr)->getType()== MOT) {
+											if ((*itr)->getLex()== ";") {
+												return 1 ; 
+											}
+										}
+									}
+								}
+								return 0 ; 
+							}
+							else {
+							cout <<"ERREUR ligne " << (*itr)->getLigne()<< " erreur de sens" << endl ;
+							}
+						}	
+					}
+				}
 			}
 		}
 	}
@@ -911,15 +946,32 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 
 //***************************************************************VARIABLE***************************************************
 int parseur_variable(list<Lexeme*>::iterator& itr) {
-
+	(*itr)->setType(VARIABLE) ;
+	itr++ ;
+	if ((*itr)->getType()==MOT) {
+		(*itr)->setType(VARIABLE_ID) ;
+		itr++;	
+		while ((*itr)->getLex()!=":"){
+			if ((*itr)->getLex()==","){
+				itr++;
+				if ((*itr)->getType()==MOT) {
+					(*itr)->setType(VARIABLE_ID) ;	
+				}
+				else {return 0;}		
+			}
+			else {return 0;}
+			itr++;
+		}
+	}
 }
 
 
 
 
+//***************************************************************PORT_MAP***************************************************
+int parseur_map(list<Lexeme*>::iterator& itr) {
 
-
-
+}
 
 
 
