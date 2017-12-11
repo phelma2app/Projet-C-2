@@ -13,7 +13,7 @@ int parseur_type_port (list<Lexeme*>::iterator& itr, bool *fin_port);
 
 int parseur_library (list<Lexeme*>::iterator& itr) ;
 
-int parseur_use (list<Lexeme*>::iterator& itr, string library);
+int parseur_use (list<Lexeme*>::iterator& itr);
 
 int parseur_package (list<Lexeme*>::iterator& itr);
 
@@ -44,3 +44,10 @@ int verif_instr(list<Lexeme*>::iterator& itr) ;
 int parseur_else (list<Lexeme*>::iterator& itr);
 
 int parseur_elsif (list<Lexeme*>::iterator& itr);
+
+int parseur_declar_type (list<Lexeme*>::iterator& itr);
+
+int parseur_variable(list<Lexeme*>::iterator& itr);
+
+int parseur_map(list<Lexeme*>::iterator& itr) ; 
+
