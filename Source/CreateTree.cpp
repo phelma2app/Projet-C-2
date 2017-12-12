@@ -583,83 +583,102 @@ void constructTreeOnPackageId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterat
 
 //-------------------------------------------------------------PROCESS---------------------------------------------------------
 
-tree<Lexeme*>& constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, int type_fin)
+bool constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, int type_fin, tree<Lexeme*>& buf_conditions)
 {
 	cout << "Tree Condition" << endl;
 
-	tree<Lexeme*> buf_conditions;
-	tree<Lexeme*>::pre_order_iterator top_buf=buf_conditions.begin(),bufroot;
-	Lexeme* bufLexeme = new Lexeme("root_condition", (*itr)->getLigne(), CONDITION_LOGIC);	//Temp
-	bufroot=buf_conditions.insert(top_buf,bufLexeme);
+	tree<Lexeme*> tree_cond_logic,tree_parenthesis;
+	tree<Lexeme*>::pre_order_iterator top_buf=buf_conditions.begin(),top_cond_tree,top_parenth_tree,bufroot;
+	Lexeme* bufLexeme = new Lexeme("root_condition", (*itr)->getLigne(), CONDITION_LOGIC);	//Tampon, amené à être remplacé par d'autres arbres
+	//bufroot=buf_conditions.insert(top_buf,bufLexeme);
 
-	list<Lexeme*>::iterator begin_condition=itr;
+	bool set_logic=false, set_parenthesis=false;
 
-	tree<Lexeme*>::pre_order_iterator childcondition;
+	list<Lexeme*>::iterator itr_2=itr;
+
+	tree<Lexeme*>::pre_order_iterator itercondition,childcondition;
+
+	//1ère boucle pour les conditions et les parenthèses
 	while((*itr)->getType()!=type_fin)
 	{
 		switch((*itr)->getType())
 		{
-			case CONDITION_LOGIC:
-				childcondition=buf_conditions.append_child(bufroot,*itr);
+
+			case CONDITION_LOGIC:	
+
+				bufroot=buf_conditions.insert(top_buf,*itr);
 				itr++;					//On passe au Lexeme suivant avant de construire un nouvel arbre
-				buf_conditions.insert_subtree(childcondition,constructTreeForCondLogic(l,itr,type_fin));	//Temp ?
-					//Traîte uniquement les conditions logiques après celle détectée : elles seront placées en enfant
+
+				if(constructTreeForCondLogic(l,itr,type_fin,tree_cond_logic))
+				{
+					itercondition=buf_conditions.append_child(bufroot,bufLexeme);
+					top_cond_tree=tree_cond_logic.begin();
+					top_cond_tree=buf_conditions.move_ontop(itercondition,top_cond_tree);
+					if(set_parenthesis==true)
+					{
+						top_parenth_tree=tree_parenthesis.begin();
+						top_parenth_tree=buf_conditions.move_ontop(itercondition,top_cond_tree);
+					}
+					set_logic=true;	
+				}
 				break;
-/*
-			case CONDITION_SCALAR:
-				childcondition=buf_conditions.append_child(bufroot,*itr);
-				itr++;					//On passe au Lexeme suivant avant de construire un nouvel arbre
-			//	insert_subtree(childcondition,constructTreeForCondScalar(l,itr,type_fin));	//Temp ?
-				break;
-//			case IF_PARENTHESE_OUV:						//Je ne traite pas les parenthèses pour l'instant
-//				constructTreeForCondition(l,itr,IF_PARENTHESE_FER);	
-//				break;
-*/
+			case IF_PARENTHESE_OUV:	
+				if(constructTreeForCondLogic(l,itr,IF_PARENTHESE_FER,tree_parenthesis))
+				{
+					set_parenthesis=true;
+
+				}	
+
 			default:
                 		itr++;
 				break;
 		}
 	}
-
-	printTree(buf_conditions);
-	return buf_conditions;
-}
-
-
-//A compléter
-tree<Lexeme*>& constructTreeForOperand(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, int type_fin)
-{
-	cout << "Tree Operand" << endl;
-
-	tree<Lexeme*> buf_operand;
-	tree<Lexeme*>::pre_order_iterator top_buf=buf_operand.begin(),bufroot;
-	Lexeme* bufLexeme = new Lexeme("root_operand", (*itr)->getLigne(), OPERATOR_IF);	//Temp
-	bufroot=buf_operand.insert(top_buf,bufLexeme);
-
-	list<Lexeme*>::iterator&::begin_operand=itr;
-
-	tree<Lexeme*>::pre_order_iterator childoperand;
-	while((*itr)->getType()!=type_fin)
+	
+	cout << "2e boucle " << endl;
+	
+	//2e boucle pour les opérateurs
+	while((*itr_2)->getType()!=type_fin)
 	{
-		switch((*itr)->getType())
+		switch((*itr_2)->getType())
 		{
-
+			case OPERATOR_IF :
+				//si déjà stocké : on passe
+				if(!isLexemeInTree(buf_conditions.begin(),buf_conditions.end(),*itr))
+				{
+					cout << "Operator if pas trouve" << endl;
+					if(set_logic)	//Condition déjà stocké : on stocke directement l'itérateur
+					{
+						childcondition=buf_conditions.append_child(itercondition,bufLexeme);
+					}
+					else		//Sinon : erreur
+					{
+						cout << "Operande trouve sans condition associe ligne : " << (*itr_2)->getLigne() << endl;
+					}
+				}
+				else			//Pour test
+				{
+					cout << "Operator if deja trouve" << endl;
+				}
+				itr_2++;
+				break;
+			default:
+                		itr_2++;
+				break;
 		}
 	}
 
-	printTree(buf_conditions);
-	return buf_conditions;
+	//printTree(buf_conditions);	//Pour test
+	if(buf_conditions.empty())
+	{
+		return false;
+	}
+	return true;
 }
 
 void constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
 {
 	cout << "Tree If" << endl;
-
-	tree<Lexeme*> buf_conditions;
-	tree<Lexeme*>::pre_order_iterator top_buf=buf_conditions.begin();
-	tree<Lexeme*>::pre_order_iterator bufroot,bufchild;
-	Lexeme* bufLexeme = new Lexeme("root_conditions_if", (*itr)->getLigne(), CONDITION);
-	bufroot=buf_conditions.insert(top_buf,bufLexeme);
 	
 	list<Lexeme*>::iterator mem_if=itr;
 
@@ -686,7 +705,14 @@ void constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if
 		}
 	}
 
-	childif=tr.insert_subtree(childif,constructTreeForCondLogic(l,mem_if,IF_END));
+	//Création de l'arbre pour les conditions
+	//En cours de construction
+	tree<Lexeme*> buf_conditions;
+	if(constructTreeForCondLogic(l,mem_if,THEN,buf_conditions))			//IF_END : à remplacer par then
+	{
+		tree<Lexeme*>::pre_order_iterator top_buf=buf_conditions.begin();
+		childif=tr.insert_subtree(childif,top_buf);	
+	}
 }
 
 void constructTreeOnIfInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& if_inst, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
@@ -867,11 +893,26 @@ string findType(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent)
     return "";
 }
 
+bool isLexemeInTree(tree<Lexeme*>::pre_order_iterator begin_search, tree<Lexeme*>::pre_order_iterator end_search, Lexeme* l_searched)
+{
+    tree<Lexeme*>::pre_order_iterator result=begin_search;
+    while(result!=end_search)
+    {
+        if(*result==l_searched)
+        {
+            return true;
+        }
+        result++;
+    }
+    return false;
+}
+
 //-------------------------------------------------------------PRINT---------------------------------------------------------
 
-void printTree(tree<Lexeme*> tr)
+void printTree(const tree<Lexeme*>& tr)
 {
 	tree<Lexeme*>::pre_order_iterator itr=tr.begin();
+
 	if(itr!=tr.end())
 		++itr;
 
@@ -886,7 +927,7 @@ void printTree(tree<Lexeme*> tr)
 	}
 }
 
-int saveTree(tree<Lexeme*> tr, string libraryname)
+int saveTree(const tree<Lexeme*>& tr, string libraryname)
 {
 	ofstream fichier(libraryname, ios::out | ios::trunc);
 	if(!fichier)
@@ -895,6 +936,7 @@ int saveTree(tree<Lexeme*> tr, string libraryname)
 		return 0;
 	}
 	tree<Lexeme*>::pre_order_iterator itr=tr.begin();
+
 	if(itr!=tr.end())
 		++itr;
 

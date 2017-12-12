@@ -41,8 +41,7 @@ void constructTreeOnPackage(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 void constructTreeOnPackageId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& packageid, list<Lexeme*>& l, list<Lexeme*>::iterator &itr);
 
 //------------------------------------Process--------------------------------
-tree<Lexeme*>& constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, int type_fin);
-tree<Lexeme*>& constructTreeForOperand(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, int type_fin);
+bool constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, int type_fin, tree<Lexeme*>& buf_conditions);
 void constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 void constructTreeOnIfInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& if_inst, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
@@ -55,10 +54,11 @@ void constructTreeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 tree<Lexeme*>::pre_order_iterator findLexemeInTree(tree<Lexeme*>::pre_order_iterator begin_search, tree<Lexeme*>::pre_order_iterator end_search, string lexeme);
 int findSizeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent);
 string findType(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent);
+bool isLexemeInTree(tree<Lexeme*>::pre_order_iterator begin_search, tree<Lexeme*>::pre_order_iterator end_search, Lexeme* l_searched);
 
 //------------------------------------Print--------------------------------
-void printTree(tree<Lexeme*> tr);
-int saveTree(tree<Lexeme*> tr, string libraryname);
+void printTree(const tree<Lexeme*>& tr);
+int saveTree(const tree<Lexeme*>& tr, string libraryname);
 
 
 #endif //CREATETREE_h_
