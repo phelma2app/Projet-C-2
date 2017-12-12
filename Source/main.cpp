@@ -30,19 +30,26 @@ int main()
 			commande=commande_vhdl(libraryname,sourcename);
 		}
 
+        int nligne=0;
 		switch(commande)
 		{
+            case COMPARE :
+                if(fichiers_identiques(sourcename,libraryname, nligne))
+                    cout << sourcename << " et " << libraryname << " sont identiques." << endl;
+                else
+                    cout << "!!!" << sourcename << " et " << libraryname << " sont differents ligne " << nligne << "!!!" << endl;
+                break;
 			case SOURCE :
 				execute_script(sourcename);
 				cout << endl << "--Fin script--" << endl << endl;
 				break;
-			case VHDLCOMP : 
+			case VHDLCOMP :
 				lex.clear();
 				vhdlcomp(libraryname,sourcename,lex);
 				cout << endl << "--Parseur en cours--" << endl;
 				erreur=parseur_root(lex);
 				print_lex(lex);
-				
+
 				if(erreur==1)
 				{
 					cout << endl << "--Creation de l'arbre--" << endl;
@@ -63,6 +70,6 @@ int main()
 			default: cout << endl << "--Sortie de programme--" << endl << endl;
 				close=true;
 				break;
-		}		
+		}
 	}
 }
