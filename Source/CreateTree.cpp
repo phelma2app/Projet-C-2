@@ -256,6 +256,10 @@ void constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_i
 			case SIGNAL:
 				constructTreeOnSignal(tr,architectureid,l,itr);
 				break;
+			case VARIABLE_ID:
+		        	childarchiid=tr.append_child(architectureid,*itr);
+		        	constructTreeOnVariableID(tr,childarchiid,l,itr);
+				break;
 			default:
 				break;
 		}
@@ -298,6 +302,29 @@ void constructTreeOnSignalID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterato
 			case TYPE_VECTOR:
                 		childsignalid=tr.append_child(signalid,*itr);
 				constructTreeOnVector(tr,childsignalid,l,itr);
+				break;
+			default:
+				break;
+		}
+		itr++;
+	}
+}
+
+void constructTreeOnVariableID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& variableid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+{
+	cout << "Tree Variable ID" << endl;
+
+	tree<Lexeme*>::pre_order_iterator childvariableid;
+	while((*itr)->getType()!=VARIABLE_END)
+	{
+		switch((*itr)->getType())
+		{
+			case VARIABLE_TYPE:
+                		childvariableid=tr.append_child(variableid,*itr);
+				break;
+			case TYPE_VECTOR:
+                		childvariableid=tr.append_child(variableid,*itr);
+				constructTreeOnVector(tr,childvariableid,l,itr);
 				break;
 			default:
 				break;
@@ -758,13 +785,16 @@ void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
                 		childprocess=tr.append_child(process,*itr);
 				constructTreeOnProcessInst(tr,childprocess,l,itr);
                 		break;
-				break;
             		case PROCESS_SENSIBILITY:
                 		childprocess=tr.append_child(process,*itr);
-                        itr++;
+                        	itr++;
+				break;
+			case VARIABLE_ID:
+		        	childprocess=tr.append_child(process,*itr);
+		        	constructTreeOnVariableID(tr,childprocess,l,itr);
 				break;
 			default:
-                itr++;
+                		itr++;
 				break;
 		}
 	}
