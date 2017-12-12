@@ -102,7 +102,6 @@ int parseur_port (list<Lexeme*>::iterator& itr) {
 	if ((*itr)->getLex()== "("){
 		itr++;
 		while (fin_port == false) {
-			cout << "on est dans le while du port " << (**itr) << endl ;
 			if ((*itr)->getType()==MOT){
 				(*itr)->setType(PORT_ID) ; 
 				itr++;
@@ -145,8 +144,7 @@ int parseur_port (list<Lexeme*>::iterator& itr) {
 			if (fin_port == false){
 				itr++ ;
 			}
-		} // while
-	cout << "fin du port " << (**itr)<< endl ; 
+		} // while 
 	return 1 ; 
 	} // if ((*itr)->getLex()== "(")
 
@@ -272,6 +270,8 @@ int parseur_package (list<Lexeme*>::iterator& itr){
 			}
 		}
 	}
+	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): dans le package " << endl ;
+	return 0; 
 }
 //**************************************************ARCHITECTURE************************************************************************
 
@@ -302,6 +302,12 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 							return 0 ; 		// indique que l'on a une erreur
 							}
 						}
+						else if ((*itr)->getLex() == "variable"){
+							if (parseur_variable(itr)== 0) {
+							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans la variable " << endl ;
+							return 0 ; 		// indique que l'on a une erreur
+							}
+						}
 						else {
 							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): on s'attend a avoir 'signal ou 'component' sachant qu'on a pas de begin " << endl ;
 							return 0 ;
@@ -320,6 +326,10 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 						else if ((*itr)->getType() == MOT) {
 							itr++;
 							if ((*itr)->getLex() == "<="){				// affectation de signaux
+								itr--;
+								(*itr)->setType(OPERATOR_AFF);
+								itr++;
+								(*itr)->setType(AFFECTATION_SIGNAL);
 								itr++ ; 
 								if ((*itr)->getType() != MOT) {
 									itr++;
@@ -333,18 +343,45 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 									}
 								}
 							}
-							else if ((*itr)->getLex() == ":"){			//process
-								itr--;   // pour recuperer le label du process
-								(*itr)->setType(PROCESS_ID) ;
+							else if ((*itr)->getLex() == ":="){				// affectation de variables
+								itr--;
+								(*itr)->setType(OPERATOR_AFF);
 								itr++;
-								itr++; 
-								if ((*itr)->getLex() == "process"){
+								(*itr)->setType(AFFECTATION_VARIABLE);
+								itr++ ; 
+								if ((*itr)->getType() != MOT) {
+									itr++;
+									while ((*itr)->getLex() != ";"){
+										if ((*itr)->getLex()== "and"|(*itr)->getLex()== "or"|(*itr)->getLex()== "xor"|(*itr)->getLex()== "not"){
+											itr++;
+											if ((*itr)->getType() != MOT) {
+												itr++;
+											}
+										}
+									}
+								}
+							}
+							else if ((*itr)->getLex() == ":"){
+								itr++;
+								if ((*itr)->getLex()=="process"){          //process
+									itr--;
+									itr--;   // pour recuperer le label du process
+									(*itr)->setType(PROCESS_ID) ;
+									itr++;
+									itr++; 
 									if (parseur_process(itr)==0){
 										cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le process" << endl ;
 										return 0;
 									}
 								}
-
+								else if ((*itr)->getType()==MOT){ 
+									itr++;
+									if ((*itr)->getLex()=="port"){
+										if (parseur_map(itr)==0){
+											return 0;
+										}
+									}
+								}
 							}
 						}
 						itr++;	
@@ -400,24 +437,19 @@ int parseur_component (list<Lexeme*>::iterator& itr){
 		itr++;
 		while ((*itr)->getLex() != "end"){
 			if ((*itr)->getLex() == "port"){
-				if (parseur_port(itr)== 1) {
-					cout << "parseur port est à 1 " << (**itr) << endl ;
-					//cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme avec le port " << endl ;
-					//return 0 ; 							
+				if (parseur_port(itr)== 0) {
+					cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme avec le port " << endl ;
+					return 0 ; 							
 				}
-				cout << "on est a la fin du if port dans le component " << (**itr) << endl ; 
 			}				
 			else if ((*itr)->getLex() == "generic"){
 				if (parseur_generic(itr)== 0) {
 					cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le generic " << endl ;
 					return 0 ; 
-				}
-				cout << "on est a la fin du if generic dans le component " << endl ; 	
+				}	
 			}
 		itr++;
-		cout << "on est a la fin du while generic dans le component " << (**itr) <<endl ;
 		}
-		cout << (**itr) << endl ; 
 		(*itr)->setType(COMPONENT_END) ;
 		itr++;
 		if ((*itr)->getLex() =="component"){
@@ -444,6 +476,7 @@ int parseur_generic (list<Lexeme*>::iterator& itr) {
 			if ((*itr)->getLex() == ":") {
 				itr++;
 				if ((*itr)->getLex()=="integer") { 
+					(*itr)->setType(GENERIC_TYPE) ;
 					itr++; 
 					if ((*itr)->getLex() == ")"){
 						(*itr)->setType(GENERIC_ID_END) ;
@@ -466,7 +499,13 @@ int parseur_process (list<Lexeme*>::iterator& itr){
 	(*itr)->setType(PROCESS) ; 
 	itr++ ;
 	while ((*itr)->getLex() != "begin") {
-		if ((*itr)->getType() == MOT) {
+		if ((*itr)->getLex() == "variable"){
+			if (parseur_variable(itr)== 0) {
+				cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans la variable " << endl ;
+				return 0 ; 		// indique que l'on a une erreur
+			}
+		}
+		else if ((*itr)->getType() == MOT) {
 			if (verif_instr(itr)==0){
 			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans l'instruction" << endl ;
 			return 0; 
@@ -637,58 +676,202 @@ int parseur_type (list<Lexeme*>::iterator& itr) {
 //*****************************************************************IF*******************************************************************
 int parseur_if (list<Lexeme*>::iterator& itr) {
 	(*itr)->setType(IF) ;
-	if (if_elsif(itr)==0){
-	return 0;
+	int c = 0 ;
+	if (expr_if_elsif(itr, c, "then")==0){
+		return 0;
 	}	
-	else {return 1;}
+	if ((*itr)->getLex()=="then") {
+		if (parseur_then(itr)==0) {
+			return 0 ;	
+		}
+	}
+	if ((*itr)->getLex()=="end") {
+		(*itr)->setType(IF_END) ;
+		itr++;
+		if ((*itr)->getLex()=="if") {
+			itr++;
+			if ((*itr)->getLex()==";") {
+				return 1;
+			}
+		}
+	}
+	return 0 ;
 }
 
 
 //***********FOnctionIF/ELSIF*******
-int if_elsif (list<Lexeme*>::iterator& itr) {
+int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 	itr++;
-	if ((*itr)->getLex() == "(") {
+	if ((*itr)->getType()==MOT) {
+		(*itr)->setType(OPERATOR_IF);
 		itr++;
-		if (verif_cond_if(itr)== 0) {
-			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dasn les conditions du if " << endl ;
-			return 0 ; 		
-		}
-		itr++;
-		if ((*itr)->getLex() == ")") {
-		}
-	}
-	else if (verif_cond_if(itr)== 0) {
-			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dasn les conditions du if " << endl ;
-			return 0 ; 		
-	}
-	itr++; 
-	while ((*itr)->getLex()== "and"|(*itr)->getLex()== "or"|(*itr)->getLex()== "xor"|(*itr)->getLex()== "not"){
-		itr++;
-		if ((*itr)->getLex() == "(") {
-			itr++;
-			if (verif_cond_if(itr)== 0) {
-				cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dasn les conditions du if " << endl ;
-				return 0 ; 		
+		if (is_scalaire((*itr)->getLex())== true ){
+			(*itr)->setType(CONDITION_SCALAR);
+			if (expr_if_elsif(itr, c, end_cond)==0){
+				return 0;
 			}
-			itr++;
-			if ((*itr)->getLex() == ")") {
+			else {return 1; }	
+		}
+		else if (is_logic((*itr)->getLex())== true ){
+			(*itr)->setType(CONDITION_LOGIC);
+			if (expr_if_elsif(itr, c, end_cond)==0){
+				return 0;
+			}
+			else {return 1; }	
+		}
+		else if ((*itr)->getLex()==end_cond){
+			if (c=0) {
+				return 1 ;
+			}
+			else {
+				return 0 ; 
 			}
 		}
-		else if (verif_cond_if(itr)== 0) {
-				cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dasn les conditions du if " << endl ;
-				return 0 ; 		
+		else if ((*itr)->getLex()==")"){
+			(*itr)->setType(IF_PARENTHESE_FER);
+			if (c==0) {
+				return 0; 
+			}
+			else {
+				c = c-1 ; 
+				itr++;
+				if (is_logic((*itr)->getLex())==true ){
+					if (expr_if_elsif(itr, c, end_cond)==0){
+						return 0;
+					}
+					else {return 1 ; } 
+				}
+				else if ((*itr)->getLex() == end_cond) {
+					return 1 ;
+				}				
+			}
 		}
-	itr++;
+		else {
+			cout << "On a pas un des tests attendus, a savoir condition scalaire ou logique" << endl ;
+		}
 	}
-	while ((*itr)->getLex() != "end"){
+	else if ((*itr)->getLex()=="("){
+		(*itr)->setType(IF_PARENTHESE_OUV);
+		c++ ; 
+		if (expr_if_elsif(itr, c, end_cond)==0){
+			return 0;
+		}	
+		else {return 1;}
+	}
+	else if ((*itr)->getLex()=="'"){
+		itr++ ; 
+		if ((*itr)->getType()==NOMBRE){
+			itr++; 
+			if ((*itr)->getLex()=="'"){
+				itr++;
+				if (is_scalaire((*itr)->getLex())==true) {
+					if (expr_if_elsif(itr, c, end_cond)==0){
+						return 0;
+					}	
+					else {return 1;}
+				}
+				else if (is_logic((*itr)->getLex())==true ) {
+					if (expr_if_elsif(itr, c, end_cond)==0){
+						return 0;
+					}	
+					else {return 1;}
+				}
+				else if ((*itr)->getLex()==end_cond){
+					if (c=0) {
+						return 1 ;
+					}
+					else {
+						cout << "Toutes les parenthèses ouvrantes ne sont pas fermees" << endl ;
+						return 0 ; 
+					}
+				}
+				else if ((*itr)->getLex()==")"){
+					(*itr)->setType(IF_PARENTHESE_FER);
+					if (c==0) {
+						cout << "Probleme de parentheses, on a une parenthese fermante alors qu'aucune parenthese n'est ouverte" <<endl ; 
+						return 0; 
+					}
+					else {
+						c = c-1 ; 
+						itr++;
+						if (is_logic((*itr)->getLex())==true ){
+							if (expr_if_elsif(itr, c, end_cond)==0){
+								return 0;
+							}
+							else {return 1 ; } 
+						}
+						else if ((*itr)->getLex() == end_cond) {
+							return 1 ;
+						}				
+					}
+				}
+			}
+		}
+	}
+	else if ((*itr)->getLex()=="\""){
+		itr++ ; 
+		if ((*itr)->getType()==NOMBRE){
+			itr++; 
+			if ((*itr)->getLex()=="\""){
+				itr++;
+				if (is_scalaire((*itr)->getLex())== true) {
+					if (expr_if_elsif(itr, c, end_cond)==0){
+						return 0;
+					}	
+					else {return 1;}
+				}
+				else if (is_logic((*itr)->getLex())==true ) {
+					if (expr_if_elsif(itr, c, end_cond)==0){
+						return 0;
+					}	
+					else {return 1;}
+				}
+				else if ((*itr)->getLex()==end_cond){
+					if (c=0) {
+						return 1 ;
+					}
+					else {
+						cout << "Toutes les parenthèses ouvrantes ne sont pas fermees" << endl ;
+						return 0 ; 
+					}
+				}
+				else if ((*itr)->getLex()==")"){
+					(*itr)->setType(IF_PARENTHESE_FER);
+					if (c==0) {
+						cout << "Probleme de parentheses, on a une parenthese fermante alors qu'aucune parenthese n'est ouverte" <<endl ; 
+						return 0; 
+					}
+					else {
+						c = c-1 ; 
+						itr++;
+						if (is_logic((*itr)->getLex())==true ){
+							if (expr_if_elsif(itr, c, end_cond)==0){
+								return 0;
+							}
+							else {return 1 ; } 
+						}
+						else if ((*itr)->getLex() == end_cond) {
+							return 1 ;
+						}				
+					}
+				}
+			}
+		}
+	}
+}
 
-		if ((*itr)->getLex() == "then") {
-			if(parseur_then(itr)== 0) {
-				cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le then " << endl ;
+//*****************************************************************THEN*****************************************************************
+int parseur_then (list<Lexeme*>::iterator& itr) {
+	(*itr)->setType(THEN) ;
+	itr++;
+	while ((*itr)->getLex()!="end") {
+		if ((*itr)->getLex()== "if") {
+			if (parseur_if(itr)== 0) {
+				cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le if " << endl ;
 				return 0 ; 		
 			}
 		}
-		else if  ((*itr)->getLex()== "elsif") {
+		else if ((*itr)->getLex()== "elsif") {
 			if (parseur_if(itr)== 0) {
 				cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le if " << endl ;
 				return 0 ; 		
@@ -700,90 +883,36 @@ int if_elsif (list<Lexeme*>::iterator& itr) {
 				return 0 ; 		
 			}
 		}
-	itr++;
-	}
-	(*itr)->setType(IF_END) ;
-	itr++; 
-	if ((*itr)->getLex()== "if"){
-		itr++; 
-		if ((*itr)->getLex()== ";"){
-			return 1;
+		else if ((*itr)->getType() == MOT){ 
+			if (verif_instr(itr)==0) {
+			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans les instr " << endl ;
+			return 0 ; 
+			}
 		}
-	}
-	return 0 ; 	
-}
-
-
-//******************Cond_if***********
-int verif_cond_if(list<Lexeme*>::iterator& itr) {
-	if ((*itr)->getType() == MOT) {
 		itr++;
-		if ((*itr)->getLex()== "="|(*itr)->getLex()== "<="|(*itr)->getLex()== ">="|(*itr)->getLex()== "<"|(*itr)->getLex()== ">"){
-			itr++;
-			if ((*itr)->getType() == MOT||(*itr)->getType() == NOMBRE) {
-				return 1;
-			}
-			else if ((*itr)->getLex()== "'"){
-				itr++;
-				if ((*itr)->getType() == MOT||(*itr)->getType() == NOMBRE) {
-					itr++;
-					if ((*itr)->getLex()== "'"){
-						return 1;
-					}
-				}
-			}
-		}
 	}
-	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dasn les conditions du if " << endl ;
-	return 0 ; 
-}
-//*****************************************************************THEN*****************************************************************
-int parseur_then (list<Lexeme*>::iterator& itr) {
-	(*itr)->setType(THEN) ;
-	itr++;
-	if ((*itr)->getLex()== "if") {
-		if (parseur_if(itr)== 0) {
-			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le if " << endl ;
-			return 0 ; 		
-		}
-		else {return 1;}
-	}
-	else if ((*itr)->getLex()== "elsif") {
-		if (parseur_if(itr)== 0) {
-			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le if " << endl ;
-			return 0 ; 		
-		}
-		else {return 1;}
-	}
-	else if ((*itr)->getLex()== "else") {
-		if (parseur_else(itr)== 0) {
-			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le else " << endl ;
-			return 0 ; 		
-		}
-		else {return 1;}
-
-	}
-        else if ((*itr)->getType() == MOT){
-		if (verif_instr(itr)==0) {
-		cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans les instr " << endl ;
-		return 0 ; 
-		}
-		else {return 1;}
-	}
-	
+	return 1 ;
 }
 
 
 //******************instr***********
 int verif_instr(list<Lexeme*>::iterator& itr) {
 	if ((*itr)->getType() == MOT) {
+		(*itr)->setType(OPERATOR_AFF);
 		itr++;		
 		if ((*itr)->getLex()== ":="|(*itr)->getLex()== "<="){
+			if ((*itr)->getLex()== ":="){
+				(*itr)->setType(AFFECTATION_VARIABLE);
+			}
+			else {
+				(*itr)->setType(AFFECTATION_SIGNAL);
+			}
 			itr++;
 			if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
 				itr++;
 				if((*itr)->getLex()== ";"){
-				return 1;
+					(*itr)->setType(AFFECTATION_END);
+					return 1;
 				}
 			}
 			else if ((*itr)->getLex()== "'"){
@@ -793,6 +922,7 @@ int verif_instr(list<Lexeme*>::iterator& itr) {
 					if ((*itr)->getLex()== "'"){
 						itr++;
 						if ((*itr)->getLex()== ";"){
+							(*itr)->setType(AFFECTATION_END);
 							return 1;
 						}
 					}
@@ -805,6 +935,7 @@ int verif_instr(list<Lexeme*>::iterator& itr) {
 					if ((*itr)->getLex()== "\""){
 						itr++;
 						if ((*itr)->getLex()== ";"){
+							(*itr)->setType(AFFECTATION_END);
 							return 1;
 						}
 					}
@@ -831,7 +962,8 @@ int parseur_else (list<Lexeme*>::iterator& itr) {
 //*****************************************************************ELSIF****************************************************************
 int parseur_elsif (list<Lexeme*>::iterator& itr) {
 	(*itr)->setType(ELSIF) ;
-	if (if_elsif(itr)==0){
+	int c = 0 ;
+	if (expr_if_elsif(itr, c, "then")==0){
 	return 0;
 	}	
 	else {return 1;}
@@ -962,6 +1094,19 @@ int parseur_variable(list<Lexeme*>::iterator& itr) {
 			else {return 0;}
 			itr++;
 		}
+		itr++;
+		if (is_type((*itr)->getLex())==true) {			// is_type est unefonction definie dans utilities qui permet de verifier qu'on est bien un type attendue
+			(*itr)->setType(VARIABLE_TYPE) ; 
+			if (parseur_type(itr)== 0) {			// parseur_type traite les type afin de verifier qu'on est les info attendue
+			cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme sur le type " << endl ;
+			return 0 ; 		
+			}
+			itr++;
+			if ((*itr)->getLex()==";") {
+				(*itr)->setType(VARIABLE_END) ;
+				return 1 ;
+			}
+		}	
 	}
 }
 
@@ -970,9 +1115,37 @@ int parseur_variable(list<Lexeme*>::iterator& itr) {
 
 //***************************************************************PORT_MAP***************************************************
 int parseur_map(list<Lexeme*>::iterator& itr) {
-
+	itr++; 
+	if ((*itr)->getLex()=="map"){
+		itr++;
+		if ((*itr)->getLex()=="("){
+			itr++;
+			if ((*itr)->getType()==MOT){
+				itr++;
+				while ((*itr)->getLex()!=")"){
+					if ((*itr)->getLex()==","){
+						itr++;
+						if ((*itr)->getType()==MOT){
+						}
+						else {return 0;}
+					}
+					else if ((*itr)->getLex()=="=>"){
+						itr++;
+						if ((*itr)->getType()==MOT){
+						}
+						else {return 0;}
+					}
+					itr++;
+				}
+				itr++;
+				if ((*itr)->getLex()==";"){
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
 }
-
 
 
 
