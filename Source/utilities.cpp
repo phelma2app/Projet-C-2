@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "../Header/utilities.h"
 
 using namespace std;
@@ -73,4 +74,26 @@ bool is_type(string st_test)
 		return true;
 	}
 	return false;
+}
+
+
+//Fonction pour comparer les fichiers
+
+bool fichiers_identiques (std::string fichier1, std::string fichier2){
+    	ifstream fich1(fichier1.c_str(),ios::in);
+    	ifstream fich2(fichier2.c_str(),ios::in);
+    	if (fich1 && fich2 ){
+		string lignef1;
+		cout << "on est dans le if" << endl ;
+		string lignef2;
+		while (getline (fich1, lignef1) && getline(fich2 , lignef2)){
+			cout << "on est dans le while" << endl ; 
+			cout << lignef1 << endl;
+			cout << lignef2 << endl;
+			if (lignef1.compare(lignef2)!=0) {
+	       			return false;
+	        	}
+		}
+	}
+	return true;
 }

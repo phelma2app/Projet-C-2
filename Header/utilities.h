@@ -32,4 +32,7 @@ bool is_number(char ch_test);
 //Fonction pour tester le type
 bool is_type(string st_test);
 
+//Fonction pour comparer les fichiers
+bool fichiers_identiques (std::string fichier1, std::string fichier2) ;
+
 #endif //UTILITIES_H_
