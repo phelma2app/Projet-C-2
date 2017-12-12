@@ -77,6 +77,26 @@ bool is_type(string st_test)
 }
 
 
+// FOnction pour tester si on a aune condition scalaire
+bool is_scalaire(string st_test)
+{
+	if(st_test=="<"||st_test=="<="||st_test=="="||st_test==">"||st_test==">=")	//Liste des tests de conditions scalaires possibles
+	{
+		return true;
+	}
+	return false;
+}
+
+// FOnction pour tester si on a aune condition logique
+bool is_logic(string st_test)
+{
+	if(st_test=="and"||st_test=="or"||st_test=="xor"||st_test=="nor"||st_test=="not")	//Liste des tests de conditions logiques possibles
+	{
+		return true;
+	}
+	return false;
+}
+
 //Fonction pour comparer les fichiers
 
 bool fichiers_identiques (std::string fichier1, std::string fichier2,int& nligne){
