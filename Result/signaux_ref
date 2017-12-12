@@ -1,0 +1,66 @@
+	std	|	2	|	Identifiant Librairie
+		textio	|	3	|	Identifiant Use
+			all	|	3	|	Identifiant Use
+	ieee	|	4	|	Identifiant Librairie
+		bit_1164	|	5	|	Identifiant Use
+			all	|	5	|	Identifiant Use
+		bit_misc	|	6	|	Identifiant Use
+			all	|	6	|	Identifiant Use
+		bit_arith	|	7	|	Identifiant Use
+			all	|	7	|	Identifiant Use
+	signaux	|	9	|	Identifiant Entity
+		port	|	10	|	Port
+			clk	|	11	|	Identifiant Port
+				in	|	11	|	Port In
+				bit	|	11	|	Type Port
+			rst	|	12	|	Identifiant Port
+				in	|	12	|	Port In
+				bit	|	12	|	Type Port
+			start	|	13	|	Identifiant Port
+				in	|	13	|	Port In
+				bit	|	13	|	Type Port
+			done	|	14	|	Identifiant Port
+				in	|	14	|	Port In
+				bit	|	14	|	Type Port
+			din	|	15	|	Identifiant Port
+				in	|	15	|	Port In
+				bit_vector	|	15	|	Vector
+					15	|	15	|	Begin Vector
+					downto	|	15	|	Sense Vector
+					0	|	15	|	End Vector
+			dout	|	16	|	Identifiant Port
+				out	|	16	|	Port Out
+				bit_vector	|	16	|	Vector
+					15	|	16	|	Begin Vector
+					downto	|	16	|	Sense Vector
+					0	|	16	|	End Vector
+	struct	|	20	|	Identifiant Architecture
+		data_round_in	|	22	|	Identifiant Signal
+			bit_vector	|	22	|	Vector
+				12	|	22	|	Begin Vector
+				downto	|	22	|	Sense Vector
+				0	|	22	|	End Vector
+		data_round_out	|	23	|	Identifiant Signal
+			bit_vector	|	23	|	Vector
+				17	|	23	|	Begin Vector
+				downto	|	23	|	Sense Vector
+				0	|	23	|	End Vector
+		first_round_key	|	24	|	Identifiant Signal
+			bit_vector	|	24	|	Vector
+				6	|	24	|	Begin Vector
+				downto	|	24	|	Sense Vector
+				0	|	24	|	End Vector
+		round_key	|	25	|	Identifiant Signal
+			bit_vector	|	25	|	Vector
+				0	|	25	|	Begin Vector
+				to	|	25	|	Sense Vector
+				127	|	25	|	End Vector
+		round_key2	|	26	|	Identifiant Signal
+			bit_vector	|	26	|	Vector
+				0	|	26	|	Begin Vector
+				to	|	26	|	Sense Vector
+				127	|	26	|	End Vector
+		last_round_signal	|	27	|	Identifiant Signal
+			bit	|	27	|	Type Signal
+		first_round_signal	|	28	|	Identifiant Signal
+			bit	|	28	|	Type Signal
