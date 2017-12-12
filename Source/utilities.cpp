@@ -66,10 +66,10 @@ bool is_number(char ch_test)
 	return false;
 }
 
-//Fonction pour tester le type 
+//Fonction pour tester le type
 bool is_type(string st_test)
 {
-	if(st_test=="std_logic"||st_test=="std_logic_vector"||st_test=="bit"||st_test=="bit_vector")	
+	if(st_test=="std_logic"||st_test=="std_logic_vector"||st_test=="bit"||st_test=="bit_vector")
 	{
 		return true;
 	}
@@ -79,20 +79,22 @@ bool is_type(string st_test)
 
 //Fonction pour comparer les fichiers
 
-bool fichiers_identiques (std::string fichier1, std::string fichier2){
+bool fichiers_identiques (std::string fichier1, std::string fichier2,int& nligne){
     	ifstream fich1(fichier1.c_str(),ios::in);
     	ifstream fich2(fichier2.c_str(),ios::in);
     	if (fich1 && fich2 ){
 		string lignef1;
-		cout << "on est dans le if" << endl ;
+		//cout << "on est dans le if" << endl ;
 		string lignef2;
+		nligne=0;
 		while (getline (fich1, lignef1) && getline(fich2 , lignef2)){
-			cout << "on est dans le while" << endl ; 
-			cout << lignef1 << endl;
-			cout << lignef2 << endl;
+			//cout << "on est dans le while" << endl ;
+			//cout << lignef1 << endl;
+			//cout << lignef2 << endl;
 			if (lignef1.compare(lignef2)!=0) {
 	       			return false;
 	        	}
+	        	nligne++;
 		}
 	}
 	return true;
