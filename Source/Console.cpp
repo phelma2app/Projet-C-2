@@ -1,23 +1,41 @@
 #include "../Header/Console.h"
 
 //Commandes sur la console pour l'utilisateur
-//Retourne un entier qui vaut 0 si erreur, sinon il renvoie une valeur associee Ã  la commande
+//Retourne un entier qui vaut 0 si erreur, sinon il renvoie une valeur associee a la commande
+int commande_compare(string &fichier1, string &fichier2)
+{
+	cin >> fichier1;
+    cin >> fichier2;
+    return COMPARE;
+}
+
+int commande_compare(string &fichier1, string &fichier2, list<string> commandes, list<string>::iterator itr)
+{
+   	itr++;
+    fichier1=(*itr);
+    itr++;
+    fichier2=(*itr);
+
+    return COMPARE;
+}
+
 int commande_vhdl(string &libraryname, string &sourcename)
 {
 	string commande;
 	cin >> commande;
 
-	return commande_vhdl(libraryname,sourcename,commande);	
+	return commande_vhdl(libraryname,sourcename,commande);
 }
 
 int commande_vhdl(string &libraryname, string &sourcename, string& commande)
 {
 	//Commande utilisateur
-	if(commande=="vhdlcomp")
+
+	if(commande=="compare")
 	{
-		if(commande_vhdlcomp(libraryname, sourcename)!=ERREUR)
+		if(commande_compare(sourcename,libraryname)!=ERREUR)
 		{
-			return VHDLCOMP;
+			return COMPARE;
 		}
 	}
 	if(commande=="source")
@@ -27,25 +45,29 @@ int commande_vhdl(string &libraryname, string &sourcename, string& commande)
 			return SOURCE;
 		}
 	}
+	if(commande=="vhdlcomp")
+	{
+		if(commande_vhdlcomp(libraryname, sourcename)!=ERREUR)
+		{
+			return VHDLCOMP;
+		}
+	}
 	if(commande=="quit")
 	{
 		return SORTIE;
 	}
-	else
-	{
-		cout << "Erreur : commande inconnue" << endl;
-		return ERREUR;
-	}
+
+	cout << "Erreur : commande inconnue" << endl;
 	return ERREUR;
 }
 
 int commande_vhdl(string &libraryname, string &sourcename, list<string> commandes, list<string>::iterator itr)
 {
-	if((*itr)=="vhdlcomp")
+	if((*itr)=="compare")
 	{
-		if(commande_vhdlcomp(libraryname, sourcename,commandes,itr)!=ERREUR)
+		if(commande_compare(sourcename,libraryname,commandes,itr)!=ERREUR)
 		{
-			return VHDLCOMP;
+			return COMPARE;
 		}
 	}
 	if((*itr)=="source")
@@ -53,6 +75,13 @@ int commande_vhdl(string &libraryname, string &sourcename, list<string> commande
 		if(commande_source(sourcename,commandes,itr)!=ERREUR)
 		{
 			return SOURCE;
+		}
+	}
+	if((*itr)=="vhdlcomp")
+	{
+		if(commande_vhdlcomp(libraryname, sourcename,commandes,itr)!=ERREUR)
+		{
+			return VHDLCOMP;
 		}
 	}
 	if((*itr)=="quit")
@@ -92,7 +121,7 @@ int commande_vhdlcomp(string &libraryname, string &sourcename, list<string> comm
 
 int commande_vhdlcomp(string &libraryname, string &sourcename)
 {
-	cout << "On va compiler" << endl;	//pour test
+	//cout << "On va compiler" << endl;	//pour test
 	string commande;
 	cin >> commande;
 	if(commande=="-l")
@@ -158,15 +187,22 @@ int execute_script(string nom_script)
 	for(itr=commandes.begin();itr!=commandes.end();itr++)
 	{
 		int commande=commande_vhdl(libraryname,sourcename,commandes,itr);
+		int nligne=0;
 		switch(commande)
 		{
+            case COMPARE :
+                if(fichiers_identiques(sourcename,libraryname,nligne))
+                    cout << sourcename << " et " << libraryname << " sont identiques." << endl;
+                else
+                    cout << "!!!" << sourcename << " et " << libraryname << " sont differents ligne " << nligne << "!!!" << endl;
+                break;
 			case VHDLCOMP :
 				lex.clear();
 				vhdlcomp(libraryname,sourcename,lex);
 				cout << endl << "--Parseur en cours--" << endl;
 				erreur=parseur_root(lex);
 				print_lex(lex);
-				
+
 				if(erreur==1)
 				{
 					cout << endl << "--Creation de l'arbre--" << endl;
@@ -191,6 +227,6 @@ int execute_script(string nom_script)
 				//cout << "Commande non reconnue : "<< (*itr) << endl;	//Pour test
 				break;
 		}
-	}		
-	return 1;	
+	}
+	return 1;
 }
