@@ -32,6 +32,12 @@ bool is_number(char ch_test);
 //Fonction pour tester le type
 bool is_type(string st_test);
 
+//FOnction pour tester condition scalaire 
+bool is_scalaire(string st_test);
+
+//FOnction pour tester condition logique 
+bool is_logic(string st_test);
+
 //Fonction pour comparer les fichiers
 bool fichiers_identiques (std::string fichier1, std::string fichier2, int& nligne) ;
 
