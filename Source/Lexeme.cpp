@@ -138,6 +138,14 @@ string Lexeme::afficheType() const
 			return "Type Signal";
 		case THEN :
 			return "Then";
+		case TYPE_DECLARE :
+			return "Type";
+		case TYPE_DECLARE_END :
+			return "End Type";
+		case TYPE_DECLARE_ID :
+			return "Identifiant Type";
+		case TYPE_DECLARE_VAL :
+			return "Valeur Type";
 		case TYPE_VECTOR:
 		    	return "Vector";
 		case TYPE_VECTOR_BEGIN:
