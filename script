@@ -6,10 +6,10 @@ vhdlcomp -l Result/proc_vide_result Tests/Test_chamilo/proc_vide.vhd
 vhdlcomp -l Result/signaux_result Tests/Test_chamilo/signaux.vhd
 vhdlcomp -l Result/vide_result Tests/Test_chamilo/vide.vhd
 
-compare Result/biblio_result Result/Ref/biblio_ref
-compare Result/entite_noarchi_result Result/Ref/entite_noarchi_ref
-compare Result/entite_seule_result Result/Ref/entite_seule_ref
-compare Result/proc_result Result/Ref/proc_ref
-compare Result/proc_vide_result Result/Ref/proc_vide_ref
-compare Result/signaux_result Result/Ref/signaux_ref
-compare Result/vide_result Result/Ref/vide_ref
+compare Result/biblio_result Result/biblio_ref
+compare Result/entite_noarchi_result Result/entite_noarchi_ref
+compare Result/entite_seule_result Result/entite_seule_ref
+compare Result/proc_result Result/proc_ref
+compare Result/proc_vide_result Result/proc_vide_ref
+compare Result/signaux_result Result/signaux_ref
+compare Result/vide_result Result/vide_ref
