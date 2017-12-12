@@ -33,7 +33,7 @@ int parseur_type (list<Lexeme*>::iterator& itr);
 
 int parseur_if (list<Lexeme*>::iterator& itr);
 
-int if_elsif (list<Lexeme*>::iterator& itr);
+int expr_if_elsif (list<Lexeme*>::iterator& itr, int c,string end_cond);
 
 int verif_cond_if(list<Lexeme*>::iterator& itr);
 
@@ -50,4 +50,3 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr);
 int parseur_variable(list<Lexeme*>::iterator& itr);
 
 int parseur_map(list<Lexeme*>::iterator& itr) ; 
-
