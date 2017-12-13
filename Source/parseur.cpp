@@ -329,37 +329,24 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 								itr--;
 								(*itr)->setType(OPERATOR_AFF);
 								itr++;
-								(*itr)->setType(AFFECTATION_SIGNAL);
-								itr++ ; 
-								if ((*itr)->getType() != MOT) {
-									itr++;
-									while ((*itr)->getLex() != ";"){
-										if ((*itr)->getLex()== "and"|(*itr)->getLex()== "or"|(*itr)->getLex()== "xor"|(*itr)->getLex()== "not"){
-											itr++;
-											if ((*itr)->getType() != MOT) {
-												itr++;
-											}
-										}
-									}
+								(*itr)->setType(AFFECTATION_SIGNAL); 
+								int c=0; 
+								cout << "on est juste avant le if de l'affactation " << endl ;
+								if (expr_if_elsif(itr, c, ";")==0){
+									return 0;
 								}
+								(*itr)->setType(AFFECTATION_END);
 							}
 							else if ((*itr)->getLex() == ":="){				// affectation de variables
 								itr--;
 								(*itr)->setType(OPERATOR_AFF);
 								itr++;
 								(*itr)->setType(AFFECTATION_VARIABLE);
-								itr++ ; 
-								if ((*itr)->getType() != MOT) {
-									itr++;
-									while ((*itr)->getLex() != ";"){
-										if ((*itr)->getLex()== "and"|(*itr)->getLex()== "or"|(*itr)->getLex()== "xor"|(*itr)->getLex()== "not"){
-											itr++;
-											if ((*itr)->getType() != MOT) {
-												itr++;
-											}
-										}
-									}
+								int c=0 ; 
+								if (expr_if_elsif(itr, c, ";")==0){
+									return 0;
 								}
+								(*itr)->setType(AFFECTATION_END);
 							}
 							else if ((*itr)->getLex() == ":"){
 								itr++;
@@ -720,7 +707,7 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 			else {return 1; }	
 		}
 		else if ((*itr)->getLex()==end_cond){
-			if (c=0) {
+			if (c==0) {
 				return 1 ;
 			}
 			else {
@@ -778,7 +765,7 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 					else {return 1;}
 				}
 				else if ((*itr)->getLex()==end_cond){
-					if (c=0) {
+					if (c==0) {
 						return 1 ;
 					}
 					else {
@@ -829,7 +816,7 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 					else {return 1;}
 				}
 				else if ((*itr)->getLex()==end_cond){
-					if (c=0) {
+					if (c==0) {
 						return 1 ;
 					}
 					else {
@@ -911,6 +898,7 @@ int verif_instr(list<Lexeme*>::iterator& itr) {
 			}
 			itr++;
 			if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
+				(*itr)->setType(OPERATOR_SOURCE);
 				itr++;
 				if((*itr)->getLex()== ";"){
 					(*itr)->setType(AFFECTATION_END);
@@ -920,6 +908,7 @@ int verif_instr(list<Lexeme*>::iterator& itr) {
 			else if ((*itr)->getLex()== "'"){
 				itr++;
 				if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
+					(*itr)->setType(OPERATOR_SOURCE);
 					itr++;
 					if ((*itr)->getLex()== "'"){
 						itr++;
@@ -933,6 +922,7 @@ int verif_instr(list<Lexeme*>::iterator& itr) {
 			else if ((*itr)->getLex()== "\""){
 				itr++;
 				if ((*itr)->getType() == MOT|(*itr)->getType() == NOMBRE) {
+					(*itr)->setType(OPERATOR_SOURCE);
 					itr++;
 					if ((*itr)->getLex()== "\""){
 						itr++;
