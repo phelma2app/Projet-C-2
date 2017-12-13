@@ -4,7 +4,7 @@ using namespace std;
 
 //-------------------------------------------------------------ROOT---------------------------------------------------------
 
-tree<Lexeme*> createTree(list<Lexeme*>& lex)
+tree<Lexeme*> createTree(list<Lexeme*>& lex, bool& erreur)
 {
 	tree<Lexeme*> tr;
 	tree<Lexeme*>::pre_order_iterator top=tr.begin();
@@ -14,35 +14,41 @@ tree<Lexeme*> createTree(list<Lexeme*>& lex)
 
 	cout << "Tree Root" << endl;
 
+    erreur=false;
 	list<Lexeme*>::iterator itr;
 	for(itr=lex.begin(); itr!=lex.end(); itr++)
 	{
 		switch((*itr)->getType())
 		{
 			case ARCHITECTURE:
-				constructTreeOnArchitecture(tr,root,lex,itr);
+				erreur=constructTreeOnArchitecture(tr,root,lex,itr);
 				break;
 			case ENTITY:
-				constructTreeOnEntity(tr,root,lex,itr);
+				erreur=constructTreeOnEntity(tr,root,lex,itr);
 				break;
 			case LIBRARY:
-				constructTreeOnLibrary(tr,root,lex,itr);
+				erreur=constructTreeOnLibrary(tr,root,lex,itr);
 				break;
 			case PACKAGE:
-				constructTreeOnPackage(tr,root,lex,itr);
+				erreur=constructTreeOnPackage(tr,root,lex,itr);
 				break;
 			case USE:
-				constructTreeOnUse(tr,root,lex,itr);
+				erreur=constructTreeOnUse(tr,root,lex,itr);
 				break;
 			default:
 				break;
 		}
+		if(erreur)
+        {
+            cout << "Erreur a la creation de l'arbre : operation avortee" << endl;
+            return tr;
+        }
 	}
 	return tr;
 }
 
 //-------------------------------------------------------------ARCHITECTURE---------------------------------------------------------
-void constructTreeOnAffectationSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& affectation, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnAffectationSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& affectation, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Affectation Signal" << endl;
 	itr--;	//Pour reperer l'operateur aff
@@ -56,28 +62,39 @@ void constructTreeOnAffectationSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_orde
 	{
 		switch((*itr)->getType())
 		{
-            		case OPERATOR_AFF:
-		            	searchOpAff=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
-				if(searchOpAff!=tr.end())
-				{
-					//Test préliminaire :est-ce un signal ou un port ?
-					if((*searchOpAff)->getType()!=SIGNAL_ID&&(*searchOpAff)->getType()!=PORT_ID)
-					{
-						cout << "Erreur : operateur non valide ligne " << (*itr)->getLigne() << endl;
-						return;
-					}
-					
-					itrAff=itr;
-					aff_set=true;
+            case OPERATOR_AFF:
+                searchOpAff=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
+                if(searchOpAff!=tr.end())
+                {
+                    //Test préliminaire :est-ce un signal ou un port ?
+                    if((*searchOpAff)->getType()!=SIGNAL_ID&&(*searchOpAff)->getType()!=PORT_ID)
+                    {
+                        cout << "Erreur : operande non valide ligne " << (*itr)->getLigne() << endl;
+                        cout << "Type attendu : signal ou port" << endl;
+                        return true;
+                    }
+
+                    itrAff=itr;
+                    aff_set=true;
 				}
+				else
+                {
+                    cout << "Erreur : operande " << (*itr)->getLex() << "non reconnu ligne " << (*itr)->getLigne() << endl;
+                    return true;
+                }
 				break;
 			case OPERATOR_SOURCE:
-		            	searchOpSource=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
+                searchOpSource=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
 				if(searchOpSource!=tr.end())
 				{
 					itrSource=itr;
 					source_set=true;
 				}
+				else
+                {
+                    cout << "Erreur : operande " << (*itr)->getLex() << "non reconnu ligne " << (*itr)->getLigne() << endl;
+                    return true;
+                }
 				break;
 			default:
 				break;
@@ -85,49 +102,53 @@ void constructTreeOnAffectationSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_orde
 		itr++;
 	}
 
-    	if(source_set)
-    	{
+    if(source_set)
+    {
 		if(aff_set)
 		{
 			typeAff=findType(tr,searchOpAff);
 			typeSource=findType(tr,searchOpSource);
 			if(typeAff=="")
 			{
-			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpAff)->getLex() 
+			    cout << "Erreur d'affectation : type non reconnu sur " << (*searchOpAff)->getLex()
 				<< " ligne " << (*searchOpAff)->getLigne() << endl;
-			    return;
+			    return true;
 			}
 			if(typeSource=="")
 			{
-			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpSource)->getLex() 
+			    cout << "Erreur d'affectation : type non reconnu sur " << (*searchOpSource)->getLex()
 				<< " ligne " << (*searchOpSource)->getLigne() << endl;
-			    return;
+			    return true;
 			}
 			if(typeAff!=typeSource)
 			{
 			    cout << "Erreur d'affectation : types non identiques ligne " << (*itr)->getLigne() << endl;
-			    return;
+			    return true;
 			}
 
 			//A placer : tests taille vecteurs
 
 			//Tous les tests sont passés
 			childaffectation=tr.append_child(affectation,*itrAff);
-			childaffectation=tr.append_child(childaffectation,*itrSource);	
-			//Source stockée en enfant de l'opérande affectée			
+			childaffectation=tr.append_child(childaffectation,*itrSource);
+			//Source stockée en enfant de l'opérande affectée
 		}
 		else
 		{
 			cout << "Erreur : pas d'operateur affecte ligne " << (*itr)->getLigne() << endl;
+			return true;
 		}
 	}
 	else
 	{
 		cout << "Erreur : pas d'operateur source ligne " << (*itr)->getLigne() << endl;
+		return true;
 	}
+
+	return false;
 }
 
-void constructTreeOnAffectationVariable(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& affectation, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnAffectationVariable(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& affectation, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Affectation Variable" << endl;
 	itr--;	//Pour reperer l'operateur aff
@@ -148,20 +169,31 @@ void constructTreeOnAffectationVariable(tree<Lexeme*>& tr, tree<Lexeme*>::pre_or
 					//Test préliminaire :est-ce une varaible ?
 					if((*searchOpAff)->getType()!=VARIABLE_ID)
 					{
-						cout << "Erreur : operateur non valide ligne " << (*itr)->getLigne() << endl;
-						return;
+						cout << "Erreur : operande non valide ligne " << (*itr)->getLigne() << endl;
+						cout << "Type attendu : variable" << endl;
+						return true;
 					}
 					itrAff=itr;
 					aff_set=true;
 				}
+				else
+                {
+                    cout << "Erreur : operande " << (*itr)->getLex() << "non reconnu ligne " << (*itr)->getLigne() << endl;
+                    return true;
+                }
 				break;
 			case OPERATOR_SOURCE:
-		            	searchOpSource=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
+                searchOpSource=findLexemeInTree(tr.begin(),tr.end(),(*itr)->getLex());
 				if(searchOpSource!=tr.end())
 				{
 					itrSource=itr;
 					source_set=true;
 				}
+				else
+                {
+                    cout << "Erreur : operande " << (*itr)->getLex() << "non reconnu ligne " << (*itr)->getLigne() << endl;
+                    return true;
+                }
 				break;
 			default:
 				break;
@@ -169,48 +201,50 @@ void constructTreeOnAffectationVariable(tree<Lexeme*>& tr, tree<Lexeme*>::pre_or
 		itr++;
 	}
 
-    	if(source_set)
-    	{
+    if(source_set)
+    {
 		if(aff_set)
 		{
 			typeAff=findType(tr,searchOpAff);
 			typeSource=findType(tr,searchOpSource);
 			if(typeAff=="")
 			{
-			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpAff)->getLex() 
+			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpAff)->getLex()
 				<< " ligne " << (*searchOpAff)->getLigne() << endl;
-			    return;
+			    return true;
 			}
 			if(typeSource=="")
 			{
-			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpSource)->getLex() 
+			    cout << "Erreur d'affectation : type non trouve sur " << (*searchOpSource)->getLex()
 				<< " ligne " << (*searchOpSource)->getLigne() << endl;
-			    return;
+			    return true;
 			}
 			if(typeAff!=typeSource)
 			{
 			    cout << "Erreur d'affectation : types non identiques ligne " << (*itr)->getLigne() << endl;
-			    return;
+			    return true;
 			}
 
 			//A placer : tests taille vecteurs
 
 			//Tous les tests sont passés
 			childaffectation=tr.append_child(affectation,*itrAff);
-			childaffectation=tr.append_child(affectation,*itrSource);			
+			childaffectation=tr.append_child(affectation,*itrSource);
 		}
 		else
 		{
 			cout << "Erreur : pas d'operateur affecte ligne " << (*itr)->getLigne() << endl;
+			return true;
 		}
 	}
 	else
 	{
 		cout << "Erreur : pas d'operateur source ligne " << (*itr)->getLigne() << endl;
+		return true;
 	}
 }
 
-void constructTreeOnArchitecture(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architecture, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnArchitecture(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architecture, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Architecture" << endl;
 
@@ -221,16 +255,20 @@ void constructTreeOnArchitecture(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_ite
 		{
 			case ARCHITECTURE_ID:
 				childarchi=tr.append_child(architecture,*itr);
-				constructTreeOnArchitectureID(tr,childarchi,l,itr);
+				if(constructTreeOnArchitectureID(tr,childarchi,l,itr))
+                {
+                    return true;
+                }
 				break;
 			default:
-               	 		itr++;
+                itr++;
 				break;
 		}
 	}
+	return false;
 }
 
-void constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architectureid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architectureid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Architecture ID" << endl;
 
@@ -240,36 +278,43 @@ void constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_i
 		switch((*itr)->getType())
 		{
         		case AFFECTATION_SIGNAL:
-            			childarchiid=tr.append_child(architectureid,*itr);
-            			constructTreeOnAffectationSignal(tr,childarchiid,l,itr);
-				break;
+                    childarchiid=tr.append_child(architectureid,*itr);
+                    if(constructTreeOnAffectationSignal(tr,childarchiid,l,itr))
+                        return true;
+                    break;
         		case AFFECTATION_VARIABLE:
-            			childarchiid=tr.append_child(architectureid,*itr);
-            			constructTreeOnAffectationVariable(tr,childarchiid,l,itr);
-				break;
+                    childarchiid=tr.append_child(architectureid,*itr);
+                    if(constructTreeOnAffectationVariable(tr,childarchiid,l,itr))
+                        return true;
+                    break;
 		    	case PROCESS:
 		        	childarchiid=tr.append_child(architectureid,*itr);
-		        	constructTreeOnProcess(tr,childarchiid,l,itr);
+		        	if(constructTreeOnProcess(tr,childarchiid,l,itr))
+                        return true;
 		        	break;
               		case PROCESS_ID:
 		        	childarchiid=tr.append_child(architectureid,*itr);
-		        	constructTreeOnProcess(tr,childarchiid,l,itr);
+		        	if(constructTreeOnProcess(tr,childarchiid,l,itr))
+                        return true;
 		        	break;
 			case SIGNAL:
-				constructTreeOnSignal(tr,architectureid,l,itr);
+				if(constructTreeOnSignal(tr,architectureid,l,itr))
+                    return true;
 				break;
 			case VARIABLE_ID:
 		        	childarchiid=tr.append_child(architectureid,*itr);
-		        	constructTreeOnVariableID(tr,childarchiid,l,itr);
+		        	if(constructTreeOnVariableID(tr,childarchiid,l,itr))
+                        return true;
 				break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
-void constructTreeOnSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& signal, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& signal, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Signal" << endl;
 
@@ -279,17 +324,19 @@ void constructTreeOnSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 		switch((*itr)->getType())
 		{
 			case SIGNAL_ID:
-                		childsignal=tr.append_child(signal,*itr);
-				constructTreeOnSignalID(tr,childsignal,l,itr);
+                childsignal=tr.append_child(signal,*itr);
+				if(constructTreeOnSignalID(tr,childsignal,l,itr))
+                    return true;
 				break;
 			default:
 			    itr++;
 				break;
 		}
 	}
+	return false;
 }
 
-void constructTreeOnSignalID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& signalid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnSignalID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& signalid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Signal ID" << endl;
 
@@ -299,20 +346,22 @@ void constructTreeOnSignalID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterato
 		switch((*itr)->getType())
 		{
 			case SIGNAL_TYPE:
-                		childsignalid=tr.append_child(signalid,*itr);
+                childsignalid=tr.append_child(signalid,*itr);
 				break;
 			case TYPE_VECTOR:
-                		childsignalid=tr.append_child(signalid,*itr);
-				constructTreeOnVector(tr,childsignalid,l,itr);
+           		childsignalid=tr.append_child(signalid,*itr);
+				if(constructTreeOnVector(tr,childsignalid,l,itr))
+                    return true;
 				break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
-void constructTreeOnVariableID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& variableid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnVariableID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& variableid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Variable ID" << endl;
 
@@ -326,18 +375,20 @@ void constructTreeOnVariableID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_itera
 				break;
 			case TYPE_VECTOR:
                 		childvariableid=tr.append_child(variableid,*itr);
-				constructTreeOnVector(tr,childvariableid,l,itr);
+				if(constructTreeOnVector(tr,childvariableid,l,itr))
+                    return true;
 				break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
 //-------------------------------------------------------------ENTITY---------------------------------------------------------
 
-void constructTreeOnEntity(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& entity, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnEntity(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& entity, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Entity" << endl;
 
@@ -348,16 +399,18 @@ void constructTreeOnEntity(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 		{
 			case ENTITY_ID:
 				childentity=tr.append_child(entity,*itr);
-				constructTreeOnEntityID(tr,childentity,l,itr);
+				if(constructTreeOnEntityID(tr,childentity,l,itr))
+                    return true;
 				break;
 			default:
 			    itr++;
 				break;
 		}
 	}
+	return false;
 }
 
-void constructTreeOnEntityID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& entityid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnEntityID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& entityid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Entity ID" << endl;
 
@@ -368,20 +421,23 @@ void constructTreeOnEntityID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterato
 		{
    			case GENERIC:
 				childentityid=tr.append_child(entityid,*itr);
-				constructTreeOnGeneric(tr,childentityid,l,itr);
+				if(constructTreeOnGeneric(tr,childentityid,l,itr))
+                    return true;
 				break;
 			case PORT:
 				childentityid=tr.append_child(entityid,*itr);
-				constructTreeOnPort(tr,childentityid,l,itr);
+				if(constructTreeOnPort(tr,childentityid,l,itr))
+                    return true;
 				break;
 			default:
 				itr++;
 				break;
 		}
 	}
+	return false;
 }
 
-void constructTreeOnGeneric(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& generic, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnGeneric(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& generic, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Generic" << endl;
 
@@ -392,16 +448,18 @@ void constructTreeOnGeneric(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 		{
 			case GENERIC_ID:
 				childgeneric=tr.append_child(generic,*itr);
-				constructTreeOnGenericId(tr,childgeneric,l,itr);
+				if(constructTreeOnGenericId(tr,childgeneric,l,itr))
+                    return true;
 				break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
-void constructTreeOnGenericId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& genericid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnGenericId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& genericid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Generic ID" << endl;
 
@@ -415,16 +473,18 @@ void constructTreeOnGenericId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterat
 				break;
 			case TYPE_VECTOR:
 				childgenericid=tr.append_child(genericid,*itr);
-				constructTreeOnVector(tr,childgenericid,l,itr);
+				if(constructTreeOnVector(tr,childgenericid,l,itr))
+                    return true;
 				break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
-void constructTreeOnPort(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& port, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnPort(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& port, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Port" << endl;
 
@@ -435,7 +495,8 @@ void constructTreeOnPort(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& p
 		{
 			case PORT_ID:
 				childport=tr.append_child(port,*itr);
-				constructTreeOnPortId(tr,childport,l,itr);
+				if(constructTreeOnPortId(tr,childport,l,itr))
+                    return true;
 				break;
 			default:
 				break;
@@ -444,7 +505,7 @@ void constructTreeOnPort(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& p
 	}
 }
 
-void constructTreeOnPortId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& portid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnPortId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& portid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Port ID" << endl;
 
@@ -467,19 +528,21 @@ void constructTreeOnPortId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 				break;
 			case TYPE_VECTOR:
 				childportid=tr.append_child(portid,*itr);
-				constructTreeOnVector(tr,childportid,l,itr);
+				if(constructTreeOnVector(tr,childportid,l,itr))
+                    return true;
 				break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
 //-------------------------------------------------------------LIBRARY---------------------------------------------------------
 
 //Pour l'instant ne stocke rien : c'est use qui se charge de stocker la bonne librairie
-void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Library" << endl;
 
@@ -496,9 +559,11 @@ void constructTreeOnLibrary(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 		}
 		itr++;
 	}
+
+	return true;
 }
 
-void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& library, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Use" << endl;
 
@@ -520,7 +585,8 @@ void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& li
                     }
                     else
                     {
-                        cout << "Erreur : librairie " << (*itr)->getLex() << " non trouvee" << endl;
+                        cout << "Erreur : librairie " << (*itr)->getLex() << " non reconnue" << endl;
+                        return true;
                     }
 				}
 				break;
@@ -533,19 +599,21 @@ void constructTreeOnUse(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& li
 				else
 				{
 				    cout << "Erreur : identifiant librairie non trouvee" << endl;
+				    return true;
 				}
-                		break;
+                break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
 
 //-------------------------------------------------------------PACKAGE---------------------------------------------------------
 
-void constructTreeOnComponentId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& componentid, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
+bool constructTreeOnComponentId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& componentid, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
 {
 	cout << "Tree Component ID" << endl;
 
@@ -556,20 +624,23 @@ void constructTreeOnComponentId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iter
 		{
    			case GENERIC:
 				childcomponentid=tr.append_child(componentid,*itr);
-				constructTreeOnGeneric(tr,childcomponentid,l,itr);
+				if(constructTreeOnGeneric(tr,childcomponentid,l,itr))
+                    return true;
 				break;
 			case PORT:
 				childcomponentid=tr.append_child(componentid,*itr);
-				constructTreeOnPort(tr,childcomponentid,l,itr);
+				if(constructTreeOnPort(tr,childcomponentid,l,itr))
+                    return true;
 				break;
 			default:
                 		itr++;
 				break;
 		}
 	}
+	return false;
 }
 
-void constructTreeOnPackage(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& package, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
+bool constructTreeOnPackage(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& package, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
 {
 	cout << "Tree Package" << endl;
 
@@ -580,16 +651,18 @@ void constructTreeOnPackage(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 		{
 			case PACKAGE_ID:
 				childpackage=tr.append_child(package,*itr);
-                		constructTreeOnPackageId(tr,childpackage,l,itr);
+                if(constructTreeOnPackageId(tr,childpackage,l,itr))
+                    return true;
 				break;
 			default:
                 		itr++;
 				break;
 		}
 	}
+	return false;
 }
 
-void constructTreeOnPackageId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& packageid, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
+bool constructTreeOnPackageId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& packageid, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
 {
 	cout << "Tree Package ID" << endl;
 
@@ -600,11 +673,12 @@ void constructTreeOnPackageId(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterat
 		{
 			case COMPONENT_ID:
 				childpackageid=tr.append_child(packageid,*itr);
-                		constructTreeOnComponentId(tr,childpackageid,l,itr);
-				itr++; //temporaire
+                if(constructTreeOnComponentId(tr,childpackageid,l,itr))
+                    return true;
+				//itr++; //temporaire
 				break;
 			default:
-                		itr++;
+                itr++;
 				break;
 		}
 	}
@@ -635,7 +709,7 @@ bool constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, i
 				bufroot=buf_conditions.insert(top_buf,*itr);
 				itr++;					//On passe au Lexeme suivant avant de construire un nouvel arbre
 
-				if(constructTreeForCondLogic(l,itr,type_fin,tree_cond_logic))
+				if(!constructTreeForCondLogic(l,itr,type_fin,tree_cond_logic))
 				{
 					itercondition=buf_conditions.append_child(bufroot,bufLexeme);
 					top_cond_tree=tree_cond_logic.begin();
@@ -647,22 +721,22 @@ bool constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, i
 						top_parenth_tree=buf_conditions.move_ontop(itercondition,top_cond_tree);
 					}
 				}
-				cout << "set logic ok" << endl; 
+				//cout << "set logic ok" << endl;
 				set_logic=true;
 				break;
-			case IF_PARENTHESE_OUV:	
-				cout << "Parenthese trouve " << endl;
+			case IF_PARENTHESE_OUV:
+				//cout << "Parenthese trouve " << endl;
 				itr++;
-				if(constructTreeForCondLogic(l,itr,IF_PARENTHESE_FER,tree_parenthesis))
+				if(!constructTreeForCondLogic(l,itr,IF_PARENTHESE_FER,tree_parenthesis))
 				{
 					set_parenthesis=true;
-					cout << "set parenthesis ok" << endl; 
+					//cout << "set parenthesis ok" << endl;
 					if(set_logic==true)
 					{
 						itercondition=buf_conditions.append_child(bufroot,bufLexeme);
 						top_parenth_tree=tree_parenthesis.begin();
 						top_parenth_tree=buf_conditions.move_ontop(itercondition,top_cond_tree);
-					}	
+					}
 				}
 
 			default:
@@ -670,7 +744,7 @@ bool constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, i
 				break;
 		}
 	}
-	
+
 	//2e boucle pour les opérateurs
 	while((*itr_2)->getType()!=type_fin)
 	{
@@ -712,17 +786,17 @@ bool constructTreeForCondLogic(list<Lexeme*>& l, list<Lexeme*>::iterator& itr, i
 	if(buf_conditions.empty())
 	{
 		//cout << "Arbre vide" << endl;
-		return false;
+		return true;
 	}
 
 	printTree(buf_conditions);	//Pour test
-	return true;
+	return false;
 }
 
-void constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
+bool constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if, list<Lexeme*>& l, list<Lexeme*>::iterator &itr)
 {
 	cout << "Tree If" << endl;
-	
+
 	list<Lexeme*>::iterator mem_if=itr;
 
 	tree<Lexeme*>::pre_order_iterator childif;
@@ -732,15 +806,18 @@ void constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if
 		{
 			case ELSE:
 				childif=tr.append_child(_if,*itr);
-                		constructTreeOnIfInst(tr,childif,l,itr);
+                if(constructTreeOnIfInst(tr,childif,l,itr))
+                    return true;
 				break;
 			case ELSIF:
 				childif=tr.append_child(_if,*itr);
-                		constructTreeOnIfInst(tr,childif,l,itr);
+                if(constructTreeOnIfInst(tr,childif,l,itr))
+                    return true;
 				break;
 			case THEN:
 				childif=tr.append_child(_if,*itr);
-				constructTreeOnIfInst(tr,childif,l,itr);
+				if(constructTreeOnIfInst(tr,childif,l,itr))
+                    return true;
 				break;
 			default:
                 		itr++;
@@ -751,18 +828,24 @@ void constructTreeOnIf(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _if
 	//Création de l'arbre pour les conditions
 	//En cours de construction
 	tree<Lexeme*> buf_conditions;
-	if(constructTreeForCondLogic(l,mem_if,THEN,buf_conditions))			//IF_END : à remplacer par then
+	if(!constructTreeForCondLogic(l,mem_if,THEN,buf_conditions))			//IF_END : à remplacer par then
 	{
 		tree<Lexeme*>::pre_order_iterator top_buf=buf_conditions.begin();
-		childif=tr.insert_subtree(childif,top_buf);	
+		childif=tr.insert_subtree(childif,top_buf);
 	}
+	else
+    {
+        cout << "Erreur : pas de conditions sur le if ligne " << (*itr)->getLigne() << endl;
+        return true;
+    }
+    return false;
 }
 
-void constructTreeOnIfInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& if_inst, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnIfInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& if_inst, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree If Instructions" << endl;
 
-    	itr++;
+    itr++;
 	tree<Lexeme*>::pre_order_iterator childifinst;
 	while((*itr)->getType()!=IF_END&&(*itr)->getType()!=ELSE&&(*itr)->getType()!=ELSIF)
 	{
@@ -770,24 +853,28 @@ void constructTreeOnIfInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 		{
         		case AFFECTATION_SIGNAL:
                 		childifinst=tr.append_child(if_inst,*itr);
-            			constructTreeOnAffectationSignal(tr,childifinst,l,itr);
+            			if(constructTreeOnAffectationSignal(tr,childifinst,l,itr))
+                            return true;
 				break;
         		case AFFECTATION_VARIABLE:
                 		childifinst=tr.append_child(if_inst,*itr);
-            			constructTreeOnAffectationVariable(tr,childifinst,l,itr);
+            			if(constructTreeOnAffectationVariable(tr,childifinst,l,itr))
+                            return true;
 				break;
             		case IF:
                 		childifinst=tr.append_child(if_inst,*itr);
-				constructTreeOnIf(tr,childifinst,l,itr);
+                        if(constructTreeOnIf(tr,childifinst,l,itr))
+                            return true;
                 		break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
-void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Process" << endl;
 
@@ -797,26 +884,30 @@ void constructTreeOnProcess(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator
 	{
 		switch((*itr)->getType())
 		{
-            		case PROCESS_BEGIN:
-                		childprocess=tr.append_child(process,*itr);
-				constructTreeOnProcessInst(tr,childprocess,l,itr);
-                		break;
-            		case PROCESS_SENSIBILITY:
-                		childprocess=tr.append_child(process,*itr);
-                        	itr++;
+            case PROCESS_BEGIN:
+                childprocess=tr.append_child(process,*itr);
+				if(constructTreeOnProcessInst(tr,childprocess,l,itr))
+                    return true;
+                break;
+            case PROCESS_SENSIBILITY:
+                childprocess=tr.append_child(process,*itr);
+                itr++;
 				break;
 			case VARIABLE_ID:
 		        	childprocess=tr.append_child(process,*itr);
-		        	constructTreeOnVariableID(tr,childprocess,l,itr);
+		        	if(constructTreeOnVariableID(tr,childprocess,l,itr))
+                        return true;
 				break;
 			default:
                 		itr++;
 				break;
 		}
 	}
+
+	return false;
 }
 
-void constructTreeOnProcessInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process_inst, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnProcessInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& process_inst, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
 	cout << "Tree Process Instructions" << endl;
 
@@ -827,44 +918,53 @@ void constructTreeOnProcessInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iter
 		{
         		case AFFECTATION_SIGNAL:
             			childprocessinst=tr.append_child(process_inst,*itr);
-            			constructTreeOnAffectationSignal(tr,childprocessinst,l,itr);
+            			if(constructTreeOnAffectationSignal(tr,childprocessinst,l,itr))
+                            return true;
 				break;
         		case AFFECTATION_VARIABLE:
             			childprocessinst=tr.append_child(process_inst,*itr);
-            			constructTreeOnAffectationVariable(tr,childprocessinst,l,itr);
+            			if(constructTreeOnAffectationVariable(tr,childprocessinst,l,itr))
+                            return true;
 				break;
             		case IF:
                 		childprocessinst=tr.append_child(process_inst,*itr);
-				constructTreeOnIf(tr,childprocessinst,l,itr);
+				if(constructTreeOnIf(tr,childprocessinst,l,itr))
+                    return true;
                 		break;
 			default:
 				break;
 		}
 		itr++;
 	}
+	return false;
 }
 
 //-------------------------------------------------------------AUTRES---------------------------------------------------------
 
 
-void constructTreeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& vec, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
+bool constructTreeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& vec, list<Lexeme*>& l, list<Lexeme*>::iterator& itr)
 {
     cout << "Tree Vector" << endl;
 
 	tree<Lexeme*>::pre_order_iterator childvec;
+
+	bool setBegin=false,setSense=false,setEnd=false;
 	while((*itr)->getType()!=TYPE_VECTOR_END)
 	{
 		switch((*itr)->getType())
 		{
 		    case TYPE_VECTOR_BEGIN:
 		        childvec=tr.append_child(vec,*itr);
+		        setBegin=true;
 		        break;
 		    case TYPE_VECTOR_SENSE:
 		        childvec=tr.append_child(vec,*itr);
+		        setSense=true;
 		        break;
 		    case TYPE_VECTOR_END:
 		        childvec=tr.append_child(vec,*itr);
-               		break;
+		        setEnd=true;
+                break;
 		    default:
 			break;
 		}
@@ -872,7 +972,17 @@ void constructTreeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 	}
 
 	if((*itr)->getType()==TYPE_VECTOR_END)
-		childvec=tr.append_child(vec,*itr);
+    {
+        childvec=tr.append_child(vec,*itr);
+        setEnd=true;
+    }
+
+    if(!setBegin||!setEnd||!setSense)
+    {
+        cout << "Erreur : vecteur incomplet ligne " << (*itr)->getLigne() << endl;
+        return true;
+    }
+    return false;
 }
 
 //-------------------------------------------------------------FIND---------------------------------------------------------
@@ -931,7 +1041,7 @@ string findType(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent)
                 return (*searchType)->getLex();
             case SIGNAL_TYPE:
                 return (*searchType)->getLex();
-	    case TYPE_VECTOR:
+            case TYPE_VECTOR:
                 return (*searchType)->getLex();
             case VARIABLE_TYPE:
                 return (*searchType)->getLex();
