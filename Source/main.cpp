@@ -8,7 +8,6 @@
 #include <list>
 #include <iostream>
 
-
 using namespace std;
 
 int main()
@@ -17,7 +16,8 @@ int main()
 	string sourcename;
 	list<Lexeme*> lex;
 	tree<Lexeme*> parseur;
-	int erreur;
+	int err_pars=0;
+	bool err_tree=false;
 	cout << endl << "---Synthetiseur VHDL Beta 1.0---" << endl << endl;
 
 	bool close=false;
@@ -47,18 +47,21 @@ int main()
 				lex.clear();
 				vhdlcomp(libraryname,sourcename,lex);
 				cout << endl << "--Parseur en cours--" << endl;
-				erreur=parseur_root(lex);
+				err_pars=parseur_root(lex);
 				print_lex(lex);
 
-				if(erreur==1)
+				if(err_pars==1)
 				{
 					cout << endl << "--Creation de l'arbre--" << endl;
-					parseur = createTree(lex);
+					parseur = createTree(lex,err_tree);
 					cout << endl;
-					cout << endl << "--Impression de l'arbre--" << endl;
-					printTree(parseur);
-					if(libraryname!="")
-						saveTree(parseur,libraryname);
+					if(!err_tree)
+                    {
+                        cout << endl << "--Impression de l'arbre--" << endl;
+                        printTree(parseur);
+                        if(libraryname!="")
+                            saveTree(parseur,libraryname);
+                    }
 					cout << endl << "--Fin de compilation--" << endl << endl;
 				}
 				else
