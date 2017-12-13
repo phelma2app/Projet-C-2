@@ -761,6 +761,7 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 	else if ((*itr)->getLex()=="'"){
 		itr++ ; 
 		if ((*itr)->getType()==NOMBRE){
+			(*itr)->setType(OPERATOR_IF);
 			itr++; 
 			if ((*itr)->getLex()=="'"){
 				itr++;
@@ -811,6 +812,7 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 	else if ((*itr)->getLex()=="\""){
 		itr++ ; 
 		if ((*itr)->getType()==NOMBRE){
+			(*itr)->setType(OPERATOR_IF);
 			itr++; 
 			if ((*itr)->getLex()=="\""){
 				itr++;
@@ -1146,7 +1148,6 @@ int parseur_map(list<Lexeme*>::iterator& itr) {
 	}
 	return 0;
 }
-
 
 
 
