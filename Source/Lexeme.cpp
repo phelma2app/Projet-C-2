@@ -84,6 +84,14 @@ string Lexeme::afficheType() const
 			return "Map";
 		case MAP_END :
 			return "End Map";
+		case MAP_ID :
+			return "Identifiant Map";
+		case MAP_OPERATOR :
+			return "Operateur Map";
+		case MAP_OPERATOR_AFF :
+			return "Operateur Map Affecte";
+		case MAP_OPERATOR_SOURCE :
+			return "Operateur Map Source";
 		case MOT :
 			return "Mot";
 		case NOMBRE :

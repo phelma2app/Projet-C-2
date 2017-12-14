@@ -59,26 +59,26 @@ component registre
 	generic (
 	S   :  integer) ;
 	port (
-	D :   in   bit_vector (S-1  downto 0) ;
+	D :   in   bit_vector (1  downto 0) ;
 	clk ,   reset   :   in   bit;
-	Q :   out bit_vector (S-1  downto 0) ) ;
+	Q :   out bit_vector (1  downto 0) ) ;
 end component;
 
 component registre_e 
 	generic (
 	S   :  integer) ;
 	port (
-	D :   in   bit_vector (S-1  downto 0) ;
+	D :   in   bit_vector (1  downto 0) ;
 	e :   in   bit;
 	clk ,   reset   :   in   bit;
-	Q :   out bit_vector (S-1  downto 0) ) ;
+	Q :   out bit_vector (1  downto 0) ) ;
 end component ;
 
 component add 
 	generic (S   :  integer) ;
 	port (
-	A,  B     :   in   bit_vector (S-1  downto 0) ;
-	R :   out bit_vector (S-1  downto 0) ;
+	A,  B     :   in   bit_vector (1  downto 0) ;
+	R :   out bit_vector (1  downto 0) ;
 	cout   :   out bit) ;
 end component;
 
@@ -86,8 +86,8 @@ component sub
 generic (
 	S   :  integer) ;
 	port (
-	A,  B     :   in   bit_vector (S-1  downto 0) ;
-	R :   out bit_vector (S-1  downto 0) ;
+	A,  B     :   in   bit_vector (1  downto 0) ;
+	R :   out bit_vector (1  downto 0) ;
 	cout   :   out bit) ;
 end component ;
 
@@ -95,8 +95,8 @@ component mult
 	generic (
 	S   :  integer) ;
 	port (
-	A,  B     :   in   bit_vector (S-1  downto 0) ;
-	R :   out bit_vector (S-1  downto 0) ;
+	A,  B     :   in   bit_vector (1  downto 0) ;
+	R :   out bit_vector (1  downto 0) ;
 	cout   :   out bit) ;
 end component ;
 
