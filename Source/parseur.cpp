@@ -237,6 +237,7 @@ int parseur_use (list<Lexeme*>::iterator& itr){
 			}
 		}
 	}
+	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le use" << endl ;
 	return 0;
 }
 //***************************************************PACKAGE****************************************************************************
@@ -378,6 +379,7 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 										}
 									}
 								}
+								else {return 0;}
 							}
 						}
 						itr++;	
@@ -434,10 +436,10 @@ int parseur_signal (list<Lexeme*>::iterator& itr){
 				(*itr)->setType(SIGNAL_END) ;
 				return 1 ; 
 			} 
-		}
-		else {return 0;}
-			
+		}			
 	}
+	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le process" << endl ;
+	return 0 ;
 }
 
 //*************************************************************COMPONENT****************************************************************
@@ -503,6 +505,7 @@ int parseur_generic (list<Lexeme*>::iterator& itr) {
 			}
 		}
 	}
+	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le generic" << endl ;
 	return 0 ; 
 }
 
@@ -635,6 +638,8 @@ int parseur_type (list<Lexeme*>::iterator& itr) {
 				}
 			}
 		}
+		cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le std logic du parseur type" << endl ;
+		return 0 ;
 	}
 	else if ((*itr)->getLex()== "bit"){
 		return 1 ; 
@@ -677,6 +682,8 @@ int parseur_type (list<Lexeme*>::iterator& itr) {
 				}
 			}
 		}
+		cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le bit vector du parseur type" << endl ;
+		return 0 ; 
 	}
 	else if  ((*itr)->getLex()== "integer"){
 		return 1 ; 
@@ -708,6 +715,7 @@ int parseur_if (list<Lexeme*>::iterator& itr) {
 			}
 		}
 	}
+	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le if" << endl ;
 	return 0 ;
 }
 
@@ -1009,17 +1017,23 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 					(*itr)->setType(TYPE_DECLARE_VAL) ;
 					itr++ ; 
 					while ((*itr)->getLex() != ")"){
-						cout << "ligne 988 " << (**itr) << endl ; 
+
 						if ((*itr)->getLex() == ","){
 							itr++; 
-							cout << "ligne 991 " << (**itr) << endl ; 
+
 							if ((*itr)->getType()==MOT){
 								(*itr)->setType(TYPE_DECLARE_VAL) ;
 							}
-							else {return 0 ;}
+							else {
+								cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type, le lexeme n'est pas un mot " << endl ;
+								return 0 ;
+							}
 
 						}
-						else {return 0 ;}
+						else {
+							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type, le lexeme n'est pas une virgule " << endl ;
+							return 0 ;
+						}
 						itr++;
 					}
 					itr++; 
@@ -1045,11 +1059,19 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 											if ((*itr)->getLex()=="'"){
 
 											}
-											else {return 0 ;}
+											else {
+												cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type, le lexeme n'est pas une apostrophe " << endl ;
+												return 0 ;}
 										}
-										else {return 0 ;}
+										else {
+											cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type " << endl ;
+											return 0 ;
+										}
 									}
-									else {return 0 ;}
+									else {
+										cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type, le lexeme n'est pas une apostrophe " << endl ;
+										return 0 ;
+									}
 
 								}
 
@@ -1062,6 +1084,8 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 							}
 						}
 					}
+					cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type 1" << endl ;
+					return 0 ;
 				}
 				else if ((*itr)->getType()==NOMBRE){
 					(*itr)->setType(TYPE_VECTOR_BEGIN) ;
@@ -1090,6 +1114,7 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 										}
 									}
 								}
+								cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type 2" << endl ;
 								return 0 ; 
 							}
 							else if (i>j && sens =="downto"){
@@ -1108,6 +1133,7 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 										}
 									}
 								}
+								cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type 3" << endl ;
 								return 0 ; 
 							}
 							else {
@@ -1119,6 +1145,7 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 			}
 		}
 	}
+	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur declar type 4" << endl ;
 	return 0;
 }
 
@@ -1136,9 +1163,13 @@ int parseur_variable(list<Lexeme*>::iterator& itr) {
 				if ((*itr)->getType()==MOT) {
 					(*itr)->setType(VARIABLE_ID) ;	
 				}
-				else {return 0;}		
+				else {
+					cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur variable, le lexeme n'est pas un mot " << endl ;
+					return 0;}		
 			}
-			else {return 0;}
+			else {
+				cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur variable le lexeme n'est pas une virgule  " << endl ;
+				return 0;}
 			itr++;
 		}
 		itr++;
@@ -1176,7 +1207,9 @@ int parseur_map(list<Lexeme*>::iterator& itr) {
 						if ((*itr)->getType()==MOT){
 							(*itr)->setType(MAP_OPERATOR) ;
 						}
-						else {return 0;}
+						else {
+							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur map, le lexeme n'es pas un mot " << endl ;
+							return 0;}
 					}
 					else if ((*itr)->getLex()=="=>"){
 						itr--; 
@@ -1187,18 +1220,21 @@ int parseur_map(list<Lexeme*>::iterator& itr) {
 						if ((*itr)->getType()==MOT){
 							(*itr)->setType(MAP_OPERATOR_AFF) ;
 						}
-						else {return 0;}
+						else {
+							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur map, le lexeme n'es pas un mot " << endl ;
+							return 0;}
 					}
 					itr++;
 				}
 				itr++;
 				if ((*itr)->getLex()==";"){
-					(*itr)->setType(MAP_END);
 					return 1;
 				}
 			}
 		}
 	}
+	cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le parseur map " << endl ;
 	return 0;
 }
+
 
