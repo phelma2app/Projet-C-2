@@ -3,6 +3,7 @@
 
 #include "tree.hh"
 #include "Lexeme.h"
+#include "utilities.h"
 #include <list>
 #include <algorithm>
 #include <string>
