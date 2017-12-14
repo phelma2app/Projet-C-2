@@ -25,16 +25,13 @@ signal int_level_1 : bit_vector(1 downto 0);
 signal int_level_2 : bit_vector(1 downto 0);
 begin
 
-first: and2 port map(a => input(0),
-	b => input(1),
-	c => int_level_1(0));
+first: and2 port map(a => d,
+	b => input,
+	c => int_level_1;
 
-second: or2 port map(a => input(2),
-	b => input(3),
-	c => int_level_1(1));
 
 reg: registre
-	generic  map (S => 2) 
+	--generic  map (S => 2) 
 	port map(
 	D => int_level_1,
 	clk    => CLK,
@@ -42,7 +39,7 @@ reg: registre
 	Q  => int_level_2) ;
 
 last: sub 
-	generic  map (S => 2) 
+	--generic  map (S => 2) 
 	port map (
 	A    => int_level_1,
 	B     => int_level_2 ,
@@ -51,4 +48,3 @@ last: sub
 
 
 end struct;
-
