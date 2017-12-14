@@ -77,11 +77,10 @@ begin
 -- controller
   control_inst: aes_ctrl port map(CLK,RST,start,last_round_signal,first_round_signal);
 -- logic part to manage modes as CBC or ECB
-  data_round_in <= DIN when(ECB_CBC='0') else
-      (DIN xor IVIN);
+--  data_round_in <= DIN when(ECB_CBC='0') else
+ --     (DIN xor IVIN);
 
   DOUT<= data_round_out ;
   DOUT_VAL<=last_round_signal;
 
   end struct;
-
