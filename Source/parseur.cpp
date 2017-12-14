@@ -1193,6 +1193,7 @@ int parseur_map(list<Lexeme*>::iterator& itr) {
 				}
 				itr++;
 				if ((*itr)->getLex()==";"){
+					(*itr)->setType(MAP_END);
 					return 1;
 				}
 			}
@@ -1200,5 +1201,4 @@ int parseur_map(list<Lexeme*>::iterator& itr) {
 	}
 	return 0;
 }
-
 
