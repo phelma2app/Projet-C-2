@@ -2,14 +2,15 @@
 
 using namespace std;
 
-int vhdlcomp(string libraryname, string sourcename, list<Lexeme*>& list_lex)
+//Permet d'ouvrir un fichier VHDL et d'en découper les differents lexemes
+bool vhdlcomp(string libraryname, string sourcename, list<Lexeme*>& list_lex)
 {
 	//Ouverture du fichier
 	ifstream fichier(sourcename.c_str(), ios::in);  // on ouvre en lecture
 	if(!fichier)  // si l'ouverture n'a pas fonctionnee
 	{
 		cerr << "Impossible d'ouvrir le fichier " << sourcename << " !" << endl;
-		return 1;
+		return true;
 	}
 
 	//Traitement du fichier
@@ -17,22 +18,29 @@ int vhdlcomp(string libraryname, string sourcename, list<Lexeme*>& list_lex)
 	do
 	{
 		string buffer ="";
-		buffer = read_line(fichier);	//on lit une ligne
-		cout << "Stock_Lexeme : ligne nÂ°" << n_ligne << endl;
-		stock_lexemes(buffer,n_ligne,list_lex);		//on separe les lexemes
+		buffer = read_line(fichier);	//on lit une ligne en y ajoutant des espaces
+		//cout << "Stock_Lexeme : ligne n" << n_ligne << endl;  //pour test
+		if(stock_lexemes(buffer,n_ligne,list_lex))		//on stocke
+        {
+            cerr << "!!Mot mal orthographie ligne " << n_ligne << "!!" << endl;
+            return true;
+        }
 		n_ligne++;
 	}while(!fichier.eof());
-	cout << "Fin du fichier atteint" << endl;
-	Lexeme* endFile = new Lexeme("\0",n_ligne,END_OF_FILE);
+
+	Lexeme* endFile = new Lexeme("\0",n_ligne,END_OF_FILE); //Lexeme special pour detecter la fin du fichier
 	list_lex.push_back(endFile);
 
+    //Affichage
+    cout << "-- Lexemes separes--" << endl;
 	print_lex(list_lex);
 
-	cout << endl <<  "Nombre de lignes dans le fichier : " << n_ligne-1 << endl;		//pour test
-	return 0;
+	//cout << endl <<  "Nombre de lignes dans le fichier : " << n_ligne-1 << endl;		//pour test
+	return false;
 }
 
-void print_lex(list<Lexeme*>& list_lex)
+//Permet d'afficher une liste entière de Lexemes
+void print_lex(const list<Lexeme*>& list_lex)
 {
 	list<Lexeme*>::iterator itr;
 	for(itr=list_lex.begin();itr!=list_lex.end();itr++)
@@ -43,10 +51,10 @@ void print_lex(list<Lexeme*>& list_lex)
 
 //Fonction pour stocker chaque lexeme d'une ligne dans une liste, avec leur numero de ligne
 //Pre-condition : les lexemes doivent etre separes avec des espaces
-void stock_lexemes(string buffer, int ligne, list<Lexeme*>& Lex_VHDL)
+bool stock_lexemes(string buffer, int ligne, list<Lexeme*>& Lex_VHDL)
 {
 	char* ch_buff;	//Buffer
-	ch_buff = strtok(&buffer[0]," ");
+	ch_buff = strtok(&buffer[0]," ");       //Selection du 1er Lexeme
 	int ligne_com=0;
 	bool is_com=false;
 	while(ch_buff!=NULL||ch_buff!='\0')
@@ -54,14 +62,17 @@ void stock_lexemes(string buffer, int ligne, list<Lexeme*>& Lex_VHDL)
 		//cout << "." << ch_buff << "." << endl;	//pour test
 		Lexeme *lex_buff = new Lexeme(ch_buff,ligne,0);
 
-		if(verif(*lex_buff,&is_com,&ligne_com))
-			cout << "Erreur lexicale detectee" << endl;
-			//exit(-1);
+		if(verif(*lex_buff,&is_com,&ligne_com))     //Verification orthographique de chaque Lexeme
+        {
+ 			cout << "Erreur lexicale detectee" << endl;
+			return true;
+        }
 
-		Lex_VHDL.push_back(lex_buff);
-		ch_buff = strtok(NULL," ");
-
+		Lex_VHDL.push_back(lex_buff);   //Stockage du lexeme verifie
+		ch_buff = strtok(NULL," ");     //Selection du lexeme suivant
 	}
+
+	return false;
 }
 
 //Fonction pour lire une ligne dans un fichier et lui ajouter des espaces entre les caracteres
@@ -71,14 +82,12 @@ string read_line(ifstream& fichier)
 	//Recuperation de la ligne
 	string buffer="";
 	getline(fichier, buffer);	//traitement d'une ligne a chaque boucle
-	buffer+="\n"; //on rajoute un espace pour bien etre sur de separer la fin de la ligne du debut de la ligne suivante  
+	buffer+="\n"; //on rajoute un espace pour bien etre sur de separer la fin de la ligne du debut de la ligne suivante
 	//cout << buffer << endl;	//pour test
 
 	//Reformatage de la ligne
 	minus_string(buffer);		//Caracteres passes en minuscule
-	//buffer = add_space_on_string(buffer, buffer.length());	//Ajout des espaces
-	//cout << buffer << endl;	//pour test
-	
+
 	return add_space_on_string(buffer, buffer.length());
 }
 
@@ -126,7 +135,7 @@ string add_space_on_string(string str, int length)
 			if(is_ponctuation(str[i]))	//si ponctuation
 			{
 				//Recopie du premier caractere
-				
+
 				if(temp[j-1]==' ')	//si on a recopie un espace auparavent, on ne recopie que la ponctuation
 				{
 					temp[j]=str[i];
@@ -158,10 +167,10 @@ string add_space_on_string(string str, int length)
 			}
 			else	//si pas ponctuation
 			{
-				if(!(str[i]==' '&&temp[j-1]==' '))	//si on a deja  stocke un espace precedemment, on n'en stocke plus
+			    //si on a deja  stocke un espace precedemment, on ne rentre pas dans le if
+				if(!(str[i]==' '&&temp[j-1]==' '))	//dans tous les autres cas, on recopie
 				{
-					//cout << "On recopie " << str[i] << endl;
-					temp[j]=str[i];			//dans tous les autres cas, on recopie
+					temp[j]=str[i];
 					j++;
 				}
 			}
@@ -170,7 +179,7 @@ string add_space_on_string(string str, int length)
 	}
 	temp[j]='\0';	//sortie de la boucle = fin de chaine, on le signale dans temp
 
-	cout << "Chaine stockee :" << temp << endl;		//Pour le test
+	//cout << "Chaine stockee :" << temp << endl;		//Pour le test
 	str = temp;
 	return str;
 }
