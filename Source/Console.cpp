@@ -196,45 +196,45 @@ int execute_script(string nom_script)
 		int nligne=0;
 		switch(commande)
 		{
-            case COMPARE :
-                if(fichiers_identiques(sourcename,libraryname,nligne))
-                    cout << sourcename << " et " << libraryname << " sont identiques." << endl;
-                else
-                    cout << "!!!" << sourcename << " et " << libraryname << " sont differents ligne " << nligne << "!!!" << endl;
-                break;
+			case COMPARE :
+				if(fichiers_identiques(sourcename,libraryname,nligne))
+					cout << sourcename << " et " << libraryname << " sont identiques." << endl;
+				else
+					cout << "!!!" << sourcename << " et " << libraryname << " sont differents ligne " << nligne << "!!!" << endl;
+				break;
 			case VHDLCOMP :
 				lex.clear();
 				if(!vhdlcomp(libraryname,sourcename,lex))
-                {
-                    cout << endl << "--Parseur en cours--" << endl;
-                    err_pars=parseur_root(lex);
-                    print_lex(lex);
+				{
+					cout << endl << "--Parseur en cours--" << endl;
+					err_pars=parseur_root(lex);
+					print_lex(lex);
 
-                    if(err_pars==1)
-                    {
-                        cout << endl << "--Creation de l'arbre--" << endl;
-                        parseur = createTree(lex,err_tree);
-                        cout << endl;
-                        if(!err_tree)
-                        {
-                            cout << endl << "--Impression de l'arbre--" << endl;
-                            printTree(parseur);
-                            if(libraryname!="")
-                                saveTree(parseur,libraryname);
-                        }
-                        cout << endl << "--Fin de compilation--" << endl << endl;
-                    }
-                    else
-                    {
-                        cout << endl << "--Erreur de syntaxe--" << endl;
-                        cout <<  "--Compilation avortée--" << endl << endl;
-                    }
-                }
-                else
-                {
-                    cout << endl << "--Erreur orthographique--" << endl;
-                    cout <<  "--Compilation avortée--" << endl << endl;
-                }
+					if(err_pars==1)
+					{
+						cout << endl << "--Creation de l'arbre--" << endl;
+						parseur = createTree(lex,err_tree);
+						cout << endl;
+						if(!err_tree)
+						{
+							cout << endl << "--Impression de l'arbre--" << endl;
+							printTree(parseur);
+							if(libraryname!="")
+								saveTree(parseur,libraryname);
+						}
+						cout << endl << "--Fin de compilation--" << endl << endl;
+					}
+					else
+					{
+						cout << endl << "--Erreur de syntaxe--" << endl;
+						cout <<  "--Compilation avortée--" << endl << endl;
+					}
+				}
+				else
+				{
+					cout << endl << "--Erreur orthographique--" << endl;
+					cout <<  "--Compilation avortée--" << endl << endl;
+				}
 				break;
 			case SOURCE:
 				execute_script(sourcename);
