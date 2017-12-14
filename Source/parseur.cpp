@@ -723,6 +723,7 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 				c = c-1 ; 
 				itr++;
 				if (is_logic((*itr)->getLex())==true ){
+					(*itr)->setType(CONDITION_LOGIC);
 					if (expr_if_elsif(itr, c, end_cond)==0){
 						return 0;
 					}
@@ -783,6 +784,7 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 						c = c-1 ; 
 						itr++;
 						if (is_logic((*itr)->getLex())==true ){
+							(*itr)->setType(CONDITION_LOGIC);
 							if (expr_if_elsif(itr, c, end_cond)==0){
 								return 0;
 							}
@@ -834,6 +836,7 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 						c = c-1 ; 
 						itr++;
 						if (is_logic((*itr)->getLex())==true ){
+							(*itr)->setType(CONDITION_LOGIC);
 							if (expr_if_elsif(itr, c, end_cond)==0){
 								return 0;
 							}
@@ -1113,17 +1116,24 @@ int parseur_map(list<Lexeme*>::iterator& itr) {
 		if ((*itr)->getLex()=="("){
 			itr++;
 			if ((*itr)->getType()==MOT){
+				(*itr)->setType(MAP_OPERATOR) ;
 				itr++;
 				while ((*itr)->getLex()!=")"){
 					if ((*itr)->getLex()==","){
 						itr++;
 						if ((*itr)->getType()==MOT){
+							(*itr)->setType(MAP_OPERATOR) ;
 						}
 						else {return 0;}
 					}
 					else if ((*itr)->getLex()=="=>"){
+						itr--; 
+						(*itr)->setType(MAP_OPERATOR_SOURCE) ;
+						itr++; 
+						(*itr)->setType(AFFECTATION_MAP) ;
 						itr++;
 						if ((*itr)->getType()==MOT){
+							(*itr)->setType(MAP_OPERATOR_AFF) ;
 						}
 						else {return 0;}
 					}
