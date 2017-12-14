@@ -20,8 +20,12 @@ bool constructTreeOnAffectationSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_orde
 bool constructTreeOnAffectationVariable(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& affectation, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 bool constructTreeOnArchitecture(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architecture, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 bool constructTreeOnArchitectureID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architectureid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
+bool constructTreeOnArchitectureInst(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& architectureinst, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
+bool constructTreeOnPortMap(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& portmap, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
+bool constructTreeOnPortMapAffectation(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& portmapaff, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 bool constructTreeOnSignal(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& signal, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 bool constructTreeOnSignalID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& signalid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
+bool constructTreeOnTypeID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& _typeid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 bool constructTreeOnVariableID(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator& variableid, list<Lexeme*>& l, list<Lexeme*>::iterator& itr);
 
 //------------------------------------Entity--------------------------------
@@ -54,6 +58,7 @@ bool constructTreeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator&
 
 //------------------------------------Find--------------------------------
 tree<Lexeme*>::pre_order_iterator findLexemeInTree(tree<Lexeme*>::pre_order_iterator begin_search, tree<Lexeme*>::pre_order_iterator end_search, string lexeme);
+int findSense(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent);
 int findSizeOnVector(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent);
 string findType(tree<Lexeme*>& tr, tree<Lexeme*>::pre_order_iterator parent);
 bool isLexemeInTree(tree<Lexeme*>::pre_order_iterator begin_search, tree<Lexeme*>::pre_order_iterator end_search, Lexeme* l_searched);
