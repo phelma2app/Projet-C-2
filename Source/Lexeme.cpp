@@ -8,6 +8,7 @@ Lexeme::~Lexeme() {
 	// TODO Auto-generated destructor stub
 }
 
+//Affichage des types definis dans type_Lexeme.h
 string Lexeme::afficheType() const
 {
 	switch(type_lex)
@@ -31,7 +32,7 @@ string Lexeme::afficheType() const
 		case ATTRIBUT:
 			return "Attribut";
 		case ATTRIBUT_ID:
-			return "Attribut ID"; 	
+			return "Attribut ID";
 		case COMMENTAIRE :
 			return "Commentaire";
 		case COMPONENT:
