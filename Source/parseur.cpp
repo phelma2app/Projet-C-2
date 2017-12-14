@@ -12,6 +12,9 @@ using namespace std;
 
 // Pour retourner toutes les infos du lexeme : cout << (**itr) << endl;     
 // ********************************ROOT********************************************************************
+
+// Il s'agit du seul parseur qui est appelé en tant que fonction en dehors de ce fichier. 
+// Les autres parseurs sont appelés à partir de celui ci.
 int parseur_root (list<Lexeme*>& list_lex){
 	delete_com(list_lex);
 	list<Lexeme*>::iterator itr;
@@ -283,31 +286,31 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 		itr++;
 		if ((*itr)->getLex() == "of"){
 			itr++ ; 
-			if ((*itr)->getType()==MOT ){ // VERIFIER QUE L'ENTITY EXISTE 
+			if ((*itr)->getType()==MOT ){ 
 				(*itr)->setType(ENTITY_ID) ;
 				itr++;
 				if ((*itr)->getLex() == "is"){
 					itr++ ;
-					while ((*itr)->getLex() != "begin"){
-						if ((*itr)->getLex() == "signal"){
+					while ((*itr)->getLex() != "begin"){			
+						if ((*itr)->getLex() == "signal"){				//signal
 							if (parseur_signal(itr)== 0) {
 								cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le signal " << endl ;
 								return 0 ; 		// indique que l'on a une erreur
 							}
 						}
-						else if ((*itr)->getLex() == "component"){
+						else if ((*itr)->getLex() == "component"){			// component
 							if (parseur_component(itr)== 0) {
 							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le component " << endl ;
 							return 0 ; 		// indique que l'on a une erreur
 							}
 						}
-						else if ((*itr)->getLex() == "variable"){
+						else if ((*itr)->getLex() == "variable"){			// variable
 							if (parseur_variable(itr)== 0) {
 							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans la variable " << endl ;
 							return 0 ; 		// indique que l'on a une erreur
 							}
 						}
-						else if ((*itr)->getLex() == "type"){
+						else if ((*itr)->getLex() == "type"){			//Type
 							if (parseur_declar_type(itr)== 0) {
 							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le type " << endl ;
 							return 0 ; 		// indique que l'on a une erreur
@@ -619,7 +622,7 @@ int parseur_type (list<Lexeme*>::iterator& itr) {
 					if ((*itr)->getType() == NOMBRE) { 
 						(*itr)->setType(TYPE_VECTOR_END) ;
 						int j = stoi((*itr)->getLex()); 
-						if (i<j && sens =="to"){
+						if (i<j && sens =="to"){			//Ici on teste que le sens est bien respecté
 							itr++ ; 
 							if ((*itr)->getLex()== ")") {
 								return 1 ; 
@@ -721,7 +724,7 @@ int parseur_if (list<Lexeme*>::iterator& itr) {
 
 
 //***********FOnctionIF/ELSIF*******
-int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
+int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {		// end cond sera then pour le if et else if et ; pour une affectation 
 	itr++;
 	if ((*itr)->getType()==MOT) {
 		(*itr)->setType(OPERATOR_IF);
