@@ -14,8 +14,8 @@ architecture essai of typage is
 TYPE  couleur  IS  (bleu,  blanc,  rouge);
 TYPE  std_logic  is  ('U',  'X',  '0',  '1',  'Z',  'W',  'L',  'H',  '-');
 
-TYPE  mot  IS  array (0  TO  31)  OF  bit;
-TYPE  drapeau  IS  array (0  TO  2)  OF  couleur;
+TYPE  mot  IS  (0  TO  31)  OF  bit;
+TYPE  drapeau  IS   (0  TO  2)  OF  couleur;
 
 
 signal one : couleur;
@@ -26,4 +26,3 @@ signal four: drapeau;
 
 begin
  end vide;
-
