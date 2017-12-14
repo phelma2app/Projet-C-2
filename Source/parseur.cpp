@@ -44,9 +44,7 @@ int parseur_root (list<Lexeme*>& list_lex){
 			}
 		}
 		else {
-			cout << "Ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex() << ") : le mot n'est ni une library, ni une architecture, ni une entity" << endl ;
 			itr++ ; 
-
 		}
 	}
 	return 1;
@@ -308,6 +306,12 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 							return 0 ; 		// indique que l'on a une erreur
 							}
 						}
+						else if ((*itr)->getLex() == "type"){
+							if (parseur_declar_type(itr)== 0) {
+							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme dans le type " << endl ;
+							return 0 ; 		// indique que l'on a une erreur
+							}
+						}
 						else {
 							cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): on s'attend a avoir 'signal ou 'component' sachant qu'on a pas de begin " << endl ;
 							return 0 ;
@@ -361,9 +365,14 @@ int parseur_architecture (list<Lexeme*>::iterator& itr){
 										return 0;
 									}
 								}
-								else if ((*itr)->getType()==MOT){ 
+								else if ((*itr)->getType()==MOT){
+									itr--;   //on est sur le : 
+									itr--;   // on est sur le label
+									(*itr)->setType(MAP_ID);
+									itr++; 
+									itr++; 
 									itr++;
-									if ((*itr)->getLex()=="port"){
+									if ((*itr)->getLex()=="port"){       // PORT MAP 
 										if (parseur_map(itr)==0){
 											return 0;
 										}
@@ -396,21 +405,38 @@ int parseur_signal (list<Lexeme*>::iterator& itr){
 	if ((*itr)->getType() == MOT) {
 		(*itr)->setType(SIGNAL_ID) ;
 		itr++ ; 
-		if ((*itr)->getLex() == ":") {
-			itr++;
-			if (is_type((*itr)->getLex())==true) {
-				(*itr)->setType(SIGNAL_TYPE) ;
-				if (parseur_type(itr)== 0) {
-					cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme avec le type " << endl ;
-					return 0 ;
+		while ((*itr)->getLex() != ":") {
+			if ((*itr)->getLex()==","){
+				itr++; 
+				if ((*itr)->getType() == MOT) {
+					(*itr)->setType(SIGNAL_ID) ;
+					itr++ ; 
 				}
-				itr++;
-				if ((*itr)->getLex()==";") {
-					(*itr)->setType(SIGNAL_END) ;
-					return 1 ; 
-				} 		
 			}
 		}
+		itr++;
+		if (is_type((*itr)->getLex())==true) {
+			(*itr)->setType(SIGNAL_TYPE) ;
+			if (parseur_type(itr)== 0) {
+				cout << "ERREUR ligne " << (*itr)->getLigne() <<"(pour le lexeme " << (*itr)->getLex()<<" ): probleme avec le type " << endl ;
+				return 0 ;
+			}
+			itr++;
+			if ((*itr)->getLex()==";") {
+				(*itr)->setType(SIGNAL_END) ;
+				return 1 ; 
+			} 		
+		}
+		else if ((*itr)->getType()==MOT) {
+			(*itr)->setType(SIGNAL_TYPE) ;
+			itr++;
+			if ((*itr)->getLex()==";") {
+				(*itr)->setType(SIGNAL_END) ;
+				return 1 ; 
+			} 
+		}
+		else {return 0;}
+			
 	}
 }
 
@@ -754,12 +780,14 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 			if ((*itr)->getLex()=="'"){
 				itr++;
 				if (is_scalaire((*itr)->getLex())==true) {
+					(*itr)->setType(CONDITION_SCALAR);
 					if (expr_if_elsif(itr, c, end_cond)==0){
 						return 0;
 					}	
 					else {return 1;}
 				}
 				else if (is_logic((*itr)->getLex())==true ) {
+					(*itr)->setType(CONDITION_LOGIC);
 					if (expr_if_elsif(itr, c, end_cond)==0){
 						return 0;
 					}	
@@ -806,12 +834,14 @@ int expr_if_elsif (list<Lexeme*>::iterator& itr, int c, string end_cond) {
 			if ((*itr)->getLex()=="\""){
 				itr++;
 				if (is_scalaire((*itr)->getLex())== true) {
+					(*itr)->setType(CONDITION_SCALAR);
 					if (expr_if_elsif(itr, c, end_cond)==0){
 						return 0;
 					}	
 					else {return 1;}
 				}
 				else if (is_logic((*itr)->getLex())==true ) {
+					(*itr)->setType(CONDITION_LOGIC);
 					if (expr_if_elsif(itr, c, end_cond)==0){
 						return 0;
 					}	
@@ -966,20 +996,25 @@ int parseur_elsif (list<Lexeme*>::iterator& itr) {
 
 //*****************************************************************DECLARATION_TYPE*****************************************************
 int parseur_declar_type (list<Lexeme*>::iterator& itr) {
-	(*itr)->setType(MOT) ;            // A CHANGER
+	(*itr)->setType(TYPE_DECLARE) ;           
 	itr++;
 	if ((*itr)->getType()==MOT){
+		(*itr)->setType(TYPE_DECLARE_ID) ;
 		itr++;
 		if ((*itr)->getLex()=="is"){
 			itr++;
 			if ((*itr)->getLex()=="("){
 				itr++;
 				if ((*itr)->getType()==MOT){
+					(*itr)->setType(TYPE_DECLARE_VAL) ;
 					itr++ ; 
 					while ((*itr)->getLex() != ")"){
-						if ((*itr)->getLex() != ","){
+						cout << "ligne 988 " << (**itr) << endl ; 
+						if ((*itr)->getLex() == ","){
 							itr++; 
+							cout << "ligne 991 " << (**itr) << endl ; 
 							if ((*itr)->getType()==MOT){
+								(*itr)->setType(TYPE_DECLARE_VAL) ;
 							}
 							else {return 0 ;}
 
@@ -989,20 +1024,23 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 					}
 					itr++; 
 					if ((*itr)->getLex()==";"){
+						(*itr)->setType(TYPE_DECLARE_END) ;
 						return 1 ;
 					}
 				}
 				else if ((*itr)->getLex()=="'"){
 					itr++ ; 
-					if ((*itr)->getType()==MOT||(*itr)->getType()==NOMBRE){
+					if ((*itr)->getType()==MOT||(*itr)->getType()==NOMBRE||(*itr)->getType()==PONCTUATION){
+						(*itr)->setType(TYPE_DECLARE_VAL) ;
 						itr++;
 						if ((*itr)->getLex()=="'"){
 							while ((*itr)->getLex() != ")"){
-								if ((*itr)->getLex() != ","){
+								if ((*itr)->getLex() == ","){
 									itr++; 
 									if ((*itr)->getLex()=="'"){
 										itr++;
-										if ((*itr)->getType()==MOT||(*itr)->getType()==NOMBRE){
+										if ((*itr)->getType()==MOT||(*itr)->getType()==NOMBRE||(*itr)->getType()==PONCTUATION){
+											(*itr)->setType(TYPE_DECLARE_VAL) ;
 											itr++;
 											if ((*itr)->getLex()=="'"){
 
@@ -1014,30 +1052,39 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 									else {return 0 ;}
 
 								}
-								else {return 0 ;}
+
 								itr++;
 							}
 							itr++; 
 							if ((*itr)->getLex()==";"){
+								(*itr)->setType(TYPE_DECLARE_END) ;
 								return 1 ;
 							}
 						}
 					}
 				}
 				else if ((*itr)->getType()==NOMBRE){
+					(*itr)->setType(TYPE_VECTOR_BEGIN) ;
 					int i = stoi((*itr)->getLex()); 
 					itr++;
-					if ((*itr)->getLex()== "downto" ||(*itr)->getLex()== "to") { 
+					if ((*itr)->getLex()== "downto" ||(*itr)->getLex()== "to") {
+						(*itr)->setType(TYPE_VECTOR_SENSE) ; 
 						string sens = (*itr)->getLex() ;
 						itr++;
 						if ((*itr)->getType() == NOMBRE) { 
+							(*itr)->setType(TYPE_VECTOR_END) ;
 							int j = stoi((*itr)->getLex()); 
 							if (i<j && sens =="to"){
 								itr++ ; 
 								if ((*itr)->getLex()== ")") {
+									itr++;
 									if ((*itr)->getLex()== "of") {
+										itr++;
 										if ((*itr)->getType()== MOT) {
+											(*itr)->setType(TYPE_DECLARE_ID) ;
+											itr++; 
 											if ((*itr)->getLex()== ";") {
+												(*itr)->setType(TYPE_DECLARE_END) ;
 												return 1 ; 
 											}
 										}
@@ -1048,9 +1095,14 @@ int parseur_declar_type (list<Lexeme*>::iterator& itr) {
 							else if (i>j && sens =="downto"){
 								itr++ ; 
 								if ((*itr)->getLex()== ")") {
+									itr++;
 									if ((*itr)->getLex()== "of") {
+										itr++;
 										if ((*itr)->getType()== MOT) {
+											(*itr)->setType(TYPE_DECLARE_ID) ;
+											itr++;
 											if ((*itr)->getLex()== ";") {
+												(*itr)->setType(TYPE_DECLARE_END) ;
 												return 1 ; 
 											}
 										}
@@ -1148,6 +1200,5 @@ int parseur_map(list<Lexeme*>::iterator& itr) {
 	}
 	return 0;
 }
-
 
 
