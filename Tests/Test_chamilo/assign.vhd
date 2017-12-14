@@ -14,7 +14,7 @@ entity assign is
     DIN :       In    bit_vector(15 downto 0);
     DOUT :       Out   bit_vector(15 downto 0)
     );
-  end signaux;-- faute de nom
+  end assign;-- faute de nom
 
 architecture struct of assign is
 
