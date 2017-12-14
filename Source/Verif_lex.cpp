@@ -10,6 +10,7 @@
 
 using namespace std ; 
 
+//Pour la verification orthographique, on verifie chaque caractere de chaque lexeme du fichier 
 
 bool verif(Lexeme& l, bool *com, int *ligne_com) {  
 	string a = l.getLex() ;
@@ -21,7 +22,8 @@ if (*com == true && *ligne_com == l.getLigne()){ 	// ici on est dans le cas ou o
 }
 else {							// SInon on teste le lexeme pour vÃÂ©rifier l'orthographe et mettre la bonne etiquette 
 	*com = false ;
-	if (is_letter(a[0])){
+	if (is_letter(a[0])){				// Le lexeme commence par une lettre, on va donc vérifier qu'il soit composé seulement de nommbres, lettres ou d'un 	
+							//underscore . on verifiera qu'il ne termine pas par un underscore
 		l.isMot() ;
 		i++;
 		while (a[i]!='\0'){
@@ -37,7 +39,7 @@ else {							// SInon on teste le lexeme pour vÃÂ©rifier l'orthographe et m
 		erreur = true ; 
 		}
 	}
-	else if (is_number(a[0])){
+	else if (is_number(a[0])){			// Le premier caractere est un nombre donc on verifie que les carcteres qui suivent ne sont que des nombres
 		l.isNombre() ; 
 		i++ ; 
 		while (a[i]!='\0'){
@@ -51,7 +53,7 @@ else {							// SInon on teste le lexeme pour vÃÂ©rifier l'orthographe et m
 			i++ ; 
 		}
 	}
-	else if (is_ponctuation(a[0])){
+	else if (is_ponctuation(a[0])){			// On verifie que l'on a que des ponctuations autorises 
 		if (a[1]=='\0'){
 			l.isPonctuation() ; 
 		}
